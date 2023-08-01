@@ -171,3 +171,23 @@ p {
      color: #254423;
      font-style: inherit;
   }
+  @media (max-width: 767px) {
+    .team-section {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .mobile-content {
+      /* Add styles to show content for smaller screens here */
+      display: block; /* Show the section for smaller screens */
+       
+    }
+  }
+  .mobile-content {
+    text-align: center;
+    background-color: rgb(191, 205, 182);
+    padding: 20px;
+    display: none; /* Hide the section by default for larger screens */
+  }
+  
