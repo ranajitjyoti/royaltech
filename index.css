@@ -167,3 +167,10 @@ p {
     background-color: #e0f2e9;
     border-radius: 5px;
 }
+
+.service-image {
+    font-size: 24px;
+     /* Adjust the value as needed for the desired text size */
+     color: #254423;
+     font-style: inherit;
+  }
