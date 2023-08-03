@@ -177,30 +177,4 @@ p {
     }
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
   
-  /* Styles for larger screens (e.g., desktops) */
-  .desktop-section {
-    text-align: center;
-    background-color: rgb(191, 205, 182);
-    padding: 20px;
-    display: block; /* Show the section by default for larger screens */
-  }
-  
-  /* Styles for smaller screens (e.g., mobile screens) */
-  @media (max-width: 767px) {
-    .desktop-section {
-      display: none; /* Hide the section for smaller screens */
-    }
-    
-    .mobile-section {
-      text-align: center;
-      background-color: rgb(242, 205, 182);
-      padding: 20px;
-      display: block; /* Show the section for smaller screens */
-    }
-  }
