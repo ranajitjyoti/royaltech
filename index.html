@@ -419,22 +419,26 @@
     <header class="header">
         <div class="container">
             <div class="wrapper">
-                <div class="header-item-left">
-                    <h1 class="brand-text">
-                        <img src="image/serviceImage/image2vector.svg" alt="Deeplink Logo" class="logo">
-                    </h1>
-                </div>
-                
-                <style>
-                    .logo {
-                        width: 1000px; /* Increase width */
-                        height: auto; /* Maintain aspect ratio */
-                    }
-                
-                    .brand-text {
-                        margin: 0; /* Remove extra spacing */
-                    }
-                </style>
+<div class="header-item-left">
+    <h1 class="brand-text">
+        <img src="image/serviceImage/image2vector.svg" alt="Deeplink Logo" class="logo">
+    </h1>
+</div>
+
+<style>
+    .logo {
+        width: 100px; /* Default size */
+        height: auto;
+    }
+
+    /* Make logo smaller on mobile */
+    @media (max-width: 768px) {
+        .logo {
+            width: 60px; /* Smaller size for mobile */
+        }
+    }
+</style>
+
                 
                 <div class="header-item-center">
                     <div class="overlay"></div>
