@@ -223,23 +223,7 @@
     </style>
 </head>
 <body>
-    <!-- Header (Same as main site) -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <span class="logo-text">DeepLinkData</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Contact Hero Section -->
     <section class="contact-hero">
         <div class="container">
             <h1>Get in Touch With Us</h1>
@@ -301,44 +285,50 @@
             </div>
             
             <!-- Contact Form -->
-            <div class="contact-form">
-                <h2>Send Us a Message</h2>
-                <form action="#" method="POST">
-                    <div class="form-group">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service">Service Interested In</label>
-                        <select id="service" name="service">
-                            <option value="">Select a service</option>
-                            <option value="automation">Automation Testing</option>
-                            <option value="security">Security Testing</option>
-                            <option value="ai">AI Testing</option>
-                            <option value="performance">Performance Testing</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" name="message" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">Send Message</button>
-                </form>
-            </div>
+<div class="contact-form">
+    <h2>Send Us a Message</h2>
+    <form action="https://formsubmit.co/connect@deeplinkdata.com" method="POST">
+        <input type="hidden" name="_subject" value="New Contact Form Submission">
+        <input type="hidden" name="_next" value="https://yourwebsite.com/thank-you.html">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" style="display:none">
+        
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+        
+        <div class="form-group">
+            <label for="service">Service Interested In</label>
+            <select id="service" name="service">
+                <option value="">Select a service</option>
+                <option value="automation">Automation Testing</option>
+                <option value="security">Security Testing</option>
+                <option value="ai">AI Testing</option>
+                <option value="performance">Performance Testing</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</div>
         </div>
         
         <!-- Google Map -->

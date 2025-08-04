@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="/image/serviceImage/title.png">
+    <link rel="apple-touch-icon" href="/image/serviceImage/title.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/image/serviceImage/title.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers at DeepLink Data Solutions - Join Our Team</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Consistent with your existing green theme */
+        :root {
+            --primary-green: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --accent-orange: #FF6D00;
+            --light-bg: #F1F8E9;
+            --text-dark: #263238;
+            --text-light: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: #f9f9f9;
+            padding-top: 80px;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header - Consistent with your main site */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+        
+        /* Navigation */
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-nav li {
+            margin-left: 30px;
+        }
+        
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+        
+        .main-nav a:hover {
+            color: var(--primary-green);
+        }
+        
+        /* Hero Section */
+        .career-hero {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
+            color: var(--text-light);
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .career-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .career-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Main Content */
+        .career-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding: 60px 0;
+        }
+        
+        .career-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .career-form-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        /* Job Opening Card */
+        .job-opening {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .job-opening h2 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+        
+        .job-meta span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .job-meta i {
+            margin-right: 8px;
+        }
+        
+        .job-section h3 {
+            color: var(--primary-green);
+            margin: 25px 0 15px;
+            font-size: 1.3rem;
+        }
+        
+        .job-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .job-section li {
+            margin-bottom: 8px;
+        }
+        
+        /* Application Form */
+        .career-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .career-form h2 {
+            color: var(--primary-green);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-green);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #E65100;
+        }
+        
+        /* Why Join Us Section */
+        .benefits-section {
+            background-color: var(--light-bg);
+            padding: 60px 0;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .benefit-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+        
+        .benefit-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+        
+        /* Footer - Consistent with your main site */
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .contact-info {
+            margin-top: 15px;
+        }
+        
+        .contact-info p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-info i {
+            margin-right: 10px;
+            color: var(--accent-orange);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .career-hero {
+                padding: 80px 0;
+            }
+            
+            .career-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .career-hero p {
+                font-size: 1rem;
+            }
+            
+            .job-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Consistent with your main site -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="/image/serviceImage/title.png" alt="DeepLink Data Solutions Logo">
+                <span class="logo-text">DeepLink Data Solutions</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/services">Services</a></li>
+                    <li><a href="https://www.linkedin.com/company/deeplink-data">About Us</a></li>
+                    <li><a href="#" class="active">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="career-hero">
+        <div class="container">
+            <h1>Build Your Future With Us</h1>
+            <p>Join our team of innovative thinkers and help shape the future of software testing solutions</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container career-content">
+        <div class="career-info">
+            <div class="job-opening">
+                <h2>Automation Testing Engineer Internship</h2>
+                <div class="job-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Remote/Hybrid</span>
+                    <span><i class="fas fa-clock"></i> 6 months</span>
+                    <span><i class="fas fa-money-bill-wave"></i> Competitive stipend</span>
+                </div>
+                
+                <div class="job-section">
+                    <h3>About DeepLink Data Solutions</h3>
+                    <p>DeepLink Data Solutions is a cutting-edge technology company specializing in software testing and quality assurance solutions. We help businesses deliver flawless digital experiences through our expertise in automation testing, security testing, AI-powered testing, and performance engineering.</p>
+                </div>
+                
+                <div class="job-section">
+                    <h3>Responsibilities</h3>
+                    <ul>
+                        <li>Develop and maintain automated test scripts</li>
+                        <li>Work with testing frameworks like Selenium, Appium, or Cypress</li>
+                        <li>Participate in test planning and strategy sessions</li>
+                        <li>Identify, document, and track software defects</li>
+                        <li>Collaborate with development teams to improve product quality</li>
+                    </ul>
+                </div>
+                
+                <div class="job-section">
+                    <h3>Requirements</h3>
+                    <ul>
+                        <li>Pursuing or recently completed degree in Computer Science or related field</li>
+                        <li>Basic understanding of software testing concepts</li>
+                        <li>Familiarity with any programming language (Java, Python, JavaScript)</li>
+                        <li>Strong problem-solving skills</li>
+                        <li>Eagerness to learn automation tools and techniques</li>
+                    </ul>
+                </div>
+                
+                <div class="job-section">
+                    <h3>Nice to Have</h3>
+                    <ul>
+                        <li>Experience with version control (Git)</li>
+                        <li>Knowledge of CI/CD pipelines</li>
+                        <li>Understanding of API testing</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="job-section">
+                <h3>Application Process</h3>
+                <ol>
+                    <li>Submit your application through our online form</li>
+                    <li>Selected candidates will be contacted for an initial screening</li>
+                    <li>Technical interview with our testing team</li>
+                    <li>Final interview with management</li>
+                    <li>Offer extended to successful candidates</li>
+                </ol>
+                <p style="margin-top: 20px;"><em>We review applications on a rolling basis and encourage early submissions.</em></p>
+            </div>
+        </div>
+        
+        <div class="career-form-container">
+            <div class="career-form">
+                <h2>Apply Now</h2>
+                <form action="https://formsubmit.co/connect@deeplinkdata.com" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="_subject" value="Internship Application - Automation Testing">
+                    <input type="hidden" name="_autoresponse" value="Thank you for applying to DeepLink Data Solutions. We've received your application and will review it shortly.">
+                    
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education">Current Education</label>
+                        <input type="text" id="education" name="education" placeholder="Degree, University, Expected Graduation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skills">Technical Skills</label>
+                        <textarea id="skills" name="skills" placeholder="Programming languages, testing tools, frameworks you're familiar with" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projects">Relevant Projects/Experience</label>
+                        <textarea id="projects" name="projects" placeholder="Briefly describe any academic or personal projects related to testing"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cv">Upload CV (PDF only, max 5MB)</label>
+                        <input type="file" id="cv" name="cv" accept=".pdf" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cover-letter">Cover Letter (Optional)</label>
+                        <textarea id="cover-letter" name="cover_letter" placeholder="Why are you interested in this internship?"></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="display:none">
+                        <label for="website">Website</label>
+                        <input type="text" id="website" name="website">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Join Us Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 style="text-align: center; color: var(--primary-green); margin-bottom: 15px;">Why Join DeepLink Data Solutions?</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">We offer more than just a job - we offer a career path with opportunities for growth and development.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Hands-on Experience</h3>
+                    <p>Work on real-world testing projects with cutting-edge technologies</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Mentorship</h3>
+                    <p>Learn from industry experts with years of testing experience</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Growth Opportunities</h3>
+                    <p>Potential for full-time positions after successful internship</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Flexible Work</h3>
+                    <p>Remote-friendly culture with flexible working hours</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - Consistent with your main site -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>DeepLink Data Solutions</h3>
+                    <p style="color: #ccc; margin-top: 15px;">Transforming testing challenges into innovative solutions through cutting-edge technology and expertise.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/services">Services</a></li>
+                        <li><a href="https://www.linkedin.com/company/deeplink-data">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> info@deeplinkdata.com</p>
+                        <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Tech Park, Silicon Valley, CA</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 DeepLink Data Solutions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle functionality (consistent with your main site)
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.createElement('button');
+            mobileMenuToggle.className = 'mobile-menu-toggle';
+            mobileMenuToggle.innerHTML = `
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            `;
+            
+            const headerContainer = document.querySelector('.header-container');
+            headerContainer.appendChild(mobileMenuToggle);
+            
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                mainNav.classList.toggle('active');
+            });
+            
+            // Close mobile menu when clicking on a link
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenuToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
