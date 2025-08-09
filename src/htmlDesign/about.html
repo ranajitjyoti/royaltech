@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | DeepLink Data Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        :root {
+            --primary-green: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --accent-orange: #FF6D00;
+            --light-bg: #F1F8E9;
+            --text-dark: #263238;
+            --text-light: #FFFFFF;
+            --black: #121212;
+            --dark-gray: #1E1E1E;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--black);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.4s ease;
+        }
+        
+        header.scrolled {
+            padding: 10px 0;
+            background-color: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(15deg);
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        /* Mobile menu button */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+        
+        .mobile-menu-toggle .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--primary-light);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* Navigation */
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav li {
+            margin-left: 30px;
+        }
+        
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-light);
+            transition: width 0.3s ease;
+        }
+        
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* About Hero Section */
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary-dark), var(--black));
+            color: var(--text-light);
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+        
+        .about-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+        
+        /* Overview Section */
+        .overview {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-orange);
+        }
+        
+        .overview-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .overview-text {
+            flex: 1;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: fadeInRight 1s ease forwards 0.6s;
+        }
+        
+        .overview-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .overview-image {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: fadeInLeft 1s ease forwards 0.6s;
+        }
+        
+        .overview-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+        
+        .overview-image:hover img {
+            transform: scale(1.03);
+        }
+        
+        /* What We Do Section */
+        .what-we-do {
+            padding: 100px 0;
+            background-color: var(--light-bg);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 35px 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .service-card.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .service-card:nth-child(1).animate { animation-delay: 0.2s; }
+        .service-card:nth-child(2).animate { animation-delay: 0.4s; }
+        .service-card:nth-child(3).animate { animation-delay: 0.6s; }
+        .service-card:nth-child(4).animate { animation-delay: 0.8s; }
+        .service-card:nth-child(5).animate { animation-delay: 1s; }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        /* Why Choose Us Section */
+        .why-choose-us {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background-color: var(--light-bg);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .feature-card.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .feature-card:nth-child(1).animate { animation-delay: 0.2s; }
+        .feature-card:nth-child(2).animate { animation-delay: 0.4s; }
+        .feature-card:nth-child(3).animate { animation-delay: 0.6s; }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background-color: var(--primary-green);
+            color: white;
+        }
+        
+        .feature-card:hover h3 {
+            color: white;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary-green);
+        }
+        
+        /* Mission Vision Section */
+        .mission-vision {
+            padding: 100px 0;
+            background-color: var(--light-bg);
+        }
+        
+        .mv-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .mv-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .mv-card.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .mv-card:nth-child(1).animate { animation-delay: 0.2s; }
+        .mv-card:nth-child(2).animate { animation-delay: 0.4s; }
+        
+        .mv-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 0;
+            background-color: var(--accent-orange);
+            transition: height 0.4s ease;
+        }
+        
+        .mv-card:hover::before {
+            height: 100%;
+        }
+        
+        .mv-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary-dark), var(--black));
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+        
+        .cta-button:hover {
+            background-color: #E65100;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 109, 0, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--text-light);
+            padding: 80px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-light);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .contact-info p {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+        }
+        
+        .contact-info i {
+            margin-right: 15px;
+            color: var(--accent-orange);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scroll-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background-color: var(--accent-orange);
+            transform: translateY(-5px);
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 992px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: var(--black);
+                padding: 20px;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+            }
+            
+            .main-nav.active {
+                transform: translateY(0);
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+            }
+            
+            .main-nav li {
+                margin: 15px 0;
+            }
+            
+            .mobile-menu-toggle.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .mobile-menu-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .mobile-menu-toggle.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            
+            .about-hero {
+                padding: 80px 0;
+            }
+            
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .about-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .mv-card, .feature-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="/image/serviceImage/title.png" alt="DeepLink Data Solutions Logo">
+                <span class="logo-text">DeepLink Data Solutions</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="career.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- About Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <h1>About DeepLink Data Solutions</h1>
+            <p>Trusted partner for comprehensive Software Testing, helping businesses deliver secure, reliable, and high-performing applications.</p>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section class="overview">
+        <div class="container">
+            <div class="section-title">
+                <h2>Overview</h2>
+            </div>
+            <div class="overview-content">
+                <div class="overview-text">
+                    <p>DeepLink Data Solutions has been a trusted partner for comprehensive Software Testing, helping businesses deliver secure, reliable, and high-performing applications. From startups to global enterprises, we empower our clients with solutions that enhance quality, ensure security, and drive success in the digital era.</p>
+                    <p>With over seven years of industry expertise, we combine innovation, technical excellence, and a client-first approach to deliver tailored, cost-effective solutions. Our mission is to ensure your applications are not only high-quality but also fortified against evolving cyber threats.</p>
+                </div>
+                <div class="overview-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="DeepLink Data Solutions Team">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Do Section -->
+    <section class="what-we-do">
+        <div class="container">
+            <div class="section-title">
+                <h2>What We Do</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Functional Testing</h3>
+                    <p>Ensuring seamless functionality across platforms with comprehensive test coverage and meticulous validation.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Automation Testing</h3>
+                    <p>Accelerating releases with advanced automation solutions that reduce testing time while increasing coverage.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Performance Testing</h3>
+                    <p>Guaranteeing optimal speed, reliability, and scalability under various load conditions and environments.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Real-World Testing</h3>
+                    <p>Leveraging global crowd testing for usability validation across diverse devices and user scenarios.</p>
+                </div>
+                <div class="service-card">
+                    <h3>CI/CD Integration</h3>
+                    <p>Embedding testing into your development pipeline effortlessly for continuous quality assurance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-us">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose DeepLink Data Solutions?</h2>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Industry Expertise</h3>
+                    <p>Over seven years of specialized experience in software testing and quality assurance.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Client-First Approach</h3>
+                    <p>Tailored solutions designed to meet your specific business requirements and goals.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Innovative Solutions</h3>
+                    <p>Cutting-edge testing methodologies combined with the latest tools and technologies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section class="mission-vision">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Vision & Mission</h2>
+            </div>
+            <div class="mv-container">
+                <div class="mv-card">
+                    <h3>Our Vision</h3>
+                    <p>To lead the industry in software testing and cybersecurity, enabling businesses to excel in the digital age.</p>
+                </div>
+                <div class="mv-card">
+                    <h3>Our Mission</h3>
+                    <p>To deliver world-class quality assurance and security solutions that create exceptional digital experiences and safeguard what matters most.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Transform Your Testing Strategy?</h2>
+            <a href="contact.html" class="cta-button">Get in Touch Today</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>DeepLink Data Solutions</h3>
+                    <p>Transforming testing challenges into solutions through innovative QA approaches and cutting-edge technology.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> info@deeplinkdata.com</p>
+                        <p><i class="fas fa-phone-alt"></i> +91-8420290133</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Kolkata, West Bengal, India</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 DeepLink Data Solutions. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.main-nav');
+            
+            toggleButton.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    toggleButton.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+            
+            // Header scroll effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Scroll to top button
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('active');
+                } else {
+                    scrollToTopBtn.classList.remove('active');
+                }
+            });
+            
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Animate elements when they come into view
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.service-card, .feature-card, .mv-card');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.classList.add('animate');
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on page load
+        });
+    </script>
+</body>
+</html>

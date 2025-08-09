@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/image/serviceImage/title.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepLink Data Solutions - Transforming Testing Challenges into Solutions</title>
+    <title>Our Services | DeepLink Data Solutions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -180,16 +180,16 @@
         }
         
         /* Hero Section */
-        .hero {
+        .services-hero {
             background: linear-gradient(135deg, var(--primary-dark), var(--black));
             color: var(--text-light);
-            padding: 120px 0 100px;
+            padding: 120px 0 80px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
         
-        .hero::before {
+        .services-hero::before {
             content: '';
             position: absolute;
             top: 0;
@@ -205,7 +205,7 @@
             100% { background-position: 100% 50%; }
         }
         
-        .hero h1 {
+        .services-hero h1 {
             font-size: 2.8rem;
             margin-bottom: 25px;
             line-height: 1.3;
@@ -214,7 +214,7 @@
             animation: fadeInUp 1s ease forwards 0.3s;
         }
         
-        .hero p {
+        .services-hero p {
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto 40px;
@@ -266,14 +266,14 @@
             transform: translateX(100%);
         }
         
-        /* Services Section */
-        .services {
+        /* Services Overview Section */
+        .services-overview {
             padding: 100px 0;
             background-color: #fff;
             position: relative;
         }
         
-        .services::before {
+        .services-overview::before {
             content: '';
             position: absolute;
             bottom: 0;
@@ -308,6 +308,25 @@
             border-radius: 3px;
         }
         
+        .services-intro {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .services-intro.animate {
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        /* Core Services Section */
+        .core-services {
+            padding: 80px 0;
+            background-color: var(--light-bg);
+        }
+        
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -315,7 +334,7 @@
         }
         
         .service-card {
-            background-color: var(--light-bg);
+            background-color: #fff;
             border-radius: 10px;
             padding: 35px 30px;
             text-align: center;
@@ -336,8 +355,6 @@
         .service-card:nth-child(2).animate { animation-delay: 0.2s; }
         .service-card:nth-child(3).animate { animation-delay: 0.3s; }
         .service-card:nth-child(4).animate { animation-delay: 0.4s; }
-        .service-card:nth-child(5).animate { animation-delay: 0.5s; }
-        .service-card:nth-child(6).animate { animation-delay: 0.6s; }
         
         .service-card::before {
             content: '';
@@ -376,190 +393,150 @@
             font-size: 1.4rem;
         }
         
-        .platform-badges i {
-            margin: 0 5px;
+        /* Specialized Services Section */
+        .specialized-services {
+            padding: 100px 0;
+            background-color: #fff;
+        }
+        
+        .specialized-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .specialized-card {
+            background-color: var(--light-bg);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-green);
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .specialized-card.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .specialized-card:nth-child(1).animate { animation-delay: 0.1s; }
+        .specialized-card:nth-child(2).animate { animation-delay: 0.2s; }
+        .specialized-card:nth-child(3).animate { animation-delay: 0.3s; }
+        .specialized-card:nth-child(4).animate { animation-delay: 0.4s; }
+        .specialized-card:nth-child(5).animate { animation-delay: 0.5s; }
+        .specialized-card:nth-child(6).animate { animation-delay: 0.6s; }
+        .specialized-card:nth-child(7).animate { animation-delay: 0.7s; }
+        .specialized-card:nth-child(8).animate { animation-delay: 0.8s; }
+        .specialized-card:nth-child(9).animate { animation-delay: 0.9s; }
+        
+        .specialized-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--accent-orange);
+        }
+        
+        .specialized-card h3 {
             color: var(--primary-green);
-            transition: transform 0.3s ease;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
         }
         
-        .service-card:hover .platform-badges i {
-            transform: scale(1.2);
+        .specialized-card h3 i {
+            margin-right: 10px;
+            color: var(--accent-orange);
         }
         
-        /* Platforms Section */
-        .platforms {
+        /* QA Ideology Section */
+        .qa-ideology {
             padding: 100px 0;
             background-color: var(--dark-gray);
             color: var(--text-light);
+            text-align: center;
+        }
+        
+        .ideology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .ideology-item {
+            padding: 30px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+            border-bottom: 3px solid transparent;
+        }
+        
+        .ideology-item.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .ideology-item:nth-child(1).animate { animation-delay: 0.1s; }
+        .ideology-item:nth-child(2).animate { animation-delay: 0.2s; }
+        .ideology-item:nth-child(3).animate { animation-delay: 0.3s; }
+        .ideology-item:nth-child(4).animate { animation-delay: 0.4s; }
+        .ideology-item:nth-child(5).animate { animation-delay: 0.5s; }
+        .ideology-item:nth-child(6).animate { animation-delay: 0.6s; }
+        
+        .ideology-item:hover {
+            transform: translateY(-10px);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid var(--primary-light);
+        }
+        
+        .ideology-icon {
+            font-size: 2.5rem;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+        }
+        
+        .ideology-item h3 {
+            margin-bottom: 15px;
+            color: var(--primary-light);
+        }
+        
+        /* CTA Section */
+        .services-cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-dark), var(--black));
+            color: var(--text-light);
+            text-align: center;
             position: relative;
         }
         
-        .platforms::before {
+        .services-cta::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+            height: 5px;
+            background: linear-gradient(90deg, var(--pride-red), var(--pride-orange), var(--pride-yellow), var(--pride-green), var(--pride-blue), var(--pride-purple));
+            animation: rainbow 8s linear infinite;
         }
         
-        .platforms .section-title h2 {
-            color: var(--primary-light);
-        }
-        
-        .platforms-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-        
-        .platform-card {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 30px 25px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .services-cta h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
             opacity: 0;
-            transform: translateY(50px);
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
         }
         
-        .platform-card.animate {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .platform-card:nth-child(1).animate { animation-delay: 0.1s; }
-        .platform-card:nth-child(2).animate { animation-delay: 0.2s; }
-        .platform-card:nth-child(3).animate { animation-delay: 0.3s; }
-        .platform-card:nth-child(4).animate { animation-delay: 0.4s; }
-        
-        .platform-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .platform-icon {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 25px;
-            background-color: rgba(76, 175, 80, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s ease;
-        }
-        
-        .platform-card:hover .platform-icon {
-            background-color: rgba(76, 175, 80, 0.2);
-            transform: rotate(15deg) scale(1.1);
-        }
-        
-        .platform-icon i {
-            font-size: 2.5rem;
-            color: var(--primary-light);
-        }
-        
-        .platform-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        .platform-card p {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        /* Process Section */
-        .process {
-            padding: 100px 0;
-            background-color: #fff;
-            position: relative;
-        }
-        
-        .process::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-green), transparent);
-        }
-        
-        .process-steps {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 60px;
-            position: relative;
-        }
-        
-        .process-steps::before {
-            content: '';
-            position: absolute;
-            top: 30px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-green), var(--accent-orange));
-            z-index: 1;
-        }
-        
-        .step {
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
-            padding: 0 15px;
-            position: relative;
-            margin-bottom: 50px;
+        .services-cta p {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
             opacity: 0;
-            transform: translateY(50px);
-        }
-        
-        .step.animate {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .step:nth-child(1).animate { animation-delay: 0.1s; }
-        .step:nth-child(2).animate { animation-delay: 0.3s; }
-        .step:nth-child(3).animate { animation-delay: 0.5s; }
-        .step:nth-child(4).animate { animation-delay: 0.7s; }
-        
-        .step-number {
-            width: 70px;
-            height: 70px;
-            background-color: var(--primary-green);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0 auto 25px;
-            position: relative;
-            z-index: 2;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
-        }
-        
-        .step:hover .step-number {
-            transform: scale(1.1) rotate(15deg);
-            background-color: var(--accent-orange);
-        }
-        
-        .step h3 {
-            margin-bottom: 20px;
-            color: var(--primary-green);
-            font-size: 1.3rem;
-            transition: color 0.3s ease;
-        }
-        
-        .step:hover h3 {
-            color: var(--accent-orange);
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.6s;
         }
         
         /* Footer */
@@ -729,21 +706,12 @@
         
         /* Mobile Styles */
         @media (max-width: 992px) {
-            .hero h1 {
+            .services-hero h1, .services-cta h2 {
                 font-size: 2.2rem;
             }
             
-            .hero p {
+            .services-hero p, .services-cta p {
                 font-size: 1.1rem;
-            }
-            
-            .step {
-                min-width: 50%;
-                margin-bottom: 40px;
-            }
-            
-            .process-steps::before {
-                display: none;
             }
         }
         
@@ -798,25 +766,20 @@
                 transform: translateY(-8px) rotate(-45deg);
             }
             
-            .hero {
+            .services-hero {
                 padding: 100px 0 70px;
             }
             
-            .hero h1 {
+            .services-hero h1 {
                 font-size: 1.8rem;
             }
             
-            .hero p {
+            .services-hero p {
                 font-size: 1rem;
             }
             
-            .services-grid, .platforms-grid {
+            .services-grid, .specialized-grid, .ideology-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .step {
-                min-width: 100%;
-                margin-bottom: 40px;
             }
         }
         
@@ -825,7 +788,7 @@
                 font-size: 20px;
             }
             
-            .hero h1 {
+            .services-hero h1, .services-cta h2 {
                 font-size: 1.6rem;
             }
             
@@ -838,7 +801,7 @@
                 font-size: 1.8rem;
             }
             
-            .service-card, .platform-card {
+            .service-card, .specialized-card {
                 padding: 25px 20px;
             }
         }
@@ -848,7 +811,7 @@
     <!-- Header -->
     <header id="header">
         <div class="container header-container">
-            <a href="#" class="logo">
+            <a href="index.html" class="logo">
                 <img src="/image/serviceImage/title.png" alt="DeepLink Data Solutions Logo">
                 <span class="logo-text">DeepLink Data Solutions</span>
             </a>
@@ -861,157 +824,179 @@
             
             <nav class="main-nav">
                 <ul>
-                    <li><a href="">Home</a></li>
-                    <li><a href="src/htmlDesign/services.html">Services</a></li>
-                    <li><a href="src/htmlDesign/about.html">About</a></li>
-                    <li><a href="src/htmlDesign/career.html">Careers</a></li>
-                    <li><a href="src/htmlDesign/contact.html">Contact</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html" class="active">Services</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="services-hero">
         <div class="container">
-            <h1>Deeplink Data Solutions is here to solve your problem, Transforming Testing Challenges into Solutions</h1>
-            <p>Deeplink Data Solutions is a provider of software testing services. We help companies release their software with confidence and assurance. We test your applications from various perspectives to ensure the best possible coverage. Whether it's any type of testing, any interface to be tested, or even a traditional package, we have the right, custom-built solution for you.</p>
-            <a href="https://www.linkedin.com/company/deeplink-data" class="cta-button">Free Consultation</a>
+            <h1>Our Comprehensive Testing Services</h1>
+            <p>Transforming testing challenges into tailored solutions with our experienced QA team and proven delivery models.</p>
+            <a href="#contact" class="cta-button">Get Started Today</a>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="services">
+    <!-- Services Overview Section -->
+    <section class="services-overview">
         <div class="container">
             <div class="section-title">
-                <h2>Our Services</h2>
-                <p>Comprehensive testing solutions for all your quality assurance needs. We deliver end‑to‑end QA services designed to help you release faster, safer, and smarter—ensuring flawless digital experiences across every platform and technology.</p>
+                <h2>Our QA Services</h2>
+            </div>
+            <div class="services-intro">
+                <p>We help companies release their software with confidence and assurance by testing applications from every perspective to ensure maximum coverage. Whether it's functional, performance, automation, or specialized testing, we provide the right, custom-built solution for your needs.</p>
+            </div>
+            
+            <!-- Core Services -->
+            <div class="section-title">
+                <h2>Core Quality Services</h2>
             </div>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-cogs fa-2x"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <h3>Automation Testing</h3>
-                    <p>Increase testability and simplify release management with an efficient automation testing approach.</p>
+                    <h3>Quality Assurance</h3>
+                    <p>Comprehensive QA processes ensuring software meets the highest quality benchmarks.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-shield-alt fa-2x"></i>
+                        <i class="fas fa-digital-tachograph"></i>
                     </div>
-                    <h3>Security Testing</h3>
-                    <p>Comprehensive security assessments to protect your applications from vulnerabilities.</p>
+                    <h3>Digital Assurance</h3>
+                    <p>End-to-end testing for modern digital platforms and ecosystems.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-brain fa-2x"></i>
+                        <i class="fas fa-cogs"></i>
                     </div>
-                    <h3>AI Testing</h3>
-                    <p>AI model validation, automated testing, performance analysis and CI/CD integration.</p>
+                    <h3>Quality Engineering</h3>
+                    <p>Embedding quality at every stage of the software development lifecycle.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-tachometer-alt fa-2x"></i>
+                        <i class="fas fa-robot"></i>
                     </div>
-                    <h3>Performance Testing</h3>
-                    <p>Enhance your software's functionality and grow your sales with our dynamic performance testing.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <div class="mobile-testing-icon">
-                            <i class="fas fa-mobile-screen fa-2x" 
-                               aria-hidden="true"
-                               title="Mobile App Testing"></i>
-                            <span class="sr-only">Mobile Application Testing Service</span>
-                            <span class="platform-badges">
-                                <i class="fab fa-android" title="Android"></i>
-                                <i class="fab fa-apple" title="iOS"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <h3>Mobile Application Testing</h3>
-                    <p>Comprehensive testing across iOS and Android devices (real devices + emulators) covering functionality, UI, and device-specific feature</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-wheelchair fa-2x"></i>
-                    </div>
-                    <h3>Accessibility Testing</h3>
-                    <p>WCAG compliance testing to ensure software is usable by people with disabilities (screen reader testing, color contrast analysis).</p>
+                    <h3>Next-Gen Testing</h3>
+                    <p>Leveraging AI, automation, and advanced analytics for smarter testing.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Platforms Section -->
-    <section class="platforms">
+    <!-- Specialized Services Section -->
+    <section class="specialized-services">
         <div class="container">
             <div class="section-title">
-                <h2>Platforms We Cover</h2>
-                <p>DeepLinkData Solutions provide expert testing services across all major platforms and devices, ensuring your product works seamlessly everywhere</p>
+                <h2>Specialized Testing Solutions</h2>
             </div>
-            <div class="platforms-grid">
-                <div class="platform-card">
-                    <div class="platform-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3>Web Services</h3>
-                    <p>Mature web testing practice that makes web automation easy as it should be.</p>
+            <div class="specialized-grid">
+                <div class="specialized-card">
+                    <h3><i class="fas fa-robot"></i> Automation Testing</h3>
+                    <p>Accelerate development cycles and simplify release management through efficient automation frameworks.</p>
                 </div>
-                <div class="platform-card">
-                    <div class="platform-icon">
-                        <i class="fas fa-window-maximize"></i>
-                    </div>
-                    <h3>Web Apps</h3>
-                    <p>Powerful automated testing for any web application including React, Angular and more.</p>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-hands-helping"></i> Manual Testing</h3>
+                    <p>Achieve flawless applications and products with meticulous manual verification.</p>
                 </div>
-                <div class="platform-card">
-                    <div class="platform-icon">
-                        <i class="fab fa-android"></i>
-                    </div>
-                    <h3>Android Apps</h3>
-                    <p>Robust testing for any Android application including native and hybrid apps.</p>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-sync-alt"></i> Regression Testing</h3>
+                    <p>Ensure updates or fixes don't introduce new defects.</p>
                 </div>
-                <div class="platform-card">
-                    <div class="platform-icon">
-                        <i class="fab fa-apple"></i>
-                    </div>
-                    <h3>iOS Apps</h3>
-                    <p>Save time and money with iOS app testing that adjusts to your requirements.</p>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-laptop-code"></i> Compatibility Testing</h3>
+                    <p>Validate your software across diverse devices, OS versions, and environments.</p>
+                </div>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-mobile-alt"></i> Mobile Application Testing</h3>
+                    <p>Detect and resolve issues that impact mobile performance and user satisfaction.</p>
+                </div>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> Performance Testing</h3>
+                    <p>Enhance speed, scalability, and reliability for better user experience and business growth.</p>
+                </div>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-shield-alt"></i> Security Testing</h3>
+                    <p>Protect your systems with robust security assessments and penetration testing.</p>
+                </div>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-user-friends"></i> Usability Testing</h3>
+                    <p>Identify UX challenges and deliver an intuitive, user-friendly experience.</p>
+                </div>
+                <div class="specialized-card">
+                    <h3><i class="fas fa-universal-access"></i> Accessibility Testing</h3>
+                    <p>Ensure digital inclusivity and compliance with accessibility standards.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Process Section -->
-    <section class="process">
+    <!-- QA Ideology Section -->
+    <section class="qa-ideology">
         <div class="container">
             <div class="section-title">
-                <h2>Our QA Process</h2>
-                <p>At DeepLink Data Solutions, we believe that quality is not an afterthought—it's built into every stage of development. Our structured QA process combines proven methodologies, cutting‑edge tools, and a deep understanding of client requirements to ensure your product meets the highest standards of functionality, performance, and reliability.</p>
+                <h2>Our QA Ideology</h2>
+                <p>The principles that guide our testing approach and ensure your success</p>
             </div>
-            <div class="process-steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Envision</h3>
-                    <p>Before we begin any testing engagement, we take the time to thoroughly understand your business objectives, application scope, and quality expectations. Our QA experts assess your current testing maturity level, existing processes, tools, and documentation.</p>
+            <div class="ideology-grid">
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Productive</h3>
+                    <p>Delivering maximum value in minimal time.</p>
                 </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Allocation of Team</h3>
-                    <p>Once the requirements are clear, we handpick a team of Quality Analysts and Engineers who bring the right domain expertise, technical skill set, and tool proficiency for your project.</p>
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-sync"></i>
+                    </div>
+                    <h3>Iterative</h3>
+                    <p>Continuous improvement through feedback-driven cycles.</p>
                 </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Project Kick Off</h3>
-                    <p>In this stage, we finalize the testing methodology—Agile, Waterfall, Hybrid, or Continuous Testing—based on your delivery model and priorities. We set up the required tools, frameworks, and environments.</p>
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Efficient</h3>
+                    <p>Optimizing processes to save time and resources.</p>
                 </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Exhaustive Reporting</h3>
-                    <p>Our reporting process goes beyond just pass/fail metrics. We provide detailed defect analytics, coverage statistics, trend graphs, and actionable insights to help you make informed decisions.</p>
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Effective</h3>
+                    <p>Achieving measurable, impactful results.</p>
+                </div>
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <h3>Thorough</h3>
+                    <p>Leaving no functionality untested.</p>
+                </div>
+                <div class="ideology-item">
+                    <div class="ideology-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Result-Oriented</h3>
+                    <p>Focused on business outcomes and client success.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="services-cta" id="contact">
+        <div class="container">
+            <h2>Ready to Transform Your Testing Strategy?</h2>
+            <p>Our team of QA experts is ready to help you build better software faster. Contact us today to discuss your testing needs.</p>
+            <a href="contact.html" class="cta-button">Get Your Free Consultation</a>
         </div>
     </section>
 
@@ -1021,25 +1006,25 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>DeepLink Data Solutions</h3>
-                    <p>Transforming testing challenges into tailored solutions through our experienced QA team, innovative strategies, and time-tested delivery models.</p>
+                    <p>Transforming testing challenges into tailored solutions through our experienced QA team and time-tested delivery models.</p>
                 </div>
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="src/htmlDesign/services.html">Services</a></li>
-                        <li><a href="src/htmlDesign/about.html">About</a></li>
-                        <li><a href="src/htmlDesign/career.html">Careers</a></li>
-                        <li><a href="src/htmlDesign/contact.html">Contact</a></li>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Services</h3>
                     <ul>
-                        <li><a href="#">Automation Testing</a></li>
-                        <li><a href="#">Security Testing</a></li>
-                        <li><a href="#">AI Testing</a></li>
-                        <li><a href="#">Performance Testing</a></li>
+                        <li><a href="services.html#automation">Automation Testing</a></li>
+                        <li><a href="services.html#security">Security Testing</a></li>
+                        <li><a href="services.html#performance">Performance Testing</a></li>
+                        <li><a href="services.html#mobile">Mobile Testing</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1111,7 +1096,7 @@
             
             // Animate elements when they come into view
             const animateOnScroll = function() {
-                const elements = document.querySelectorAll('.service-card, .platform-card, .step');
+                const elements = document.querySelectorAll('.service-card, .specialized-card, .ideology-item, .services-intro');
                 
                 elements.forEach(element => {
                     const elementPosition = element.getBoundingClientRect().top;

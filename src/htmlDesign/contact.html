@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | DeepLink Data Solutions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Green theme colors */
             --primary-green: #2E7D32;
             --primary-light: #4CAF50;
             --primary-dark: #1B5E20;
@@ -14,20 +16,31 @@
             --light-bg: #F1F8E9;
             --text-dark: #263238;
             --text-light: #FFFFFF;
+            --black: #121212;
+            --dark-gray: #1E1E1E;
+            
+            /* Pride colors */
+            --pride-red: #FF0018;
+            --pride-orange: #FFA52C;
+            --pride-yellow: #FFFF41;
+            --pride-green: #008018;
+            --pride-blue: #0000F9;
+            --pride-purple: #86007D;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
             line-height: 1.6;
             color: var(--text-dark);
-            background-color: #f9f9f9;
+            background-color: var(--light-bg);
             padding-top: 80px;
+            overflow-x: hidden;
         }
         
         .container {
@@ -37,129 +50,394 @@
             padding: 0 15px;
         }
         
-        /* Header Styles - Same as main site */
+        /* Header Styles */
         header {
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--black);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
             padding: 15px 0;
+            transition: all 0.4s ease;
         }
         
-        /* Contact Page Specific Styles */
-        .contact-hero {
-            background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
+        header.scrolled {
+            padding: 10px 0;
+            background-color: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(15deg);
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-light);
+            position: relative;
+        }
+        
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--pride-red), var(--pride-orange), var(--pride-yellow), var(--pride-green), var(--pride-blue), var(--pride-purple));
+            transition: width 0.3s ease;
+        }
+        
+        .logo:hover .logo-text::after {
+            width: 100%;
+        }
+        
+        /* Mobile menu button */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+            position: relative;
+        }
+        
+        .mobile-menu-toggle .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--primary-light);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* Navigation */
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-nav li {
+            margin-left: 30px;
+            position: relative;
+        }
+        
+        .main-nav a {
+            text-decoration: none;
             color: var(--text-light);
-            padding: 60px 0;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-light);
+            transition: width 0.3s ease;
+        }
+        
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+        
+        .main-nav a:hover {
+            color: var(--primary-light);
+        }
+        
+        /* Contact Hero Section */
+        .contact-hero {
+            background: linear-gradient(135deg, var(--primary-dark), var(--black));
+            color: var(--text-light);
+            padding: 120px 0 80px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--pride-red), var(--pride-orange), var(--pride-yellow), var(--pride-green), var(--pride-blue), var(--pride-purple));
+            animation: rainbow 8s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
         
         .contact-hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            line-height: 1.3;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.3s;
         }
         
+        .contact-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.6s;
+        }
+        
+        /* Contact Content */
         .contact-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 40px;
-            padding: 60px 0;
+            padding: 80px 0;
+            position: relative;
         }
         
+        .contact-container::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-green), transparent);
+        }
+        
+        /* Contact Information */
         .contact-info {
             background-color: var(--light-bg);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+            border-left: 4px solid var(--primary-green);
+        }
+        
+        .contact-info.animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .contact-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            border-left: 4px solid var(--accent-orange);
         }
         
         .contact-info h2 {
             color: var(--primary-green);
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .contact-info h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-orange);
+            border-radius: 3px;
         }
         
         .contact-method {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-method:hover {
+            transform: translateX(5px);
         }
         
         .contact-icon {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--primary-green);
-            margin-right: 15px;
-            min-width: 30px;
+            margin-right: 20px;
+            min-width: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-method:hover .contact-icon {
+            color: var(--accent-orange);
+            transform: scale(1.1);
         }
         
         .contact-details h3 {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: var(--primary-dark);
+            font-size: 1.2rem;
+        }
+        
+        .contact-details p, 
+        .contact-details a {
+            color: var(--text-dark);
+            transition: color 0.3s;
         }
         
         .contact-details a {
-            color: var(--text-dark);
             text-decoration: none;
-            transition: color 0.3s;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .contact-details a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary-green);
+            transition: width 0.3s ease;
         }
         
         .contact-details a:hover {
             color: var(--primary-green);
         }
         
+        .contact-details a:hover::after {
+            width: 100%;
+        }
+        
         .social-links {
             display: flex;
             gap: 15px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .social-links a {
             color: var(--primary-dark);
             font-size: 1.5rem;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(76, 175, 80, 0.1);
         }
         
         .social-links a:hover {
-            color: var(--primary-green);
+            color: var(--primary-light);
+            background-color: var(--primary-green);
+            transform: translateY(-3px);
         }
         
+        /* Contact Form */
         .contact-form {
             background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .contact-form.animate {
+            animation: fadeInUp 0.8s ease forwards 0.2s;
+        }
+        
+        .contact-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
         
         .contact-form h2 {
             color: var(--primary-green);
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .contact-form h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-orange);
+            border-radius: 3px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 500;
+            color: var(--primary-dark);
         }
         
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: rgba(241, 248, 233, 0.3);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
         }
         
         .form-group textarea {
-            min-height: 120px;
+            min-height: 150px;
             resize: vertical;
         }
         
@@ -167,67 +445,456 @@
             background-color: var(--accent-orange);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 15px 35px;
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
             font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         
         .submit-btn:hover {
             background-color: #E65100;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 109, 0, 0.4);
         }
         
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .submit-btn:hover::after {
+            transform: translateX(100%);
+        }
+        
+        /* Map Container */
         .map-container {
-            height: 400px;
-            margin-top: 40px;
-            border-radius: 8px;
+            height: 450px;
+            margin: 60px 0;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .map-container.animate {
+            animation: fadeInUp 0.8s ease forwards 0.4s;
+        }
+        
+        .map-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(46, 125, 50, 0.1), transparent);
+            z-index: 1;
+            pointer-events: none;
         }
         
         .map-container iframe {
             width: 100%;
             height: 100%;
             border: none;
+            filter: grayscale(20%) contrast(1.1);
+            transition: filter 0.5s ease;
         }
         
+        .map-container:hover iframe {
+            filter: grayscale(0%) contrast(1);
+        }
+        
+        /* Suggestion Box */
         .suggestion-box {
             background-color: var(--light-bg);
-            padding: 30px;
-            border-radius: 8px;
-            margin-top: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border-radius: 12px;
+            margin: 60px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            border-left: 4px solid var(--primary-green);
+        }
+        
+        .suggestion-box.animate {
+            animation: fadeInUp 0.8s ease forwards 0.6s;
+        }
+        
+        .suggestion-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background-color: var(--accent-orange);
+            transition: height 0.6s ease;
+        }
+        
+        .suggestion-box:hover::before {
+            height: 100%;
         }
         
         .suggestion-box h2 {
             color: var(--primary-green);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            position: relative;
         }
         
-        /* Responsive Adjustments */
+        .suggestion-box h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-orange);
+            border-radius: 3px;
+        }
+        
+        .suggestion-box p {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .suggestion-box p::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-orange);
+            font-weight: bold;
+        }
+        
+        .suggestion-box strong {
+            color: var(--primary-dark);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--text-light);
+            padding: 80px 0 30px;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--pride-red), var(--pride-orange), var(--pride-yellow), var(--pride-green), var(--pride-blue), var(--pride-purple));
+            animation: rainbow 8s linear infinite;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-light);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .footer-column ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary-light);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .footer-column ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .contact-info-footer {
+            margin-top: 20px;
+        }
+        
+        .contact-info-footer p {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+        }
+        
+        .contact-info-footer i {
+            margin-right: 15px;
+            color: var(--accent-orange);
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scroll-indicator.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-indicator:hover {
+            background-color: var(--accent-orange);
+            transform: translateY(-5px);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 992px) {
+            .contact-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .contact-hero p {
+                font-size: 1.1rem;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .contact-container {
-                grid-template-columns: 1fr;
+            body {
+                padding-top: 70px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: var(--black);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                padding: 20px;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 999;
+            }
+            
+            .main-nav.active {
+                transform: translateY(0);
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+            }
+            
+            .main-nav li {
+                margin: 15px 0;
+            }
+            
+            .main-nav a {
+                font-size: 1.1rem;
+            }
+            
+            /* Animate hamburger to X when active */
+            .mobile-menu-toggle.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .mobile-menu-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .mobile-menu-toggle.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            
+            .contact-hero {
+                padding: 100px 0 60px;
             }
             
             .contact-hero h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            
+            .contact-hero p {
+                font-size: 1rem;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+                padding: 40px 0;
+            }
+            
+            .contact-info, 
+            .contact-form {
+                padding: 30px;
             }
             
             .map-container {
-                height: 300px;
+                height: 350px;
+                margin: 40px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .contact-hero h1 {
+                font-size: 1.6rem;
+            }
+            
+            .submit-btn {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+            }
+            
+            .contact-info h2,
+            .contact-form h2,
+            .suggestion-box h2 {
+                font-size: 1.5rem;
+            }
+            
+            .contact-info,
+            .contact-form,
+            .suggestion-box {
+                padding: 25px 20px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="/image/serviceImage/title.png" alt="DeepLink Data Solutions Logo">
+                <span class="logo-text">DeepLink Data Solutions</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="career.html">Careers</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <!-- Hero Section -->
     <section class="contact-hero">
         <div class="container">
             <h1>Get in Touch With Us</h1>
-            <p>We're here to answer your questions and discuss how we can help your business</p>
+            <p>We're here to answer your questions and discuss how we can help transform your testing challenges into solutions</p>
         </div>
     </section>
 
@@ -264,7 +931,7 @@
                     </div>
                     <div class="contact-details">
                         <h3>Address</h3>
-                        <p>123 Tech Park, Sector 15<br>Gurugram, Haryana 122001<br>India</p>
+                        <p>New Alipore, <br>Kolkata -53<br>India</p>
                     </div>
                 </div>
                 
@@ -273,62 +940,64 @@
                         <i class="fab fa-linkedin"></i>
                     </div>
                     <div class="contact-details">
-                        <h3>LinkedIn</h3>
+                        <h3>Connect With Us</h3>
                         <a href="https://linkedin.com/company/deeplink-data-solutions" target="_blank">linkedin.com/company/deeplink-data-solutions</a>
                         <div class="social-links">
-                            <a href="https://facebook.com/deeplinkdata" target="_blank"><i class="fab fa-facebook"></i></a>
+                            <a href="https://facebook.com/deeplinkdata" target="_blank"><i class="fab fa-facebook-f"></i></a>
                             <a href="https://twitter.com/deeplinkdata" target="_blank"><i class="fab fa-twitter"></i></a>
                             <a href="https://instagram.com/deeplinkdata" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a href="https://youtube.com/deeplinkdata" target="_blank"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Contact Form -->
-<div class="contact-form">
-    <h2>Send Us a Message</h2>
-    <form action="https://formsubmit.co/connect@deeplinkdata.com" method="POST">
-        <input type="hidden" name="_subject" value="New Contact Form Submission">
-        <input type="hidden" name="_next" value="https://yourwebsite.com/thank-you.html">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="text" name="_honey" style="display:none">
-        
-        <div class="form-group">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone">
-        </div>
-        
-        <div class="form-group">
-            <label for="service">Service Interested In</label>
-            <select id="service" name="service">
-                <option value="">Select a service</option>
-                <option value="automation">Automation Testing</option>
-                <option value="security">Security Testing</option>
-                <option value="ai">AI Testing</option>
-                <option value="performance">Performance Testing</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" name="message" required></textarea>
-        </div>
-        
-        <button type="submit" class="submit-btn">Send Message</button>
-    </form>
-</div>
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form action="https://formsubmit.co/connect@deeplinkdata.com" method="POST">
+                    <input type="hidden" name="_subject" value="New Contact Form Submission">
+                    <input type="hidden" name="_next" value="https://yourwebsite.com/thank-you.html">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="text" name="_honey" style="display:none">
+                    
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">Service Interested In</label>
+                        <select id="service" name="service">
+                            <option value="">Select a service</option>
+                            <option value="automation">Automation Testing</option>
+                            <option value="security">Security Testing</option>
+                            <option value="ai">AI Testing</option>
+                            <option value="performance">Performance Testing</option>
+                            <option value="mobile">Mobile Testing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
         </div>
         
         <!-- Google Map -->
@@ -342,8 +1011,134 @@
             <p><strong>For fastest response:</strong> Use our LinkedIn messaging or email during business hours (9AM-6PM IST).</p>
             <p><strong>For technical queries:</strong> Please include relevant details like technology stack, project stage, and specific challenges.</p>
             <p><strong>Meeting requests:</strong> Include your availability and preferred communication method (Zoom, Teams, etc.)</p>
+            <p><strong>Project estimates:</strong> Share your requirements document or user stories for accurate assessment.</p>
             <p>We typically respond within 1 business day. For urgent matters, please call our support number.</p>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>DeepLink Data Solutions</h3>
+                    <p>Transforming testing challenges into tailored solutions through our experienced QA team and proven delivery models.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="services.html#automation">Automation Testing</a></li>
+                        <li><a href="services.html#security">Security Testing</a></li>
+                        <li><a href="services.html#performance">Performance Testing</a></li>
+                        <li><a href="services.html#mobile">Mobile Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info-footer">
+                        <p><i class="fas fa-phone-alt"></i> +91-8420290133</p>
+                        <p><i class="fas fa-envelope"></i> info@deeplinkdata.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Kolkata, india</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 DeepLink Data Solutions. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-indicator" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.main-nav');
+            
+            toggleButton.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    toggleButton.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+            
+            // Header scroll effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Scroll to top button
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('active');
+                } else {
+                    scrollToTopBtn.classList.remove('active');
+                }
+            });
+            
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Animate elements when they come into view
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.contact-info, .contact-form, .map-container, .suggestion-box');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.classList.add('animate');
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on page load
+            
+            // Form submission animation
+            const form = document.querySelector('.contact-form form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('.submit-btn');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
