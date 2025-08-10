@@ -181,7 +181,8 @@
         
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--primary-dark), var(--black));
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(27, 94, 32, 0.9)), 
+                        url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
             color: var(--text-light);
             padding: 120px 0 100px;
             text-align: center;
@@ -212,6 +213,7 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1s ease forwards 0.3s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .hero p {
@@ -221,6 +223,7 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1s ease forwards 0.6s;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         
         .cta-button {
@@ -264,6 +267,69 @@
         
         .cta-button:hover::after {
             transform: translateX(100%);
+        }
+        
+        /* AI/ML Floating Elements */
+        .ai-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .ai-element {
+            position: absolute;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 5px rgba(76, 175, 80, 0.5));
+            animation: floatElement 15s infinite linear;
+        }
+        
+        .ai-element:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            width: 60px;
+            animation-delay: 0s;
+            animation-duration: 20s;
+        }
+        
+        .ai-element:nth-child(2) {
+            top: 30%;
+            right: 10%;
+            width: 50px;
+            animation-delay: 2s;
+            animation-duration: 18s;
+        }
+        
+        .ai-element:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            width: 70px;
+            animation-delay: 4s;
+            animation-duration: 25s;
+        }
+        
+        .ai-element:nth-child(4) {
+            bottom: 30%;
+            right: 5%;
+            width: 40px;
+            animation-delay: 6s;
+            animation-duration: 22s;
+        }
+        
+        @keyframes floatElement {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-50px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
         }
         
         /* Services Section */
@@ -386,12 +452,69 @@
             transform: scale(1.2);
         }
         
+        /* AI/ML Feature Section */
+        .ai-feature {
+            padding: 100px 0;
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(27, 94, 32, 0.95)), 
+                        url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .ai-feature .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .ai-feature h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--primary-light);
+        }
+        
+        .ai-feature p {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.2rem;
+        }
+        
+        .ai-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .ai-feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ai-feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ai-feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+        }
+        
         /* Platforms Section */
         .platforms {
             padding: 100px 0;
             background-color: var(--dark-gray);
             color: var(--text-light);
             position: relative;
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(27, 94, 32, 0.95)), 
+                        url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
         }
         
         .platforms::before {
@@ -424,6 +547,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             transform: translateY(50px);
+            backdrop-filter: blur(5px);
         }
         
         .platform-card.animate {
@@ -745,6 +869,10 @@
             .process-steps::before {
                 display: none;
             }
+            
+            .ai-element {
+                width: 40px !important;
+            }
         }
         
         @media (max-width: 768px) {
@@ -818,6 +946,10 @@
                 min-width: 100%;
                 margin-bottom: 40px;
             }
+            
+            .ai-element {
+                display: none;
+            }
         }
         
         @media (max-width: 480px) {
@@ -873,6 +1005,12 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <div class="ai-elements">
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="ai-element" alt="AI icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="ai-element" alt="AI icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="ai-element" alt="AI icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="ai-element" alt="AI icon">
+        </div>
         <div class="container">
             <h1>Deeplink Data Solutions is here to solve your problem, Transforming Testing Challenges into Solutions</h1>
             <p>Deeplink Data Solutions is a provider of software testing services. We help companies release their software with confidence and assurance. We test your applications from various perspectives to ensure the best possible coverage. Whether it's any type of testing, any interface to be tested, or even a traditional package, we have the right, custom-built solution for you.</p>
@@ -938,6 +1076,45 @@
                     </div>
                     <h3>Accessibility Testing</h3>
                     <p>WCAG compliance testing to ensure software is usable by people with disabilities (screen reader testing, color contrast analysis).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI/ML Feature Section -->
+    <section class="ai-feature">
+        <div class="container">
+            <h2>AI-Powered Testing Solutions</h2>
+            <p>Leverage cutting-edge artificial intelligence and machine learning technologies to transform your testing processes. Our AI-driven solutions provide intelligent test automation, predictive analytics, and self-healing test scripts.</p>
+            
+            <div class="ai-feature-grid">
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Test Generation</h3>
+                    <p>Automatically generate test cases based on application behavior and usage patterns.</p>
+                </div>
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Predictive Analytics</h3>
+                    <p>Identify potential failure points before they occur using historical data analysis.</p>
+                </div>
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Self-Healing Tests</h3>
+                    <p>Automatically adapt to UI changes without manual script maintenance.</p>
+                </div>
+                <div class="ai-feature-card">
+                    <div class="ai-feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Visual Validation</h3>
+                    <p>Advanced image recognition for pixel-perfect UI validation across devices.</p>
                 </div>
             </div>
         </div>
@@ -1125,6 +1302,14 @@
             
             window.addEventListener('scroll', animateOnScroll);
             animateOnScroll(); // Run once on page load
+            
+            // Add floating animation to AI elements on mobile
+            if (window.innerWidth <= 768) {
+                const aiElements = document.querySelectorAll('.ai-element');
+                aiElements.forEach(el => {
+                    el.style.animation = 'floating 3s ease-in-out infinite';
+                });
+            }
         });
     </script>
 </body>
