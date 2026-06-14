@@ -825,95 +825,73 @@
     draw();
   })();
 </script>
-  <!-- Firebase SDKs -->
+  <!-- Cloudinary Report Upload -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    const CLOUD_NAME    = 'dmndorsu2';
+    const UPLOAD_PRESET = 'stcet_reports';
+    const PATIENT_ID    = 'CAD-9821';
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyPLACEHOLDER",
-      authDomain: "your-project.firebaseapp.com",
-      projectId: "your-project-id",
-      storageBucket: "your-project-id.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef"
-    };
-
-    const app  = initializeApp(firebaseConfig);
-    const db   = getFirestore(app);
-    const storage = getStorage(app);
-    const PATIENT_ID = 'CAD-9821';
-
-    // ---------- LOAD EXISTING REPORTS ----------
-    async function loadReports(){
-      const list = document.getElementById('reportsList');
-      list.innerHTML = '<p style="font-size:0.75rem;color:#aaa;">Loading...</p>';
-      try{
-        const q = query(collection(db, 'reports', PATIENT_ID, 'files'), orderBy('uploadedAt','desc'));
-        const snap = await getDocs(q);
-        if(snap.empty){ list.innerHTML='<p style="font-size:0.75rem;color:#aaa;">No reports uploaded yet.</p>'; return; }
-        list.innerHTML='';
-        snap.forEach(d=>{
-          const {name, url, size} = d.data();
-          list.innerHTML += `
-            <div class="report-item" id="ri-${d.id}">
-              <span><i class="fas fa-file-medical" style="color:#c61a2f;margin-right:8px;"></i>
-              <a href="${url}" target="_blank">${name}</a>
-              <span style="color:#aaa;font-size:0.68rem;"> &nbsp;${(size/1024).toFixed(1)} KB</span></span>
-              <button class="del-btn" onclick="deleteReport('${d.id}','${name}','${d.id}')"><i class="fas fa-trash"></i></button>
-            </div>`;
-        });
-      }catch(e){ list.innerHTML='<p style="font-size:0.75rem;color:red;">Error loading reports.</p>'; }
+    function loadReports(){
+      const list   = document.getElementById('reportsList');
+      const stored = JSON.parse(localStorage.getItem('reports_'+PATIENT_ID)||'[]');
+      if(!stored.length){ list.innerHTML='<p style="font-size:0.75rem;color:#aaa;text-align:center;">No reports uploaded yet.</p>'; return; }
+      list.innerHTML = stored.map((f,i)=>`
+        <div class="report-item">
+          <span>
+            <i class="fas ${f.name.match(/\.pdf$/i)?'fa-file-pdf':'fa-file-image'}" style="color:#c61a2f;margin-right:8px;"></i>
+            <a href="${f.url}" target="_blank">${f.name}</a>
+            <span style="color:#aaa;font-size:0.68rem;"> &nbsp;${(f.size/1024).toFixed(1)} KB &middot; ${f.date}</span>
+          </span>
+          <button class="del-btn" onclick="window.deleteReport(${i})"><i class="fas fa-trash"></i></button>
+        </div>`).join('');
     }
 
-    // ---------- UPLOAD FILES ----------
+    window.deleteReport = function(i){
+      const stored = JSON.parse(localStorage.getItem('reports_'+PATIENT_ID)||'[]');
+      if(!confirm('Delete '+stored[i].name+'?')) return;
+      stored.splice(i,1);
+      localStorage.setItem('reports_'+PATIENT_ID, JSON.stringify(stored));
+      loadReports();
+    };
+
     async function uploadFiles(files){
+      const statusDiv = document.getElementById('uploadStatus');
       for(const file of files){
-        const statusDiv = document.getElementById('uploadStatus');
-        const id = Date.now()+'_'+file.name;
-        statusDiv.innerHTML += `
+        const id = Date.now()+'_'+Math.random().toString(36).slice(2);
+        statusDiv.insertAdjacentHTML('beforeend',`
           <div id="prog-${id}">
             <div class="upload-msg"><i class="fas fa-spinner fa-spin"></i> Uploading <b>${file.name}</b>...</div>
             <div class="upload-progress"><div class="upload-progress-bar" id="bar-${id}" style="width:0%"></div></div>
-          </div>`;
-
-        const storRef = ref(storage, `reports/${PATIENT_ID}/${Date.now()}_${file.name}`);
-        const task = uploadBytesResumable(storRef, file);
-
-        await new Promise((resolve)=>{
-          task.on('state_changed',
-            snap=>{ const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100); document.getElementById('bar-'+id).style.width=pct+'%'; },
-            err=>{ document.getElementById('prog-'+id).innerHTML=`<div class="upload-msg" style="color:red;">❌ Failed: ${file.name}</div>`; resolve(); },
-            async ()=>{
-              const url = await getDownloadURL(task.snapshot.ref);
-              await addDoc(collection(db,'reports',PATIENT_ID,'files'),{ name:file.name, url, size:file.size, uploadedAt:new Date() });
-              document.getElementById('prog-'+id).innerHTML=`<div class="upload-msg" style="color:green;">✅ ${file.name} uploaded!</div>`;
-              setTimeout(()=>{ const el=document.getElementById('prog-'+id); if(el) el.remove(); },3000);
-              resolve();
-            }
-          );
-        });
+          </div>`);
+        let fp=0;
+        const t=setInterval(()=>{ fp=Math.min(fp+Math.random()*15,90); const b=document.getElementById('bar-'+id); if(b) b.style.width=fp+'%'; },200);
+        try{
+          const fd=new FormData();
+          fd.append('file',file); fd.append('upload_preset',UPLOAD_PRESET); fd.append('folder','reports/'+PATIENT_ID);
+          const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{method:'POST',body:fd});
+          const data = await res.json();
+          clearInterval(t);
+          if(data.secure_url){
+            const b=document.getElementById('bar-'+id); if(b) b.style.width='100%';
+            const stored=JSON.parse(localStorage.getItem('reports_'+PATIENT_ID)||'[]');
+            stored.unshift({name:file.name,url:data.secure_url,size:file.size,date:new Date().toLocaleDateString()});
+            localStorage.setItem('reports_'+PATIENT_ID,JSON.stringify(stored));
+            setTimeout(()=>{ document.getElementById('prog-'+id)?.remove(); loadReports(); },1200);
+          } else { throw new Error(); }
+        }catch(e){
+          clearInterval(t);
+          const el=document.getElementById('prog-'+id);
+          if(el) el.innerHTML=`<div class="upload-msg" style="color:red;">&#10060; Failed: ${file.name}</div>`;
+          setTimeout(()=>document.getElementById('prog-'+id)?.remove(),3000);
+        }
       }
-      loadReports();
     }
 
-    // ---------- DELETE REPORT ----------
-    window.deleteReport = async function(docId, name){
-      if(!confirm('Delete '+name+'?')) return;
-      try{
-        await deleteDoc(doc(db,'reports',PATIENT_ID,'files',docId));
-        document.getElementById('ri-'+docId)?.remove();
-      }catch(e){ alert('Delete failed'); }
-    };
-
-    // ---------- WIRE UP INPUT & DRAG DROP ----------
-    document.getElementById('reportInput').addEventListener('change', e=> uploadFiles([...e.target.files]));
-    const dz = document.getElementById('dropZone');
-    dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag-over'); });
-    dz.addEventListener('dragleave', ()=> dz.classList.remove('drag-over'));
-    dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag-over'); uploadFiles([...e.dataTransfer.files]); });
-
+    document.getElementById('reportInput').addEventListener('change',e=>uploadFiles([...e.target.files]));
+    const dz=document.getElementById('dropZone');
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');uploadFiles([...e.dataTransfer.files]);});
     loadReports();
   </script>
 </body>
