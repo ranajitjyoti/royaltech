@@ -677,11 +677,23 @@
   init();
 
   // ---------- PROFILE PICTURE UPLOAD ----------
+  function loadSavedProfile(){
+    const saved = localStorage.getItem('profilePic');
+    if(saved){
+      const circle = document.querySelector('.avatar-circle');
+      document.getElementById('avatarIcon').style.display = 'none';
+      let img = circle.querySelector('img');
+      if(!img){ img = document.createElement('img'); circle.insertBefore(img, circle.firstChild); }
+      img.src = saved;
+    }
+  }
+
   document.getElementById('profileInput').addEventListener('change', function(){
     const file = this.files[0];
     if(!file) return;
     const reader = new FileReader();
     reader.onload = function(e){
+      localStorage.setItem('profilePic', e.target.result);
       const circle = document.querySelector('.avatar-circle');
       document.getElementById('avatarIcon').style.display = 'none';
       let img = circle.querySelector('img');
@@ -690,6 +702,8 @@
     };
     reader.readAsDataURL(file);
   });
+
+  loadSavedProfile();
 
   // ---------- LIVE ECG BACKGROUND ----------
   (function(){
