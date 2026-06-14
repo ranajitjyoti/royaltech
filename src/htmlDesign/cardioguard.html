@@ -116,16 +116,42 @@
     }
     .avatar-circle {
       background: linear-gradient(145deg, #c61a2f, #9e1027);
-      width: 52px;
-      height: 52px;
-      border-radius: 60px;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-size: 1.6rem;
       box-shadow: 0 6px 12px rgba(198,26,47,0.25);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border: 3px solid #c61a2f;
+      flex-shrink: 0;
     }
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .avatar-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      font-size: 0.65rem;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .avatar-circle:hover .avatar-overlay { opacity: 1; }
+    #profileInput { display: none; }
     .patient-info h3 {
       font-weight: 700;
       font-size: 1.25rem;
@@ -359,7 +385,11 @@
   <div class="card">
     <div class="patient-row">
       <div class="patient-avatar">
-        <div class="avatar-circle"><i class="fas fa-user-md"></i></div>
+        <div class="avatar-circle" onclick="document.getElementById('profileInput').click()" title="Click to upload photo">
+          <i class="fas fa-user-md" id="avatarIcon"></i>
+          <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+        </div>
+        <input type="file" id="profileInput" accept="image/*">
         <div class="patient-info">
           <h3>Ranajit Jyoti, 58</h3>
           <p><i class="fas fa-id-card"></i> ID: #CAD-9821 · Male · Hyperlipidemia</p>
@@ -645,6 +675,21 @@
   }
   
   init();
+
+  // ---------- PROFILE PICTURE UPLOAD ----------
+  document.getElementById('profileInput').addEventListener('change', function(){
+    const file = this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const circle = document.querySelector('.avatar-circle');
+      document.getElementById('avatarIcon').style.display = 'none';
+      let img = circle.querySelector('img');
+      if(!img){ img = document.createElement('img'); circle.insertBefore(img, circle.firstChild); }
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   // ---------- LIVE ECG BACKGROUND ----------
   (function(){
