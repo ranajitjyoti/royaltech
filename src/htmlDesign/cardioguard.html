@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>CardioGuard AI | Real-time CAD Risk Dashboard</title>
+  <!-- Google Fonts & simple CSS reset -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Chart.js CDN for trend charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #eef2f9 0%, #e0e8f2 100%);
+      font-family: 'Inter', sans-serif;
+      padding: 20px 16px 40px 16px;
+      color: #13294b;
+    }
+
+    /* modern container & cards */
+    .dashboard-container {
+      max-width: 550px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* header with heartbeat icon */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .logo-area h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c61a2f, #a00028);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-area i {
+      background: none;
+      color: #c61a2f;
+      font-size: 1.8rem;
+    }
+    .badge-live {
+      background: rgba(198, 26, 47, 0.15);
+      backdrop-filter: blur(2px);
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #b91c2e;
+      border: 1px solid rgba(198,26,47,0.3);
+    }
+    .badge-live i {
+      font-size: 0.7rem;
+      margin-right: 4px;
+    }
+
+    /* card style */
+    .card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(2px);
+      border-radius: 32px;
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0,0,0,0.02);
+      padding: 1.2rem 1.2rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #2c3e66;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid #c61a2f;
+      padding-left: 12px;
+    }
+    .card-title i {
+      color: #c61a2f;
+      font-size: 1.1rem;
+    }
+
+    /* patient overview row */
+    .patient-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .patient-avatar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar-circle {
+      background: linear-gradient(145deg, #c61a2f, #9e1027);
+      width: 52px;
+      height: 52px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.6rem;
+      box-shadow: 0 6px 12px rgba(198,26,47,0.25);
+    }
+    .patient-info h3 {
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .patient-info p {
+      font-size: 0.75rem;
+      color: #4a5b7a;
+    }
+    .last-updated {
+      font-size: 0.7rem;
+      background: #eef2fa;
+      padding: 6px 12px;
+      border-radius: 30px;
+    }
+
+    /* metrics grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 12px;
+    }
+    .metric-item {
+      background: white;
+      border-radius: 24px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: transform 0.1s ease;
+    }
+    .metric-icon {
+      font-size: 1.6rem;
+      color: #c61a2f;
+      margin-bottom: 6px;
+    }
+    .metric-value {
+      font-weight: 800;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      color: #0a2540;
+    }
+    .metric-unit {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #5c6f91;
+    }
+    .metric-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 4px;
+    }
+
+    /* risk card */
+    .risk-score {
+      background: linear-gradient(135deg, #1b2b4e, #0f1a2f);
+      color: white;
+    }
+    .risk-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .risk-gauge {
+      text-align: center;
+    }
+    .risk-percent {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .risk-confidence {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    .risk-level {
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 60px;
+      font-weight: 600;
+    }
+    .risk-description {
+      font-size: 0.75rem;
+      margin-top: 12px;
+    }
+
+    /* chart canvas container */
+    .chart-container {
+      margin-top: 8px;
+      height: 180px;
+      position: relative;
+    }
+    canvas {
+      max-height: 180px;
+      width: 100%;
+    }
+
+    /* factors & recommendations */
+    .factors-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .factor-badge {
+      background: #f0f3f9;
+      border-radius: 40px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .recommend-item {
+      background: #f8fafd;
+      border-radius: 20px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      border-left: 3px solid #c61a2f;
+    }
+    .model-badge {
+      background: #e9ecef;
+      border-radius: 20px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .model-accuracy {
+      font-weight: 700;
+      color: #15803d;
+    }
+    .best {
+      background: #e0f2e9;
+      border: 1px solid #2e7d64;
+    }
+
+    .arch-flow {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.7rem;
+      text-align: center;
+    }
+    .arch-node {
+      background: white;
+      border-radius: 40px;
+      padding: 8px 12px;
+      flex: 1;
+      font-weight: 500;
+    }
+
+    hr {
+      margin: 8px 0;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c61a2f30, transparent);
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 0.65rem;
+      color: #5c6f91;
+      margin-top: 8px;
+    }
+    /* ── ECG background canvas ── */
+    #ecgBg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+    }
+    .dashboard-container { position: relative; z-index: 1; }
+
+    /* ── Header heart pulse ── */
+    @keyframes heartPulse {
+      0%,100% { transform: scale(1); }
+      14%      { transform: scale(1.35); }
+      28%      { transform: scale(1); }
+      42%      { transform: scale(1.2); }
+      56%      { transform: scale(1); }
+    }
+    .logo-area i.fa-heartbeat {
+      display: inline-block;
+      animation: heartPulse 1.2s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* ── Metric icon beep ── */
+    @keyframes metricBeep {
+      0%,100% { transform: scale(1);   opacity: 1; }
+      50%      { transform: scale(1.4); opacity: 0.7; }
+    }
+    .metric-icon { animation: metricBeep 1.2s ease-in-out infinite; display: inline-block; }
+
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .risk-main {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- ECG background -->
+<canvas id="ecgBg"></canvas>
+<div class="dashboard-container">
+  <!-- header with realtime simulation -->
+  <div class="header">
+    <div class="logo-area">
+      <h1><i class="fas fa-heartbeat"></i> CardioGuard AI</h1>
+    </div>
+    <div class="badge-live"><i class="fas fa-circle" style="font-size: 0.5rem; color:#e31b2e;"></i> LIVE SIMULATION</div>
+  </div>
+
+  <!-- Patient Overview Card -->
+  <div class="card">
+    <div class="patient-row">
+      <div class="patient-avatar">
+        <div class="avatar-circle"><i class="fas fa-user-md"></i></div>
+        <div class="patient-info">
+          <h3>Ranajit Jyoti, 58</h3>
+          <p><i class="fas fa-id-card"></i> ID: #CAD-9821 · Male · Hyperlipidemia</p>
+        </div>
+      </div>
+      <div class="last-updated"><i class="fas fa-sync-alt"></i> <span id="timestamp">Just now</span></div>
+    </div>
+  </div>
+
+  <!-- Live Health Metrics (8 metrics) -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-waveform"></i> Live Health Metrics</div>
+    <div class="metrics-grid" id="metricsGrid">
+      <!-- dynamic values injected via JS -->
+    </div>
+  </div>
+
+  <!-- CAD Risk Assessment + Confidence + score -->
+  <div class="card risk-score">
+    <div class="card-title" style="color: #ffe0e3; border-left-color:#ffb7c1;"><i class="fas fa-chart-line"></i> CAD Risk Assessment</div>
+    <div class="risk-main">
+      <div class="risk-gauge">
+        <div class="risk-percent" id="riskScoreValue">27.4%</div>
+        <div class="risk-confidence">Risk Score</div>
+      </div>
+      <div class="risk-gauge">
+        <div class="risk-percent" id="confidenceValue">91.2%</div>
+        <div class="risk-confidence">Confidence Interval</div>
+      </div>
+      <div class="risk-level" id="riskLevelBadge">⚠️ LOW-MODERATE</div>
+    </div>
+    <div class="risk-description" id="riskDesc">
+      Based on real-time wearable fusion + Random Forest ensemble.
+    </div>
+  </div>
+
+  <!-- Health Trend Chart (Heart Rate & HRV over last 12 intervals) -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-chart-simple"></i> Trend Analysis (Last 12 readings)</div>
+    <div class="chart-container">
+      <canvas id="trendChart" width="400" height="160" style="max-height: 160px;"></canvas>
+    </div>
+  </div>
+
+  <!-- Key Risk Factors & AI Recommendations -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-exclamation-triangle"></i> Key Risk Factors</div>
+    <div class="factors-list" id="riskFactorsList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-microchip"></i> AI Clinical Recommendations</div>
+    <div id="recommendationsList"></div>
+  </div>
+
+  <!-- ML Model Comparison (Random Forest 94.2% best) -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-chart-column"></i> ML Model Comparison</div>
+    <div id="modelComparison"></div>
+  </div>
+
+  <!-- System Architecture Flow -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-project-diagram"></i> System Architecture Flow</div>
+    <div class="arch-flow">
+      <div class="arch-node"><i class="fas fa-microphone-alt"></i> Wearable sensors</div>
+      <div class="arch-node"><i class="fas fa-cloud-upload-alt"></i> Edge Gateway</div>
+      <div class="arch-node"><i class="fas fa-brain"></i> ML Pipeline</div>
+      <div class="arch-node"><i class="fas fa-chalkboard-user"></i> CardioGuard AI</div>
+    </div>
+    <div class="footer-note">Real‑time feature extraction → Random Forest (94.2% AUC) → CAD risk scoring</div>
+  </div>
+</div>
+
+<script>
+  // ---------- SIMULATED WEARABLE DATA STREAM ----------
+  // Base realistic ranges for a 58yo male with some risk factors
+  let currentMetrics = {
+    hr: 78,          // heart rate bpm
+    hrv: 32,         // ms (lower indicates stress)
+    bp_sys: 128,     // systolic
+    bp_dia: 82,      // diastolic
+    spo2: 96,        // %
+    temp: 36.7,      // Celsius
+    sleep: 6.2,      // hours
+    activity: 6850   // steps
+  };
+
+  // For trend chart (store last 12 heart rates and HRV)
+  let hrHistory = [76, 79, 78, 80, 77, 75, 78, 79, 81, 78, 76, 78];
+  let hrvHistory = [34, 33, 31, 30, 32, 33, 31, 30, 29, 31, 32, 32];
+  
+  // simulation interval: update metrics every 5 sec, dynamic small changes
+  let updateInterval;
+  
+  // Risk model function: simulated Random Forest inference based on current metrics.
+  // Returns riskScore% (0-100) and confidence% based on variance/agreement.
+  function computeCADRisk(metrics) {
+    // Using weighted risk factors (inspired by classic Framingham + wearable features)
+    let risk = 0;
+    // Age factor (58 years) baseline 15%
+    let ageRisk = 15;
+    // Heart Rate >85 adds risk, >100 severe; HRV low (<30) adds risk
+    let hrRisk = Math.max(0, (metrics.hr - 75) * 0.6);
+    let hrvRisk = Math.max(0, (35 - metrics.hrv) * 1.2);
+    // BP risk: sys>130 or dia>85
+    let bpRisk = 0;
+    if(metrics.bp_sys > 130) bpRisk += (metrics.bp_sys - 130) * 0.4;
+    if(metrics.bp_dia > 85) bpRisk += (metrics.bp_dia - 85) * 0.8;
+    // SpO2 <94% increases risk
+    let oxRisk = metrics.spo2 < 94 ? (95 - metrics.spo2) * 2.5 : 0;
+    // temp abnormal >37.5 or <36.0 slightly increase
+    let tempRisk = (metrics.temp > 37.5 || metrics.temp < 36.0) ? 4 : 0;
+    // sleep <6h increases risk, activity low <5000 steps
+    let sleepRisk = metrics.sleep < 6 ? (6.5 - metrics.sleep) * 2.2 : 0;
+    let activityRisk = metrics.activity < 5000 ? (5000 - metrics.activity) / 400 : 0;
+    
+    risk = ageRisk + hrRisk + hrvRisk + bpRisk + oxRisk + tempRisk + sleepRisk + activityRisk;
+    // add baseline inflammation factor 3-8%
+    risk += 4.5;
+    // clamp between 5% and 94%
+    let rawRisk = Math.min(94, Math.max(5, risk));
+    // Also incorporate trend disturbance: if heart rate rising significantly -> risk modulation
+    let trendMod = 0;
+    if(hrHistory.length >= 3) {
+      let recentAvg = hrHistory.slice(-3).reduce((a,b)=>a+b,0)/3;
+      if(recentAvg > metrics.hr + 3) trendMod = 2;
+      if(recentAvg < metrics.hr - 3) trendMod = -1;
+    }
+    let finalRisk = Math.min(94, Math.max(5, rawRisk + trendMod));
+    // Confidence based on feature consistency (simulated Random Forest high confidence when metrics are steady)
+    let variability = Math.abs(hrRisk) + Math.abs(hrvRisk) * 0.5;
+    let confidenceBase = 94 - Math.min(18, variability * 0.7);
+    let confidence = Math.min(98, Math.max(78, confidenceBase));
+    return { riskScore: Math.round(finalRisk * 10) / 10, confidence: Math.round(confidence * 10) / 10 };
+  }
+
+  // risk level textual & color mapping
+  function getRiskLevel(score) {
+    if(score < 20) return { text: "✅ LOW RISK", desc: "Normal variation, maintain lifestyle." };
+    if(score < 45) return { text: "⚠️ LOW-MODERATE", desc: "Monitor key metrics & consider lifestyle adjustments." };
+    if(score < 70) return { text: "🔥 MODERATE-HIGH", desc: "Consult cardiology. Enhanced monitoring recommended." };
+    return { text: "🚨 HIGH RISK", desc: "Immediate clinical attention & advanced diagnostics needed." };
+  }
+
+  // Update UI: metrics, risk score, recommendations, factors
+  function refreshDashboard() {
+    // Update timestamp
+    const now = new Date();
+    document.getElementById('timestamp').innerText = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    
+    // Render metrics grid with current values
+    const metricsGrid = document.getElementById('metricsGrid');
+    metricsGrid.innerHTML = `
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-heart"></i></div><div class="metric-value">${currentMetrics.hr}</div><div class="metric-unit">bpm</div><div class="metric-label">Heart Rate</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-charging-station"></i></div><div class="metric-value">${currentMetrics.hrv}</div><div class="metric-unit">ms</div><div class="metric-label">HRV</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-tachometer-alt"></i></div><div class="metric-value">${currentMetrics.bp_sys}/${currentMetrics.bp_dia}</div><div class="metric-unit">mmHg</div><div class="metric-label">Blood Pressure</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-lungs"></i></div><div class="metric-value">${currentMetrics.spo2}</div><div class="metric-unit">%</div><div class="metric-label">SpO₂</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-thermometer-half"></i></div><div class="metric-value">${currentMetrics.temp.toFixed(1)}</div><div class="metric-unit">°C</div><div class="metric-label">Temperature</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-bed"></i></div><div class="metric-value">${currentMetrics.sleep}</div><div class="metric-unit">hrs</div><div class="metric-label">Sleep Duration</div></div>
+      <div class="metric-item"><div class="metric-icon"><i class="fas fa-shoe-prints"></i></div><div class="metric-value">${currentMetrics.activity}</div><div class="metric-unit">steps</div><div class="metric-label">Activity Level</div></div>
+    `;
+    
+    // Compute CAD risk
+    const { riskScore, confidence } = computeCADRisk(currentMetrics);
+    const riskLevelObj = getRiskLevel(riskScore);
+    document.getElementById('riskScoreValue').innerHTML = `${riskScore}%`;
+    document.getElementById('confidenceValue').innerHTML = `${confidence}%`;
+    document.getElementById('riskLevelBadge').innerHTML = riskLevelObj.text;
+    document.getElementById('riskDesc').innerHTML = `${riskLevelObj.desc} · Ensemble confidence: ${confidence}% (Random Forest primary).`;
+    
+    // Key Risk Factors dynamic based on current metrics
+    const riskFactors = [];
+    if(currentMetrics.hr > 85) riskFactors.push({icon:"fa-heartbeat", text:`Tachycardia: ${currentMetrics.hr} bpm`});
+    if(currentMetrics.hrv < 30) riskFactors.push({icon:"fa-waveform", text:`Low HRV (${currentMetrics.hrv}ms) → autonomic imbalance`});
+    if(currentMetrics.bp_sys > 130 || currentMetrics.bp_dia > 85) riskFactors.push({icon:"fa-tachometer-alt", text:`Elevated BP ${currentMetrics.bp_sys}/${currentMetrics.bp_dia}`});
+    if(currentMetrics.spo2 < 94) riskFactors.push({icon:"fa-lungs", text:`Hypoxemia SpO₂ ${currentMetrics.spo2}%`});
+    if(currentMetrics.sleep < 6) riskFactors.push({icon:"fa-moon", text:`Sleep deprivation (${currentMetrics.sleep}h)`});
+    if(currentMetrics.activity < 6000) riskFactors.push({icon:"fa-shoe-prints", text:`Sedentary: ${currentMetrics.activity} steps`});
+    if(currentMetrics.temp > 37.4 || currentMetrics.temp < 36.2) riskFactors.push({icon:"fa-thermometer-half", text:`Atypical temp: ${currentMetrics.temp}°C`});
+    if(riskFactors.length === 0) riskFactors.push({icon:"fa-check-circle", text:"Key markers within optimal range"});
+    const factorsHtml = riskFactors.map(f => `<div class="factor-badge"><i class="fas ${f.icon}"></i> ${f.text}</div>`).join('');
+    document.getElementById('riskFactorsList').innerHTML = factorsHtml;
+    
+    // AI Recommendations based on risk score and prominent factor
+    let recommendations = [];
+    if(riskScore > 60) recommendations.push("🫀 Schedule echocardiogram + specialist review within 48h.");
+    else if(riskScore > 30) recommendations.push("📉 Increase moderate exercise & consider reducing sodium intake.");
+    if(currentMetrics.hrv < 30) recommendations.push("🧘 Guided breathing exercises shown to improve HRV & reduce CAD risk.");
+    if(currentMetrics.sleep < 6.5) recommendations.push("😴 Prioritize 7-8h sleep; sleep apnea screening if persists.");
+    if(currentMetrics.activity < 7000) recommendations.push("🚶‍♂️ Daily step goal: 7,500+ to improve cardiovascular profile.");
+    if(currentMetrics.bp_sys > 130) recommendations.push("💊 Monitor BP twice daily; DASH diet recommended.");
+    if(recommendations.length === 0) recommendations.push("✅ All metrics stable. Maintain Mediterranean diet and periodic monitoring.");
+    recommendations.unshift("🧠 Random Forest model suggests low immediate risk but preventive follow-up."); 
+    const recHtml = recommendations.map(r => `<div class="recommend-item"><i class="fas fa-stethoscope" style="margin-right:10px; color:#c61a2f;"></i> ${r}</div>`).join('');
+    document.getElementById('recommendationsList').innerHTML = recHtml;
+    
+    // ML Model Comparison table style
+    document.getElementById('modelComparison').innerHTML = `
+      <div class="model-badge"><span><i class="fas fa-tree"></i> Random Forest (Ensemble)</span><span class="model-accuracy">94.2% accuracy | AUC 0.96 ★ BEST</span></div>
+      <div class="model-badge"><span><i class="fas fa-brain"></i> XGBoost</span><span>91.7% accuracy</span></div>
+      <div class="model-badge"><span><i class="fas fa-chart-line"></i> Logistic Regression</span><span>84.3% accuracy</span></div>
+      <div class="model-badge"><span><i class="fas fa-network-wired"></i> Neural Net (3-layer)</span><span>89.5% accuracy</span></div>
+      <div style="font-size:0.7rem; margin-top:6px;">Cross-validated on 10,200 patients. Random Forest outperforms due to feature interactions.</div>
+    `;
+  }
+
+  // Update chart with latest HR and HRV history (trend chart)
+  let chart;
+  function updateTrendChart() {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const labels = Array.from({length: hrHistory.length}, (_,i)=>`t-${hrHistory.length-i}`);
+    if(chart) {
+      chart.data.datasets[0].data = [...hrHistory];
+      chart.data.datasets[1].data = [...hrHistory.map((_,idx)=>hrvHistory[idx])];
+      chart.update();
+    } else {
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Heart Rate (bpm)', data: [...hrHistory], borderColor: '#c61a2f', backgroundColor: 'rgba(198,26,47,0.05)', tension: 0.3, fill: true, pointRadius: 2 },
+            { label: 'HRV (ms)', data: [...hrvHistory], borderColor: '#2c7da0', backgroundColor: 'rgba(44,125,160,0.05)', tension: 0.3, fill: true, pointRadius: 2, borderDash: [5,5] }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: true,
+          plugins: { legend: { position: 'top', labels: { boxWidth:12, font:{size:10} } }, tooltip: { mode: 'index' } }
+        }
+      });
+    }
+  }
+  
+  // Simulate new sensor reading: small random walk + realistic correlation
+  function simulateNewReadings() {
+    // heart rate change ±3 bpm
+    let newHr = currentMetrics.hr + (Math.random() - 0.5) * 3.6;
+    newHr = Math.min(130, Math.max(55, Math.round(newHr)));
+    // HRV inversely related to HR roughly
+    let newHrv = currentMetrics.hrv + (Math.random() - 0.5) * 2.2;
+    newHrv = Math.min(58, Math.max(18, Math.round(newHrv*10)/10));
+    // BP (sys) variant
+    let newSys = currentMetrics.bp_sys + (Math.random() - 0.5) * 2.5;
+    newSys = Math.min(158, Math.max(105, Math.round(newSys)));
+    let newDia = currentMetrics.bp_dia + (Math.random() - 0.5) * 2;
+    newDia = Math.min(98, Math.max(68, Math.round(newDia)));
+    let newSpo2 = currentMetrics.spo2 + (Math.random() - 0.5) * 0.8;
+    newSpo2 = Math.min(100, Math.max(91, Math.round(newSpo2*10)/10));
+    let newTemp = currentMetrics.temp + (Math.random() - 0.5) * 0.15;
+    newTemp = Math.min(37.9, Math.max(36.1, Math.round(newTemp*10)/10));
+    let newSleep = currentMetrics.sleep + (Math.random() - 0.5) * 0.3;
+    newSleep = Math.min(8.5, Math.max(4.5, Math.round(newSleep*10)/10));
+    let newActivity = currentMetrics.activity + (Math.random() - 0.5) * 320;
+    newActivity = Math.min(15000, Math.max(1800, Math.round(newActivity)));
+    
+    currentMetrics = { hr: newHr, hrv: newHrv, bp_sys: newSys, bp_dia: newDia, spo2: newSpo2, temp: newTemp, sleep: newSleep, activity: newActivity };
+    
+    // update history arrays (rolling)
+    hrHistory.push(newHr);
+    hrvHistory.push(newHrv);
+    if(hrHistory.length > 12) hrHistory.shift();
+    if(hrvHistory.length > 12) hrvHistory.shift();
+    
+    refreshDashboard();
+    updateTrendChart();
+  }
+  
+  // start simulation interval
+  function startSimulation() {
+    simulateNewReadings(); // initial fill
+    if(updateInterval) clearInterval(updateInterval);
+    updateInterval = setInterval(() => {
+      simulateNewReadings();
+    }, 5000);
+  }
+  
+  // initialize everything
+  function init() {
+    refreshDashboard();
+    updateTrendChart();
+    startSimulation();
+  }
+  
+  init();
+
+  // ---------- LIVE ECG BACKGROUND ----------
+  (function(){
+    const canvas = document.getElementById('ecgBg');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // ECG waveform shape (one beat cycle, normalised 0-1 x, -1 to 1 y)
+    const beat = [
+      [0,0],[0.08,0],[0.09,0.15],[0.1,0],[0.12,-0.1],[0.14,0],
+      [0.18,0],[0.2,1],[0.22,-0.5],[0.24,0.2],[0.26,0],
+      [0.35,0],[0.38,0.3],[0.42,0],[1,0]
+    ];
+
+    // interpolate beat shape
+    function ecgY(px) {
+      const t = px;
+      for(let i=0;i<beat.length-1;i++){
+        const [x0,y0]=beat[i], [x1,y1]=beat[i+1];
+        if(t>=x0&&t<=x1){ const r=(t-x0)/(x1-x0); return y0+(y1-y0)*r; }
+      }
+      return 0;
+    }
+
+    const SPEED = 1.8;        // px per frame
+    const TAIL  = 400;        // px length of visible trace
+    const BEAT_W = 180;       // px width of one beat
+    let headX = 0;
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      const midY = H * 0.5;
+      const amp  = H * 0.18;
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#c61a2f';
+      ctx.lineWidth   = 2.2;
+      ctx.shadowColor = '#ff2244';
+      ctx.shadowBlur  = 8;
+
+      for(let px = headX - TAIL; px <= headX; px++){
+        const bx = ((px % BEAT_W) + BEAT_W) % BEAT_W;
+        const y  = midY - ecgY(bx / BEAT_W) * amp;
+        // fade tail
+        const alpha = (px - (headX - TAIL)) / TAIL;
+        ctx.globalAlpha = Math.max(0, alpha);
+        if(px === headX - TAIL){ ctx.moveTo(px, y); }
+        else { ctx.lineTo(px, y); }
+      }
+      ctx.globalAlpha = 1;
+      ctx.stroke();
+
+      // glowing dot at head
+      ctx.beginPath();
+      ctx.arc(headX, midY - ecgY(((headX % BEAT_W)+BEAT_W)%BEAT_W / BEAT_W)*amp, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#ff2244';
+      ctx.shadowBlur = 16;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      headX += SPEED;
+      if(headX > W + BEAT_W) headX = 0;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+</script>
+</body>
+</html>
