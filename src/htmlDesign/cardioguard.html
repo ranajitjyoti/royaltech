@@ -324,11 +324,46 @@
       color: #5c6f91;
       margin-top: 8px;
     }
-    /* ── ECG inline strip ── */
+    /* ── Report Upload ── */
+    .drop-zone {
+      border: 2px dashed #c61a2f;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      background: #fff5f6;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { background: #fde8eb; }
+    .report-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafd;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .report-item a { color: #c61a2f; text-decoration: none; font-weight: 600; }
+    .report-item a:hover { text-decoration: underline; }
+    .report-item .del-btn {
+      background: none; border: none; color: #e53935;
+      cursor: pointer; font-size: 0.9rem; padding: 2px 6px;
+    }
+    .upload-progress {
+      background: #eee; border-radius: 10px; height: 8px; overflow: hidden; margin: 6px 0;
+    }
+    .upload-progress-bar {
+      height: 100%; background: linear-gradient(90deg,#c61a2f,#ff5722);
+      border-radius: 10px; transition: width 0.3s;
+    }
+    .upload-msg { font-size: 0.75rem; color: #5c6f91; margin-bottom:4px; }
     #ecgBg { display: none; }
     .ecg-strip {
       width: 100%;
-      height: 80px;
+      height: 40px;
       display: block;
       border-radius: 16px;
       background: rgba(0,0,0,0.04);
@@ -453,6 +488,25 @@
   <div class="card">
     <div class="card-title"><i class="fas fa-chart-column"></i> ML Model Comparison</div>
     <div id="modelComparison"></div>
+  </div>
+
+  <!-- Blood Report Upload Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-file-medical"></i> Blood Reports & Documents</div>
+
+    <!-- Drop Zone -->
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('reportInput').click()">
+      <i class="fas fa-cloud-upload-alt" style="font-size:2rem; color:#c61a2f;"></i>
+      <p style="margin:8px 0 4px; font-weight:600;">Click or Drag & Drop files here</p>
+      <p style="font-size:0.72rem; color:#5c6f91;">PDF, JPG, PNG, DOC — multiple files allowed</p>
+      <input type="file" id="reportInput" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display:none">
+    </div>
+
+    <!-- Upload Progress -->
+    <div id="uploadStatus" style="margin-top:10px;"></div>
+
+    <!-- Uploaded Files List -->
+    <div id="reportsList" style="margin-top:12px;"></div>
   </div>
 
   <!-- System Architecture Flow -->
@@ -771,5 +825,96 @@
     draw();
   })();
 </script>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyPLACEHOLDER",
+      authDomain: "your-project.firebaseapp.com",
+      projectId: "your-project-id",
+      storageBucket: "your-project-id.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+    const storage = getStorage(app);
+    const PATIENT_ID = 'CAD-9821';
+
+    // ---------- LOAD EXISTING REPORTS ----------
+    async function loadReports(){
+      const list = document.getElementById('reportsList');
+      list.innerHTML = '<p style="font-size:0.75rem;color:#aaa;">Loading...</p>';
+      try{
+        const q = query(collection(db, 'reports', PATIENT_ID, 'files'), orderBy('uploadedAt','desc'));
+        const snap = await getDocs(q);
+        if(snap.empty){ list.innerHTML='<p style="font-size:0.75rem;color:#aaa;">No reports uploaded yet.</p>'; return; }
+        list.innerHTML='';
+        snap.forEach(d=>{
+          const {name, url, size} = d.data();
+          list.innerHTML += `
+            <div class="report-item" id="ri-${d.id}">
+              <span><i class="fas fa-file-medical" style="color:#c61a2f;margin-right:8px;"></i>
+              <a href="${url}" target="_blank">${name}</a>
+              <span style="color:#aaa;font-size:0.68rem;"> &nbsp;${(size/1024).toFixed(1)} KB</span></span>
+              <button class="del-btn" onclick="deleteReport('${d.id}','${name}','${d.id}')"><i class="fas fa-trash"></i></button>
+            </div>`;
+        });
+      }catch(e){ list.innerHTML='<p style="font-size:0.75rem;color:red;">Error loading reports.</p>'; }
+    }
+
+    // ---------- UPLOAD FILES ----------
+    async function uploadFiles(files){
+      for(const file of files){
+        const statusDiv = document.getElementById('uploadStatus');
+        const id = Date.now()+'_'+file.name;
+        statusDiv.innerHTML += `
+          <div id="prog-${id}">
+            <div class="upload-msg"><i class="fas fa-spinner fa-spin"></i> Uploading <b>${file.name}</b>...</div>
+            <div class="upload-progress"><div class="upload-progress-bar" id="bar-${id}" style="width:0%"></div></div>
+          </div>`;
+
+        const storRef = ref(storage, `reports/${PATIENT_ID}/${Date.now()}_${file.name}`);
+        const task = uploadBytesResumable(storRef, file);
+
+        await new Promise((resolve)=>{
+          task.on('state_changed',
+            snap=>{ const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100); document.getElementById('bar-'+id).style.width=pct+'%'; },
+            err=>{ document.getElementById('prog-'+id).innerHTML=`<div class="upload-msg" style="color:red;">❌ Failed: ${file.name}</div>`; resolve(); },
+            async ()=>{
+              const url = await getDownloadURL(task.snapshot.ref);
+              await addDoc(collection(db,'reports',PATIENT_ID,'files'),{ name:file.name, url, size:file.size, uploadedAt:new Date() });
+              document.getElementById('prog-'+id).innerHTML=`<div class="upload-msg" style="color:green;">✅ ${file.name} uploaded!</div>`;
+              setTimeout(()=>{ const el=document.getElementById('prog-'+id); if(el) el.remove(); },3000);
+              resolve();
+            }
+          );
+        });
+      }
+      loadReports();
+    }
+
+    // ---------- DELETE REPORT ----------
+    window.deleteReport = async function(docId, name){
+      if(!confirm('Delete '+name+'?')) return;
+      try{
+        await deleteDoc(doc(db,'reports',PATIENT_ID,'files',docId));
+        document.getElementById('ri-'+docId)?.remove();
+      }catch(e){ alert('Delete failed'); }
+    };
+
+    // ---------- WIRE UP INPUT & DRAG DROP ----------
+    document.getElementById('reportInput').addEventListener('change', e=> uploadFiles([...e.target.files]));
+    const dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', ()=> dz.classList.remove('drag-over'));
+    dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag-over'); uploadFiles([...e.dataTransfer.files]); });
+
+    loadReports();
+  </script>
 </body>
 </html>
