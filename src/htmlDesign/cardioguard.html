@@ -59,18 +59,19 @@
       font-size: 1.8rem;
     }
     .badge-live {
-      background: rgba(198, 26, 47, 0.15);
+      background: rgba(0, 200, 83, 0.15);
       backdrop-filter: blur(2px);
       padding: 6px 12px;
       border-radius: 40px;
       font-size: 0.7rem;
       font-weight: 600;
-      color: #b91c2e;
-      border: 1px solid rgba(198,26,47,0.3);
+      color: #00c853;
+      border: 1px solid rgba(0,200,83,0.3);
     }
     .badge-live i {
       font-size: 0.7rem;
       margin-right: 4px;
+      color: #00e676;
     }
 
     /* card style */
@@ -330,7 +331,7 @@
       width: 100%; height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.18;
+      opacity: 0.28;
     }
     .dashboard-container { position: relative; z-index: 1; }
 
@@ -378,7 +379,7 @@
     <div class="logo-area">
       <h1><i class="fas fa-heartbeat"></i> STCET M.Tech Project</h1>
     </div>
-    <div class="badge-live"><i class="fas fa-circle" style="font-size: 0.5rem; color:#e31b2e;"></i> LIVE SIMULATION</div>
+    <div class="badge-live"><i class="fas fa-circle" style="font-size: 0.5rem; color:#00e676;"></i> LIVE SIMULATION</div>
   </div>
 
   <!-- Patient Overview Card -->
@@ -721,54 +722,75 @@
       [0.35,0],[0.38,0.3],[0.42,0],[1,0]
     ];
 
-    // interpolate beat shape
-    function ecgY(px) {
-      const t = px;
+    function ecgY(t) {
       for(let i=0;i<beat.length-1;i++){
-        const [x0,y0]=beat[i], [x1,y1]=beat[i+1];
-        if(t>=x0&&t<=x1){ const r=(t-x0)/(x1-x0); return y0+(y1-y0)*r; }
+        const [x0,y0]=beat[i],[x1,y1]=beat[i+1];
+        if(t>=x0&&t<=x1){ return y0+(y1-y0)*((t-x0)/(x1-x0)); }
       }
       return 0;
     }
 
-    const SPEED = 1.8;        // px per frame
-    const TAIL  = 400;        // px length of visible trace
-    const BEAT_W = 180;       // px width of one beat
+    // get color from current risk score
+    function ecgColor(){
+      const el = document.getElementById('riskScoreValue');
+      const score = el ? parseFloat(el.innerText) : 25;
+      if(score < 20)  return { stroke:'#00c853', shadow:'#00e676' };  // green = low
+      if(score < 45)  return { stroke:'#ffd600', shadow:'#ffff00' };  // yellow = moderate
+      return           { stroke:'#ff1744', shadow:'#ff6d00' };          // red = high risk
+    }
+
+    const SPEED  = 2.2;
+    const TAIL   = 600;   // longer continuous tail
+    const BEAT_W = 200;
     let headX = 0;
+
+    // rows: draw 3 ECG lines at different vertical positions for fullscreen feel
+    const ROWS = [0.3, 0.55, 0.78];
 
     function draw(){
       ctx.clearRect(0,0,W,H);
-      const midY = H * 0.5;
-      const amp  = H * 0.18;
+      const { stroke, shadow } = ecgColor();
 
-      ctx.beginPath();
-      ctx.strokeStyle = '#c61a2f';
-      ctx.lineWidth   = 2.2;
-      ctx.shadowColor = '#ff2244';
-      ctx.shadowBlur  = 8;
+      ROWS.forEach(rowFrac => {
+        const midY = H * rowFrac;
+        const amp  = H * 0.1;
 
-      for(let px = headX - TAIL; px <= headX; px++){
-        const bx = ((px % BEAT_W) + BEAT_W) % BEAT_W;
-        const y  = midY - ecgY(bx / BEAT_W) * amp;
-        // fade tail
-        const alpha = (px - (headX - TAIL)) / TAIL;
-        ctx.globalAlpha = Math.max(0, alpha);
-        if(px === headX - TAIL){ ctx.moveTo(px, y); }
-        else { ctx.lineTo(px, y); }
-      }
-      ctx.globalAlpha = 1;
-      ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth   = 3.5;
+        ctx.shadowColor = shadow;
+        ctx.shadowBlur  = 14;
+        ctx.lineJoin    = 'round';
+        ctx.lineCap     = 'round';
 
-      // glowing dot at head
-      ctx.beginPath();
-      ctx.arc(headX, midY - ecgY(((headX % BEAT_W)+BEAT_W)%BEAT_W / BEAT_W)*amp, 4, 0, Math.PI*2);
-      ctx.fillStyle = '#ff2244';
-      ctx.shadowBlur = 16;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+        // draw full-width continuous line (past tail = flat baseline)
+        for(let px = 0; px < W; px++){
+          const distFromHead = (headX - px + W * 10) % W;
+          const inTail = distFromHead <= TAIL;
+          const bx = ((px % BEAT_W) + BEAT_W) % BEAT_W;
+          const y = inTail
+            ? midY - ecgY(bx / BEAT_W) * amp
+            : midY;  // flat line ahead of sweep
+          const alpha = inTail ? Math.min(1, distFromHead === 0 ? 1 : (TAIL - distFromHead) / TAIL * 0.9 + 0.1) : 0.08;
+          ctx.globalAlpha = alpha;
+          if(px === 0) ctx.moveTo(px, y);
+          else ctx.lineTo(px, y);
+        }
+        ctx.globalAlpha = 1;
+        ctx.stroke();
 
-      headX += SPEED;
-      if(headX > W + BEAT_W) headX = 0;
+        // glowing head dot
+        const hx = headX % W;
+        const hy = midY - ecgY(((hx % BEAT_W)+BEAT_W)%BEAT_W / BEAT_W) * amp;
+        ctx.beginPath();
+        ctx.arc(hx, hy, 5, 0, Math.PI*2);
+        ctx.fillStyle = shadow;
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      headX = (headX + SPEED) % W;
       requestAnimationFrame(draw);
     }
     draw();
