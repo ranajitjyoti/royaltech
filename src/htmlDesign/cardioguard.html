@@ -324,7 +324,25 @@
       color: #5c6f91;
       margin-top: 8px;
     }
-    /* ── Report Upload ── */
+    /* ── Lifestyle & Medical History ── */
+    .ls-btn {
+      background: #f0f3f9; border: 1.5px solid transparent;
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 0.75rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      font-family: inherit; color: #2c3e66;
+    }
+    .ls-btn:hover { background: #fde8eb; border-color: #c61a2f; }
+    .ls-btn.active { background: #c61a2f; color: white; border-color: #c61a2f; }
+    .mh-check {
+      display: flex; align-items: center; gap: 8px;
+      background: #f8fafd; border-radius: 14px;
+      padding: 10px 12px; font-size: 0.78rem;
+      cursor: pointer; border: 1.5px solid transparent;
+      transition: all 0.2s;
+    }
+    .mh-check:has(input:checked) { background: #fde8eb; border-color: #c61a2f; color: #c61a2f; font-weight: 600; }
+    .mh-check input { accent-color: #c61a2f; width:15px; height:15px; }
     .drop-zone {
       border: 2px dashed #c61a2f;
       border-radius: 20px;
@@ -380,9 +398,29 @@
     }
     .logo-area i.fa-heartbeat {
       display: inline-block;
-      animation: heartPulse 1.2s ease-in-out infinite;
       transform-origin: center;
     }
+
+    /* ── Floating heart ── */
+    #floatingHeartBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      background: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    #floatingHeartBtn .fh-icon { font-size: 1.6rem; }
+    #floatingHeartBtn .fh-label { font-size: 0.42rem; font-weight: 700; color: #1b2b4e; }
 
     /* ── Metric icon beep ── */
     @keyframes metricBeep {
@@ -432,6 +470,21 @@
         <div class="patient-info">
           <h3>Ranajit Jyoti, 58</h3>
           <p><i class="fas fa-id-card"></i> ID: #CAD-9821 · Male · Hyperlipidemia</p>
+          <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:5px;background:#f0f3f9;border-radius:20px;padding:3px 10px;font-size:0.72rem;">
+              <i class="fas fa-ruler-vertical" style="color:#c61a2f;"></i>
+              <span id="heightDisplay">--</span> cm
+              <button onclick="editField('height')" style="background:none;border:none;cursor:pointer;color:#c61a2f;font-size:0.7rem;padding:0 2px;"><i class="fas fa-pen"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;background:#f0f3f9;border-radius:20px;padding:3px 10px;font-size:0.72rem;">
+              <i class="fas fa-weight" style="color:#c61a2f;"></i>
+              <span id="weightDisplay">--</span> kg
+              <button onclick="editField('weight')" style="background:none;border:none;cursor:pointer;color:#c61a2f;font-size:0.7rem;padding:0 2px;"><i class="fas fa-pen"></i></button>
+            </div>
+            <div id="bmiDisplay" style="background:#f0f3f9;border-radius:20px;padding:3px 10px;font-size:0.72rem;display:none;">
+              <i class="fas fa-calculator" style="color:#c61a2f;"></i> BMI: <span id="bmiValue">--</span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="last-updated"><i class="fas fa-sync-alt"></i> <span id="timestamp">Just now</span></div>
@@ -509,6 +562,286 @@
     <div id="reportsList" style="margin-top:12px;"></div>
   </div>
 
+  <!-- Identity Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-id-badge"></i> Identity & Region</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Gender -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-venus-mars" style="color:#c61a2f;"></i> Gender</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="ls-btn" id="id-gender-male"   onclick="selectIdentity('gender','male',this)">&#9794; Male</button>
+          <button class="ls-btn" id="id-gender-female" onclick="selectIdentity('gender','female',this)">&#9792; Female</button>
+          <button class="ls-btn" id="id-gender-other"  onclick="selectIdentity('gender','other',this)">&#9889; Other</button>
+        </div>
+      </div>
+
+      <!-- Ethnicity -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-dna" style="color:#c61a2f;"></i> Ethnicity</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="id-eth-southasian" onclick="selectIdentity('eth','southasian',this)">🇻🇳 South Asian</button>
+          <button class="ls-btn" id="id-eth-african"    onclick="selectIdentity('eth','african',this)">🇳🇬 African</button>
+          <button class="ls-btn" id="id-eth-eastasian"  onclick="selectIdentity('eth','eastasian',this)">🇨🇳 East Asian</button>
+          <button class="ls-btn" id="id-eth-caucasian"  onclick="selectIdentity('eth','caucasian',this)">🇪🇺 Caucasian</button>
+          <button class="ls-btn" id="id-eth-hispanic"   onclick="selectIdentity('eth','hispanic',this)">🇲🇽 Hispanic</button>
+          <button class="ls-btn" id="id-eth-other"      onclick="selectIdentity('eth','other',this)">🌍 Other</button>
+        </div>
+      </div>
+
+      <!-- City -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-location-dot" style="color:#c61a2f;"></i> City / Town</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <input type="text" id="id-city" placeholder="e.g. Kolkata, Delhi, Mumbai..."
+            style="flex:1;border:1.5px solid #dde3f0;border-radius:20px;padding:8px 14px;
+            font-size:0.78rem;font-family:inherit;outline:none;color:#13294b;"
+            oninput="localStorage.setItem('id_city',this.value); resolveRegion(this.value); if(window.updateProfileDonut) updateProfileDonut();">
+        </div>
+        <div id="regionResult" style="font-size:0.72rem;color:#5c6f91;margin-top:6px;padding-left:4px;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Diet Profile Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-utensils"></i> Diet Profile</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Diet Type -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-leaf" style="color:#c61a2f;"></i> Diet Type</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-type-veg"     onclick="selectDiet('type','veg',this)">🥦 Vegetarian</button>
+          <button class="ls-btn" id="dt-type-fish"    onclick="selectDiet('type','fish',this)">🐟 Pescatarian</button>
+          <button class="ls-btn" id="dt-type-nonveg"  onclick="selectDiet('type','nonveg',this)">🍗 Non-Veg</button>
+          <button class="ls-btn" id="dt-type-junk"    onclick="selectDiet('type','junk',this)">🍔 Junk Food</button>
+        </div>
+      </div>
+
+      <!-- Salt Intake -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-shaker" style="color:#c61a2f;"></i> Salt / Sodium Intake</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-salt-low"    onclick="selectDiet('salt','low',this)">✅ Low</button>
+          <button class="ls-btn" id="dt-salt-normal" onclick="selectDiet('salt','normal',this)">🟡 Normal</button>
+          <button class="ls-btn" id="dt-salt-high"   onclick="selectDiet('salt','high',this)">🚨 High</button>
+        </div>
+      </div>
+
+      <!-- Oil Type -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-droplet" style="color:#c61a2f;"></i> Cooking Oil Type</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-oil-olive"   onclick="selectDiet('oil','olive',this)">🫒 Olive/Mustard</button>
+          <button class="ls-btn" id="dt-oil-refined" onclick="selectDiet('oil','refined',this)">⚠️ Refined</button>
+          <button class="ls-btn" id="dt-oil-butter"  onclick="selectDiet('oil','butter',this)">🧈 Butter/Ghee</button>
+        </div>
+      </div>
+
+      <!-- Carb Type -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-bread-slice" style="color:#c61a2f;"></i> Carbohydrate Type</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-carb-whole"  onclick="selectDiet('carb','whole',this)">🌾 Whole Grain</button>
+          <button class="ls-btn" id="dt-carb-mixed"  onclick="selectDiet('carb','mixed',this)">🍚 Mixed</button>
+          <button class="ls-btn" id="dt-carb-white"  onclick="selectDiet('carb','white',this)">🍜 White Rice/Bread</button>
+        </div>
+      </div>
+
+      <!-- Sugar Intake -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-candy-cane" style="color:#c61a2f;"></i> Sugar Intake</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-sugar-low"    onclick="selectDiet('sugar','low',this)">✅ Low</button>
+          <button class="ls-btn" id="dt-sugar-moderate" onclick="selectDiet('sugar','moderate',this)">🟡 Moderate</button>
+          <button class="ls-btn" id="dt-sugar-high"   onclick="selectDiet('sugar','high',this)">🍬 High</button>
+        </div>
+      </div>
+
+      <!-- Water Intake -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-tint" style="color:#c61a2f;"></i> Daily Water Intake</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-water-high"   onclick="selectDiet('water','high',this)">💧 2L+ (Good)</button>
+          <button class="ls-btn" id="dt-water-normal" onclick="selectDiet('water','normal',this)">🟡 1-2L</button>
+          <button class="ls-btn" id="dt-water-low"    onclick="selectDiet('water','low',this)">🔴 &lt;1L (Low)</button>
+        </div>
+      </div>
+
+      <!-- Fiber Intake -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-seedling" style="color:#c61a2f;"></i> Fiber / Vegetable Intake</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="dt-fiber-high"   onclick="selectDiet('fiber','high',this)">🥦 High (Daily veggies)</button>
+          <button class="ls-btn" id="dt-fiber-moderate" onclick="selectDiet('fiber','moderate',this)">🟡 Moderate</button>
+          <button class="ls-btn" id="dt-fiber-low"    onclick="selectDiet('fiber','low',this)">🔴 Low (Rarely)</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Screen Time Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-mobile-screen"></i> Screen Time</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;">
+          <i class="fas fa-mobile-alt" style="color:#c61a2f;"></i> Mobile Screen Time: <span id="mobileHrsLabel">3 hrs/day</span>
+        </label>
+        <input type="range" min="0" max="12" value="3" id="mobileHrs"
+          oninput="document.getElementById('mobileHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_mobile',this.value);"
+          style="width:100%;margin-top:8px;accent-color:#c61a2f;">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;"><span>0h</span><span>6h</span><span>12h</span></div>
+      </div>
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;">
+          <i class="fas fa-laptop" style="color:#c61a2f;"></i> Laptop/PC Screen Time: <span id="laptopHrsLabel">4 hrs/day</span>
+        </label>
+        <input type="range" min="0" max="14" value="4" id="laptopHrs"
+          oninput="document.getElementById('laptopHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_laptop',this.value);"
+          style="width:100%;margin-top:8px;accent-color:#c61a2f;">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;"><span>0h</span><span>7h</span><span>14h</span></div>
+      </div>
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-pause-circle" style="color:#c61a2f;"></i> Takes Regular Screen Breaks?</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="ls-btn" id="sc-break-yes" onclick="selectDiet('break','yes',this)">✅ Yes</button>
+          <button class="ls-btn" id="sc-break-no"  onclick="selectDiet('break','no',this)">❌ No</button>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-moon" style="color:#c61a2f;"></i> Uses Night Mode / Blue Light Filter?</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="ls-btn" id="sc-night-yes" onclick="selectDiet('night','yes',this)">✅ Yes</button>
+          <button class="ls-btn" id="sc-night-no"  onclick="selectDiet('night','no',this)">❌ No</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Profession Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-briefcase"></i> Profession</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-building" style="color:#c61a2f;"></i> Job Type</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="pr-job-desk"     onclick="selectDiet('job','desk',this)">💻 Desk/IT</button>
+          <button class="ls-btn" id="pr-job-physical" onclick="selectDiet('job','physical',this)">🏗️ Physical</button>
+          <button class="ls-btn" id="pr-job-night"    onclick="selectDiet('job','night',this)">🌙 Night Shift</button>
+          <button class="ls-btn" id="pr-job-student"  onclick="selectDiet('job','student',this)">🎓 Student</button>
+          <button class="ls-btn" id="pr-job-retired"  onclick="selectDiet('job','retired',this)">🏠 Retired</button>
+          <button class="ls-btn" id="pr-job-field"    onclick="selectDiet('job','field',this)">🌾 Field Work</button>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;">
+          <i class="fas fa-clock" style="color:#c61a2f;"></i> Work Hours/Day: <span id="workHrsLabel">8 hrs</span>
+        </label>
+        <input type="range" min="0" max="16" value="8" id="workHrs"
+          oninput="document.getElementById('workHrsLabel').innerText=this.value+' hrs'; localStorage.setItem('prof_workhrs',this.value);"
+          style="width:100%;margin-top:8px;accent-color:#c61a2f;">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;"><span>0h</span><span>8h</span><span>16h</span></div>
+      </div>
+
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-fire" style="color:#c61a2f;"></i> Work Stress Level</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="pr-stress-low"    onclick="selectDiet('wstress','low',this)">😌 Low</button>
+          <button class="ls-btn" id="pr-stress-medium" onclick="selectDiet('wstress','medium',this)">😐 Medium</button>
+          <button class="ls-btn" id="pr-stress-high"   onclick="selectDiet('wstress','high',this)">😰 High</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Lifestyle Factors Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-heartbeat"></i> Lifestyle Risk Factors</div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Smoking -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-smoking" style="color:#c61a2f;"></i> Smoking Status</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="ls-smoke-never" onclick="selectLifestyle('smoke','never',this)">🚭 Never</button>
+          <button class="ls-btn" id="ls-smoke-ex" onclick="selectLifestyle('smoke','ex',this)">⏹ Ex-Smoker</button>
+          <button class="ls-btn" id="ls-smoke-current" onclick="selectLifestyle('smoke','current',this)">🚬 Current</button>
+        </div>
+      </div>
+
+      <!-- Alcohol -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-wine-glass" style="color:#c61a2f;"></i> Alcohol Consumption</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="ls-alcohol-none" onclick="selectLifestyle('alcohol','none',this)">✅ None</button>
+          <button class="ls-btn" id="ls-alcohol-occ" onclick="selectLifestyle('alcohol','occ',this)">🍷 Occasional</button>
+          <button class="ls-btn" id="ls-alcohol-reg" onclick="selectLifestyle('alcohol','reg',this)">🍺 Regular</button>
+        </div>
+      </div>
+
+      <!-- Diet -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-salad" style="color:#c61a2f;"></i> Diet Type</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="ls-diet-healthy" onclick="selectLifestyle('diet','healthy',this)">🥗 Healthy</button>
+          <button class="ls-btn" id="ls-diet-moderate" onclick="selectLifestyle('diet','moderate',this)">🍱 Moderate</button>
+          <button class="ls-btn" id="ls-diet-poor" onclick="selectLifestyle('diet','poor',this)">🍔 Poor</button>
+        </div>
+      </div>
+
+      <!-- Exercise -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-running" style="color:#c61a2f;"></i> Exercise Frequency</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ls-btn" id="ls-exercise-daily" onclick="selectLifestyle('exercise','daily',this)">🏃 Daily</button>
+          <button class="ls-btn" id="ls-exercise-weekly" onclick="selectLifestyle('exercise','weekly',this)">🚴 Weekly</button>
+          <button class="ls-btn" id="ls-exercise-rarely" onclick="selectLifestyle('exercise','rarely',this)">🛋 Rarely</button>
+          <button class="ls-btn" id="ls-exercise-never" onclick="selectLifestyle('exercise','never',this)">❌ Never</button>
+        </div>
+      </div>
+
+      <!-- Stress -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;color:#2c3e66;"><i class="fas fa-brain" style="color:#c61a2f;"></i> Stress Level: <span id="stressLabel">Medium</span></label>
+        <input type="range" min="1" max="3" value="2" id="stressSlider" oninput="updateStress(this.value)"
+          style="width:100%;margin-top:8px;accent-color:#c61a2f;">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;">
+          <span>😌 Low</span><span>😐 Medium</span><span>😰 High</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Medical History Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-notes-medical"></i> Medical History</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <label class="mh-check"><input type="checkbox" id="mh-diabetes" onchange="saveMedHistory()"> 🩸 Diabetes</label>
+      <label class="mh-check"><input type="checkbox" id="mh-heartattack" onchange="saveMedHistory()"> ❤️ Prior Heart Attack</label>
+      <label class="mh-check"><input type="checkbox" id="mh-family" onchange="saveMedHistory()"> 🧬 Family CAD History</label>
+      <label class="mh-check"><input type="checkbox" id="mh-hypertension" onchange="saveMedHistory()"> 💉 Hypertension</label>
+      <label class="mh-check"><input type="checkbox" id="mh-kidney" onchange="saveMedHistory()"> 🫘 Kidney Disease</label>
+      <label class="mh-check"><input type="checkbox" id="mh-stroke" onchange="saveMedHistory()"> 🧠 Stroke History</label>
+      <label class="mh-check"><input type="checkbox" id="mh-obesity" onchange="saveMedHistory()"> ⚖️ Obesity</label>
+      <label class="mh-check"><input type="checkbox" id="mh-thyroid" onchange="saveMedHistory()"> 🦋 Thyroid Disorder</label>
+    </div>
+  </div>
+
   <!-- System Architecture Flow -->
   <div class="card">
     <div class="card-title"><i class="fas fa-project-diagram"></i> System Architecture Flow</div>
@@ -520,6 +853,52 @@
     </div>
     <div class="footer-note">Real‑time feature extraction → Random Forest (94.2% AUC) → CAD risk scoring</div>
   </div>
+  <!-- Profile Completeness Card -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-circle-check"></i> Profile Completeness</div>
+    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div style="position:relative;width:140px;height:140px;flex-shrink:0;">
+        <canvas id="profileDonut" width="140" height="140"></canvas>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div id="profilePct" style="font-size:1.8rem;font-weight:800;color:#1b2b4e;">0%</div>
+          <div style="font-size:0.65rem;color:#5c6f91;">Complete</div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:160px;">
+        <div id="profileSections" style="display:flex;flex-direction:column;gap:7px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Profile Completeness -->
+  <div id="floatingDonut" style="position:fixed;bottom:20px;right:20px;z-index:9999;
+    background:white;border-radius:50%;width:70px;height:70px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.15);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;"
+    title="Profile Completeness" onclick="document.getElementById('profileDonut').closest('.card').scrollIntoView({behavior:'smooth'})">
+    <canvas id="floatingDonutCanvas" width="70" height="70"></canvas>
+    <div style="position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="floatingPct" style="font-size:0.72rem;font-weight:800;color:#1b2b4e;">0%</div>
+    </div>
+  </div>
+
+  <!-- Floating Heart Risk Indicator removed - using header icon instead -->
+
+  <style>
+    @keyframes heartBeat {
+      0%,100%{ transform:scale(1); }
+      14%    { transform:scale(1.4); }
+      28%    { transform:scale(1); }
+      42%    { transform:scale(1.2); }
+      56%    { transform:scale(1); }
+    }
+    .heart-beating { animation: heartBeat 1s ease-in-out infinite; display:inline-block; transform-origin:center; }
+    @keyframes heartBeatFast  { 0%,100%{transform:scale(1);} 25%{transform:scale(1.5);} 50%{transform:scale(1);} 75%{transform:scale(1.3);} }
+    @keyframes heartBeatSlow  { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+    .heart-fast { animation: heartBeatFast 0.6s ease-in-out infinite; display:inline-block; transform-origin:center; }
+    .heart-slow { animation: heartBeatSlow 1.8s ease-in-out infinite; display:inline-block; transform-origin:center; }
+  </style>
+
 </div>
 
 <script>
@@ -618,6 +997,21 @@
     document.getElementById('confidenceValue').innerHTML = `${confidence}%`;
     document.getElementById('riskLevelBadge').innerHTML = riskLevelObj.text;
     document.getElementById('riskDesc').innerHTML = `${riskLevelObj.desc} · Ensemble confidence: ${confidence}% (Random Forest primary).`;
+
+    // update floating heart
+    const heart = document.querySelector('.logo-area i.fa-heartbeat');
+    if(heart){
+      heart.className = 'fas fa-heartbeat';
+      if(riskScore < 20){
+        heart.style.color='#00c853'; heart.classList.add('heart-slow');
+      } else if(riskScore < 45){
+        heart.style.color='#f9a825'; heart.classList.add('heart-beating');
+      } else if(riskScore < 70){
+        heart.style.color='#ff6d00'; heart.classList.add('heart-fast');
+      } else {
+        heart.style.color='#ff1744'; heart.classList.add('heart-fast');
+      }
+    }
     
     // Key Risk Factors dynamic based on current metrics
     const riskFactors = [];
@@ -757,11 +1151,226 @@
       let img = circle.querySelector('img');
       if(!img){ img = document.createElement('img'); circle.insertBefore(img, circle.firstChild); }
       img.src = e.target.result;
+      if(window.updateProfileDonut) updateProfileDonut();
     };
     reader.readAsDataURL(file);
   });
 
   loadSavedProfile();
+
+  // ---------- HEIGHT & WEIGHT ----------
+  function loadHeightWeight(){
+    const h = localStorage.getItem('patientHeight') || '173';
+    const w = localStorage.getItem('patientWeight') || '75';
+    if(!localStorage.getItem('patientHeight')) localStorage.setItem('patientHeight','173');
+    if(!localStorage.getItem('patientWeight')) localStorage.setItem('patientWeight','75');
+    document.getElementById('heightDisplay').innerText = h;
+    document.getElementById('weightDisplay').innerText = w;
+    updateBMI(parseFloat(h), parseFloat(w));
+  }
+
+  function updateBMI(h, w){
+    const bmi = (w / ((h/100) ** 2)).toFixed(1);
+    const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    const col = bmi < 18.5 ? '#f9a825' : bmi < 25 ? '#00c853' : bmi < 30 ? '#f9a825' : '#ff1744';
+    document.getElementById('bmiValue').innerHTML = `<span style="color:${col};font-weight:700;">${bmi}</span> <span style="color:#aaa;">(${cat})</span>`;
+    document.getElementById('bmiDisplay').style.display = 'block';
+  }
+
+  window.editField = function(field){
+    const label = field === 'height' ? 'Height (cm)' : 'Weight (kg)';
+    const cur   = localStorage.getItem('patient'+field.charAt(0).toUpperCase()+field.slice(1)) || '';
+    const val   = prompt(label + ':', cur);
+    if(val === null || val.trim() === '') return;
+    const num = parseFloat(val);
+    if(isNaN(num) || num <= 0){ alert('Please enter a valid number.'); return; }
+    localStorage.setItem('patient'+field.charAt(0).toUpperCase()+field.slice(1), num);
+    document.getElementById(field+'Display').innerText = num;
+    const h = localStorage.getItem('patientHeight');
+    const w = localStorage.getItem('patientWeight');
+    if(h && w) updateBMI(parseFloat(h), parseFloat(w));
+    if(window.updateProfileDonut) updateProfileDonut();
+  };
+
+  loadHeightWeight();
+
+  // ---------- LIFESTYLE FACTORS ----------
+  const stressLabels = {1:'😌 Low', 2:'😐 Medium', 3:'😰 High'};
+  window.selectLifestyle = function(group, val, btn){
+    document.querySelectorAll(`[id^="ls-${group}-"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    localStorage.setItem('ls_'+group, val);
+  };
+  window.updateStress = function(v){
+    document.getElementById('stressLabel').innerText = stressLabels[v];
+    localStorage.setItem('ls_stress', v);
+  };
+  function loadLifestyle(){
+    ['smoke','alcohol','diet','exercise'].forEach(g=>{
+      const v = localStorage.getItem('ls_'+g);
+      if(v){ const b=document.getElementById('ls-'+g+'-'+v); if(b) b.classList.add('active'); }
+    });
+    const s = localStorage.getItem('ls_stress')||'2';
+    document.getElementById('stressSlider').value = s;
+    document.getElementById('stressLabel').innerText = stressLabels[s];
+  }
+
+  // ---------- MEDICAL HISTORY ----------
+  window.saveMedHistory = function(){
+    const ids = ['diabetes','heartattack','family','hypertension','kidney','stroke','obesity','thyroid'];
+    const data = {};
+    ids.forEach(id=> data[id] = document.getElementById('mh-'+id).checked);
+    localStorage.setItem('medHistory', JSON.stringify(data));
+  };
+  function loadMedHistory(){
+    const data = JSON.parse(localStorage.getItem('medHistory')||'{}');
+    Object.keys(data).forEach(id=>{ const el=document.getElementById('mh-'+id); if(el) el.checked=data[id]; });
+  }
+
+  loadLifestyle();
+  loadMedHistory();
+
+  // ---------- DIET PROFILE ----------
+  const dietRisk = {
+    type:  { veg:0, fish:0, nonveg:3, junk:8 },
+    salt:  { low:0, normal:1, high:5 },
+    oil:   { olive:0, refined:3, butter:5 },
+    carb:  { whole:0, mixed:2, white:4 },
+    sugar: { low:0, moderate:2, high:6 },
+    water: { high:0, normal:1, low:4 },
+    fiber: { high:0, moderate:1, low:4 }
+  };
+
+  window.selectDiet = function(group, val, btn){
+    document.querySelectorAll(`[id^="dt-${group}-"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    localStorage.setItem('diet_'+group, val);
+    updateDietRisk();
+  };
+
+  function updateDietRisk(){}
+
+  function loadDietProfile(){
+    Object.keys(dietRisk).forEach(g=>{
+      const v = localStorage.getItem('diet_'+g);
+      if(v){ const b=document.getElementById('dt-'+g+'-'+v); if(b) b.classList.add('active'); }
+    });
+  }
+  loadDietProfile();
+
+  // ---------- SCREEN TIME & PROFESSION ----------
+  function loadScreenProf(){
+    const mob = localStorage.getItem('screen_mobile')||'3';
+    const lap = localStorage.getItem('screen_laptop')||'4';
+    const wrk = localStorage.getItem('prof_workhrs')||'8';
+    document.getElementById('mobileHrs').value  = mob;
+    document.getElementById('mobileHrsLabel').innerText = mob+' hrs/day';
+    document.getElementById('laptopHrs').value  = lap;
+    document.getElementById('laptopHrsLabel').innerText = lap+' hrs/day';
+    document.getElementById('workHrs').value    = wrk;
+    document.getElementById('workHrsLabel').innerText   = wrk+' hrs';
+    ['break','night','job','wstress'].forEach(g=>{
+      const v = localStorage.getItem('diet_'+g);
+      if(v){
+        const prefix = ['break','night'].includes(g)?'sc':'pr';
+        const b = document.getElementById(prefix+'-'+g+'-'+v);
+        if(b) b.classList.add('active');
+      }
+    });
+  }
+  loadScreenProf();
+
+  // ---------- IDENTITY & REGION ----------
+  window.selectIdentity = function(group, val, btn){
+    document.querySelectorAll(`[id^="id-${group}-"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    localStorage.setItem('id_'+group, val);
+    if(window.updateProfileDonut) updateProfileDonut();
+  };
+
+  const urbanCities = ['kolkata','mumbai','delhi','bangalore','chennai','hyderabad','pune','ahmedabad','surat','lucknow','jaipur','patna','bhopal','indore','nagpur','noida','gurgaon','thane'];
+  const pollutedCities = ['delhi','kolkata','patna','lucknow','kanpur','agra','muzaffarpur','noida','gurgaon'];
+  const coastalStates = ['kolkata','chennai','mumbai','kochi','visakhapatnam','goa','mangalore','pondicherry'];
+
+  window.resolveRegion = function(city){
+    const c = city.trim().toLowerCase();
+    if(!c){ document.getElementById('regionResult').innerHTML=''; return; }
+    const isUrban    = urbanCities.some(u=>c.includes(u));
+    const isPoluted  = pollutedCities.some(u=>c.includes(u));
+    const isCoastal  = coastalStates.some(u=>c.includes(u));
+    const tags = [];
+    tags.push(isUrban ? '<span style="background:#fde8eb;color:#c61a2f;border-radius:10px;padding:2px 8px;">&#127961; Urban</span>' : '<span style="background:#e8f5e9;color:#2e7d32;border-radius:10px;padding:2px 8px;">&#127807; Rural</span>');
+    if(isPoluted) tags.push('<span style="background:#fff3e0;color:#e65100;border-radius:10px;padding:2px 8px;">&#128168; High Pollution</span>');
+    if(isCoastal) tags.push('<span style="background:#e3f2fd;color:#1565c0;border-radius:10px;padding:2px 8px;">&#127754; Coastal</span>');
+    document.getElementById('regionResult').innerHTML = tags.join(' ');
+    localStorage.setItem('id_region', JSON.stringify({urban:isUrban, polluted:isPoluted, coastal:isCoastal}));
+  };
+
+  function loadIdentity(){
+    ['gender','eth'].forEach(g=>{
+      const v = localStorage.getItem('id_'+g);
+      if(v){ const b=document.getElementById('id-'+g+'-'+v); if(b) b.classList.add('active'); }
+    });
+    const city = localStorage.getItem('id_city')||'';
+    if(city){ document.getElementById('id-city').value=city; resolveRegion(city); }
+  }
+  loadIdentity();
+
+  // ---------- PROFILE COMPLETENESS DONUT ----------
+  const profileSections = [
+    { label:'Photo',          check: ()=> !!localStorage.getItem('profilePic') },
+    { label:'Height/Weight',  check: ()=> !!localStorage.getItem('patientHeight') && !!localStorage.getItem('patientWeight') },
+    { label:'Gender & Ethnicity', check: ()=> !!localStorage.getItem('id_gender') && !!localStorage.getItem('id_eth') },
+    { label:'City/Region',    check: ()=> !!localStorage.getItem('id_city') },
+    { label:'Diet Profile',   check: ()=> ['type','salt','oil','carb','sugar','water','fiber'].filter(k=>localStorage.getItem('diet_'+k)).length >= 4 },
+    { label:'Lifestyle',      check: ()=> ['smoke','alcohol','exercise'].filter(k=>localStorage.getItem('ls_'+k)).length >= 2 },
+    { label:'Screen Time',    check: ()=> !!localStorage.getItem('screen_mobile') },
+    { label:'Profession',     check: ()=> !!localStorage.getItem('diet_job') },
+    { label:'Medical History',check: ()=> localStorage.getItem('medHistory') !== null },
+    { label:'Reports Upload', check: ()=> JSON.parse(localStorage.getItem('reports_CAD-9821')||'[]').length > 0 },
+  ];
+
+  let donutChart, floatingChart;
+  function updateProfileDonut(){
+    const done   = profileSections.filter(s=>s.check()).length;
+    const total  = profileSections.length;
+    const pct    = Math.round((done/total)*100);
+    const color  = pct < 40 ? '#ff1744' : pct < 75 ? '#f9a825' : '#00c853';
+    const remaining = total - done;
+
+    document.getElementById('profilePct').innerText = pct+'%';
+    document.getElementById('profilePct').style.color = color;
+    document.getElementById('floatingPct').innerText = pct+'%';
+    document.getElementById('floatingPct').style.color = color;
+
+    document.getElementById('profileSections').innerHTML = profileSections.map(s=>{
+      const ok = s.check();
+      return `<div style="display:flex;align-items:center;gap:8px;font-size:0.75rem;">
+        <i class="fas ${ok?'fa-circle-check':'fa-circle-xmark'}" style="color:${ok?'#00c853':'#ddd'};font-size:0.9rem;"></i>
+        <span style="color:${ok?'#13294b':'#aaa'};">${s.label}</span>
+      </div>`;
+    }).join('');
+
+    const donutData = { datasets:[{ data:[done,remaining], backgroundColor:[color,'#eef2f9'], borderWidth:0 }] };
+    const donutOpts = { cutout:'72%', responsive:false, animation:{animateRotate:true,duration:800}, plugins:{legend:{display:false},tooltip:{enabled:false}} };
+
+    // main donut
+    const ctx = document.getElementById('profileDonut').getContext('2d');
+    if(donutChart) donutChart.destroy();
+    donutChart = new Chart(ctx,{ type:'doughnut', data:donutData, options:donutOpts });
+
+    // floating donut
+    const ctx2 = document.getElementById('floatingDonutCanvas').getContext('2d');
+    if(floatingChart) floatingChart.destroy();
+    floatingChart = new Chart(ctx2,{ type:'doughnut', data:donutData, options:{...donutOpts, cutout:'65%'} });
+  }
+  window.updateProfileDonut = updateProfileDonut;
+
+  document.querySelectorAll('.ls-btn, .mh-check input, input[type=range]').forEach(el=>{
+    el.addEventListener('click',  ()=>setTimeout(updateProfileDonut,100));
+    el.addEventListener('change', ()=>setTimeout(updateProfileDonut,100));
+  });
+  updateProfileDonut();
 
   // ---------- LIVE ECG STRIP ----------
   (function(){
@@ -876,7 +1485,7 @@
             const stored=JSON.parse(localStorage.getItem('reports_'+PATIENT_ID)||'[]');
             stored.unshift({name:file.name,url:data.secure_url,size:file.size,date:new Date().toLocaleDateString()});
             localStorage.setItem('reports_'+PATIENT_ID,JSON.stringify(stored));
-            setTimeout(()=>{ document.getElementById('prog-'+id)?.remove(); loadReports(); },1200);
+            setTimeout(()=>{ document.getElementById('prog-'+id)?.remove(); loadReports(); if(window.updateProfileDonut) window.updateProfileDonut(); },1200);
           } else { throw new Error(); }
         }catch(e){
           clearInterval(t);
@@ -893,6 +1502,7 @@
     dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
     dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');uploadFiles([...e.dataTransfer.files]);});
     loadReports();
+    setTimeout(()=>{ if(window.updateProfileDonut) window.updateProfileDonut(); }, 500);
   </script>
 </body>
 </html>
