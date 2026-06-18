@@ -694,7 +694,7 @@
           <i class="fas fa-mobile-alt" style="color:#c61a2f;"></i> Mobile Screen Time: <span id="mobileHrsLabel">3 hrs/day</span>
         </label>
         <input type="range" min="0" max="12" value="3" id="mobileHrs"
-          oninput="document.getElementById('mobileHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_mobile',this.value);"
+          oninput="document.getElementById('mobileHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_mobile',this.value); refreshDashboard();"
           style="width:100%;margin-top:8px;accent-color:#c61a2f;">
         <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;"><span>0h</span><span>6h</span><span>12h</span></div>
       </div>
@@ -704,7 +704,7 @@
           <i class="fas fa-laptop" style="color:#c61a2f;"></i> Laptop/PC Screen Time: <span id="laptopHrsLabel">4 hrs/day</span>
         </label>
         <input type="range" min="0" max="14" value="4" id="laptopHrs"
-          oninput="document.getElementById('laptopHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_laptop',this.value);"
+          oninput="document.getElementById('laptopHrsLabel').innerText=this.value+' hrs/day'; localStorage.setItem('screen_laptop',this.value); refreshDashboard();"
           style="width:100%;margin-top:8px;accent-color:#c61a2f;">
         <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#aaa;"><span>0h</span><span>7h</span><span>14h</span></div>
       </div>
@@ -897,8 +897,94 @@
     @keyframes heartBeatSlow  { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
     .heart-fast { animation: heartBeatFast 0.6s ease-in-out infinite; display:inline-block; transform-origin:center; }
     .heart-slow { animation: heartBeatSlow 1.8s ease-in-out infinite; display:inline-block; transform-origin:center; }
+
+    /* HIGH RISK POPUP */
+    #highRiskOverlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(10,5,5,0.82);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    #highRiskOverlay.show { display: flex; animation: overlayIn 0.35s ease; }
+    @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+    .hr-popup {
+      background: linear-gradient(145deg,#1a0008,#2d0010);
+      border: 2px solid #ff1744;
+      border-radius: 36px;
+      padding: 36px 30px 28px;
+      max-width: 340px; width: 90%;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,23,68,0.5), 0 0 120px rgba(255,23,68,0.2);
+      animation: popupIn 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popupIn { from{transform:scale(0.6) translateY(40px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+    .hr-pulse-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      border: 3px solid #ff1744;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      animation: ringPulse 1s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%,100%{ box-shadow: 0 0 0 0 rgba(255,23,68,0.7); }
+      50%     { box-shadow: 0 0 0 18px rgba(255,23,68,0); }
+    }
+    .hr-pulse-ring i { font-size: 2.8rem; color: #ff1744; animation: heartBeatFast 0.6s ease-in-out infinite; }
+    .hr-popup h2 { color: #ff5370; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 1px; }
+    .hr-popup p  { color: #ffb3b3; font-size: 0.82rem; line-height: 1.6; margin-bottom: 20px; }
+    .hr-score-badge {
+      display: inline-block;
+      background: rgba(255,23,68,0.2);
+      border: 1.5px solid #ff1744;
+      color: #ff5370;
+      border-radius: 40px;
+      padding: 6px 20px;
+      font-size: 1.1rem; font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .hr-warning-strip {
+      background: rgba(255,23,68,0.12);
+      border-radius: 14px; padding: 10px 14px;
+      margin-bottom: 18px;
+      font-size: 0.75rem; color: #ff8a80;
+      border-left: 3px solid #ff1744;
+      text-align: left;
+    }
+    .hr-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .hr-btn-dismiss {
+      background: rgba(255,255,255,0.08); color: #ffb3b3;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 10px 22px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .hr-btn-call {
+      background: #ff1744; color: white; border: none;
+      border-radius: 20px; padding: 10px 22px;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      box-shadow: 0 4px 16px rgba(255,23,68,0.5);
+    }
   </style>
 
+</div>
+
+<!-- HIGH RISK POPUP OVERLAY -->
+<div id="highRiskOverlay">
+  <div class="hr-popup">
+    <div class="hr-pulse-ring"><i class="fas fa-heart-pulse"></i></div>
+    <h2>&#x26A0;&#xFE0F; HIGH RISK ALERT</h2>
+    <p>CardioGuard AI has detected a <strong style="color:#ff5370;">HIGH CAD Risk</strong> based on your current wearable data and health profile.</p>
+    <div class="hr-score-badge">Risk Score: <span id="popupRiskScore">--</span></div>
+    <div class="hr-warning-strip">
+      <i class="fas fa-triangle-exclamation"></i> <strong>Immediate action recommended:</strong><br>
+      Contact your cardiologist or seek emergency care if experiencing chest pain, shortness of breath, or dizziness.
+    </div>
+    <div class="hr-actions">
+      <button class="hr-btn-dismiss" onclick="dismissHighRisk()"><i class="fas fa-xmark"></i> Dismiss</button>
+      <button class="hr-btn-call" onclick="window.open('tel:102')"><i class="fas fa-phone"></i> Call Emergency</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -921,46 +1007,134 @@
   
   // simulation interval: update metrics every 5 sec, dynamic small changes
   let updateInterval;
-  
-  // Risk model function: simulated Random Forest inference based on current metrics.
-  // Returns riskScore% (0-100) and confidence% based on variance/agreement.
+  let highRiskShown = false;
+
+  function showHighRiskPopup(score){
+    document.getElementById('popupRiskScore').innerText = score + '%';
+    document.getElementById('highRiskOverlay').classList.add('show');
+    playAlertSound();
+    speakAlert(score);
+  }
+
+  // ---- Beep alert using Web Audio API ----
+  function playAlertSound(){
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const beeps = [0, 0.35, 0.7];
+      beeps.forEach(offset => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime + offset);
+        osc.frequency.setValueAtTime(660, ctx.currentTime + offset + 0.15);
+        gain.gain.setValueAtTime(0.8, ctx.currentTime + offset);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + offset + 0.3);
+        osc.start(ctx.currentTime + offset);
+        osc.stop(ctx.currentTime + offset + 0.32);
+      });
+    } catch(e){}
+  }
+
+  // ---- English voice alert using Web Speech API ----
+  function speakAlert(score){
+    if(!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(
+      `Warning! High cardiac risk detected. Your current CAD risk score is ${score} percent. ` +
+      `This is a critical alert. Please contact your doctor immediately or call emergency services. ` +
+      `Do not ignore this warning.`
+    );
+    msg.lang   = 'en-US';
+    msg.rate   = 0.88;
+    msg.pitch  = 1;
+    msg.volume = 1;
+    // prefer a clear English voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('female'))
+                   || voices.find(v => v.lang === 'en-US')
+                   || voices.find(v => v.lang.startsWith('en'));
+    if(preferred) msg.voice = preferred;
+    window.speechSynthesis.speak(msg);
+  }
+
+  window.dismissHighRisk = function(){
+    document.getElementById('highRiskOverlay').classList.remove('show');
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    highRiskShown = true;
+    setTimeout(()=>{ highRiskShown = false; }, 30000);
+  };
+
+  // ---- Profile risk from lifestyle / diet / medical history ----
+  function computeProfileRisk(){
+    let extra = 0;
+    const smoke = localStorage.getItem('ls_smoke');
+    if(smoke === 'current') extra += 12; else if(smoke === 'ex') extra += 4;
+    const alc = localStorage.getItem('ls_alcohol');
+    if(alc === 'reg') extra += 6; else if(alc === 'occ') extra += 2;
+    const ex = localStorage.getItem('ls_exercise');
+    if(ex === 'never') extra += 7; else if(ex === 'rarely') extra += 4; else if(ex === 'daily') extra -= 3;
+    const stress = parseInt(localStorage.getItem('ls_stress') || '2');
+    extra += (stress - 1) * 3.5;
+    const diet = localStorage.getItem('ls_diet');
+    if(diet === 'poor') extra += 5; else if(diet === 'healthy') extra -= 2;
+    const salt  = localStorage.getItem('diet_salt');  if(salt === 'high') extra += 4;
+    const oil   = localStorage.getItem('diet_oil');   if(oil === 'butter') extra += 4; else if(oil === 'refined') extra += 2;
+    const sugar = localStorage.getItem('diet_sugar'); if(sugar === 'high') extra += 4;
+    const fiber = localStorage.getItem('diet_fiber'); if(fiber === 'low') extra += 3; else if(fiber === 'high') extra -= 2;
+    const water = localStorage.getItem('diet_water'); if(water === 'low') extra += 2;
+    const carb  = localStorage.getItem('diet_carb');  if(carb === 'white') extra += 2;
+    const dtype = localStorage.getItem('diet_type');  if(dtype === 'junk') extra += 5;
+    const mh = JSON.parse(localStorage.getItem('medHistory') || '{}');
+    if(mh.diabetes)     extra += 8;
+    if(mh.hypertension) extra += 6;
+    if(mh.heartattack)  extra += 10;
+    if(mh.family)       extra += 7;
+    if(mh.stroke)       extra += 5;
+    if(mh.obesity)      extra += 4;
+    if(mh.kidney)       extra += 3;
+    if(mh.thyroid)      extra += 2;
+    const job = localStorage.getItem('diet_job');
+    if(job === 'desk') extra += 3; else if(job === 'night') extra += 5; else if(job === 'physical') extra -= 2;
+    const wstress = localStorage.getItem('diet_wstress');
+    if(wstress === 'high') extra += 4;
+    const totalScreen = parseFloat(localStorage.getItem('screen_mobile') || '3') + parseFloat(localStorage.getItem('screen_laptop') || '4');
+    if(totalScreen > 10) extra += 3; else if(totalScreen > 7) extra += 1.5;
+    const region = JSON.parse(localStorage.getItem('id_region') || '{}');
+    if(region.polluted) extra += 3;
+    const eth = localStorage.getItem('id_eth');
+    if(eth === 'southasian') extra += 3; else if(eth === 'african') extra += 2;
+    if(localStorage.getItem('id_gender') === 'male') extra += 2;
+    const h = parseFloat(localStorage.getItem('patientHeight'));
+    const w = parseFloat(localStorage.getItem('patientWeight'));
+    if(h && w){ const bmi = w / ((h/100)**2); if(bmi >= 30) extra += 5; else if(bmi >= 25) extra += 2; }
+    return extra;
+  }
+
+  // Risk model: wearable metrics + profile data -> CAD risk score
   function computeCADRisk(metrics) {
-    // Using weighted risk factors (inspired by classic Framingham + wearable features)
-    let risk = 0;
-    // Age factor (58 years) baseline 15%
-    let ageRisk = 15;
-    // Heart Rate >85 adds risk, >100 severe; HRV low (<30) adds risk
-    let hrRisk = Math.max(0, (metrics.hr - 75) * 0.6);
-    let hrvRisk = Math.max(0, (35 - metrics.hrv) * 1.2);
-    // BP risk: sys>130 or dia>85
-    let bpRisk = 0;
+    let ageRisk      = 15;
+    let hrRisk       = Math.max(0, (metrics.hr - 75) * 0.6);
+    let hrvRisk      = Math.max(0, (35 - metrics.hrv) * 1.2);
+    let bpRisk       = 0;
     if(metrics.bp_sys > 130) bpRisk += (metrics.bp_sys - 130) * 0.4;
-    if(metrics.bp_dia > 85) bpRisk += (metrics.bp_dia - 85) * 0.8;
-    // SpO2 <94% increases risk
-    let oxRisk = metrics.spo2 < 94 ? (95 - metrics.spo2) * 2.5 : 0;
-    // temp abnormal >37.5 or <36.0 slightly increase
-    let tempRisk = (metrics.temp > 37.5 || metrics.temp < 36.0) ? 4 : 0;
-    // sleep <6h increases risk, activity low <5000 steps
-    let sleepRisk = metrics.sleep < 6 ? (6.5 - metrics.sleep) * 2.2 : 0;
+    if(metrics.bp_dia > 85)  bpRisk += (metrics.bp_dia - 85)  * 0.8;
+    let oxRisk       = metrics.spo2 < 94 ? (95 - metrics.spo2) * 2.5 : 0;
+    let tempRisk     = (metrics.temp > 37.5 || metrics.temp < 36.0) ? 4 : 0;
+    let sleepRisk    = metrics.sleep < 6 ? (6.5 - metrics.sleep) * 2.2 : 0;
     let activityRisk = metrics.activity < 5000 ? (5000 - metrics.activity) / 400 : 0;
-    
-    risk = ageRisk + hrRisk + hrvRisk + bpRisk + oxRisk + tempRisk + sleepRisk + activityRisk;
-    // add baseline inflammation factor 3-8%
-    risk += 4.5;
-    // clamp between 5% and 94%
-    let rawRisk = Math.min(94, Math.max(5, risk));
-    // Also incorporate trend disturbance: if heart rate rising significantly -> risk modulation
+    let risk = ageRisk + hrRisk + hrvRisk + bpRisk + oxRisk + tempRisk + sleepRisk + activityRisk + 4.5;
+    risk += computeProfileRisk();
     let trendMod = 0;
     if(hrHistory.length >= 3) {
       let recentAvg = hrHistory.slice(-3).reduce((a,b)=>a+b,0)/3;
       if(recentAvg > metrics.hr + 3) trendMod = 2;
       if(recentAvg < metrics.hr - 3) trendMod = -1;
     }
-    let finalRisk = Math.min(94, Math.max(5, rawRisk + trendMod));
-    // Confidence based on feature consistency (simulated Random Forest high confidence when metrics are steady)
+    let finalRisk = Math.min(97, Math.max(5, risk + trendMod));
     let variability = Math.abs(hrRisk) + Math.abs(hrvRisk) * 0.5;
-    let confidenceBase = 94 - Math.min(18, variability * 0.7);
-    let confidence = Math.min(98, Math.max(78, confidenceBase));
+    let confidence = Math.min(98, Math.max(78, 94 - Math.min(18, variability * 0.7)));
     return { riskScore: Math.round(finalRisk * 10) / 10, confidence: Math.round(confidence * 10) / 10 };
   }
 
@@ -996,7 +1170,12 @@
     document.getElementById('riskScoreValue').innerHTML = `${riskScore}%`;
     document.getElementById('confidenceValue').innerHTML = `${confidence}%`;
     document.getElementById('riskLevelBadge').innerHTML = riskLevelObj.text;
-    document.getElementById('riskDesc').innerHTML = `${riskLevelObj.desc} · Ensemble confidence: ${confidence}% (Random Forest primary).`;
+
+    if(riskScore >= 70 && !highRiskShown){ showHighRiskPopup(riskScore); highRiskShown = true; }
+    if(riskScore < 70){ highRiskShown = false; }
+    const profileBonus = computeProfileRisk();
+    const dataSource = '🔄 Live simulation';
+    document.getElementById('riskDesc').innerHTML = `${riskLevelObj.desc}<br><span style="font-size:0.7rem;opacity:0.8;">Source: ${dataSource} · Profile risk: ${profileBonus > 0 ? '+' : ''}${Math.round(profileBonus)}% (lifestyle/medical/diet) · Confidence: ${confidence}%</span>`;
 
     // update floating heart
     const heart = document.querySelector('.logo-area i.fa-heartbeat');
@@ -1126,6 +1305,12 @@
     startSimulation();
   }
   
+  // preload voices so they are ready when needed
+  if(window.speechSynthesis){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
   init();
 
   // ---------- PROFILE PICTURE UPLOAD ----------
@@ -1200,10 +1385,12 @@
     document.querySelectorAll(`[id^="ls-${group}-"]`).forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     localStorage.setItem('ls_'+group, val);
+    refreshDashboard();
   };
   window.updateStress = function(v){
     document.getElementById('stressLabel').innerText = stressLabels[v];
     localStorage.setItem('ls_stress', v);
+    refreshDashboard();
   };
   function loadLifestyle(){
     ['smoke','alcohol','diet','exercise'].forEach(g=>{
@@ -1221,6 +1408,7 @@
     const data = {};
     ids.forEach(id=> data[id] = document.getElementById('mh-'+id).checked);
     localStorage.setItem('medHistory', JSON.stringify(data));
+    refreshDashboard();
   };
   function loadMedHistory(){
     const data = JSON.parse(localStorage.getItem('medHistory')||'{}');
@@ -1245,7 +1433,7 @@
     document.querySelectorAll(`[id^="dt-${group}-"]`).forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     localStorage.setItem('diet_'+group, val);
-    updateDietRisk();
+    refreshDashboard();
   };
 
   function updateDietRisk(){}
@@ -1285,6 +1473,7 @@
     document.querySelectorAll(`[id^="id-${group}-"]`).forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     localStorage.setItem('id_'+group, val);
+    refreshDashboard();
     if(window.updateProfileDonut) updateProfileDonut();
   };
 
