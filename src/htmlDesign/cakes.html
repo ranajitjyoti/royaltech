@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cakes Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7f3;
+            color: #1a3d2b;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background:
+                linear-gradient(135deg, rgba(20,70,40,0.85), rgba(46,139,87,0.80)),
+                url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1350&q=80')
+                no-repeat center / cover;
+            color: white;
+            text-align: center;
+            padding: clamp(50px, 10vw, 100px) 20px clamp(40px, 8vw, 80px);
+        }
+        .hero h1 {
+            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: clamp(0.88rem, 2.2vw, 1.1rem);
+            opacity: 0.88;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .delivery-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding: 10px 22px;
+            background: rgba(46,139,87,0.92);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 40px;
+            font-size: clamp(0.82rem, 2vw, 0.97rem);
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.2px;
+            backdrop-filter: blur(4px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .delivery-badge span.dot {
+            width: 9px; height: 9px;
+            background: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 40px;
+            font-size: clamp(0.82rem, 2vw, 0.95rem);
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .contact-btn:active { transform: scale(0.96); }
+        .btn-call {
+            background: #fff;
+            color: #1a3d2b;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        }
+        .btn-call:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+        .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+        }
+        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,211,102,0.45); }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(46,139,87,0.5); }
+            50%       { box-shadow: 0 0 0 10px rgba(46,139,87,0); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+
+        /* ── Section title ── */
+        .section-title { text-align: center; margin-bottom: 44px; }
+        .section-title h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            color: #2e8b57;
+            display: inline-block;
+            position: relative;
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute; bottom: -10px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 3px;
+            background: #2e8b57; border-radius: 3px;
+        }
+        .section-title p { margin-top: 20px; color: #4a7c5e; font-size: clamp(0.8rem, 2vw, 0.92rem); }
+
+        /* ── Gallery ── */
+        .gallery-section { padding: clamp(36px, 6vw, 70px) 0; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .cake-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(40px);
+            display: flex;
+            flex-direction: column;
+        }
+        .cake-card.animate { animation: fadeInUp 0.65s ease forwards; }
+        .cake-card:nth-child(1).animate { animation-delay: 0.04s; }
+        .cake-card:nth-child(2).animate { animation-delay: 0.08s; }
+        .cake-card:nth-child(3).animate { animation-delay: 0.12s; }
+        .cake-card:nth-child(4).animate { animation-delay: 0.16s; }
+        .cake-card:nth-child(5).animate { animation-delay: 0.20s; }
+        .cake-card:nth-child(6).animate { animation-delay: 0.24s; }
+        .cake-card:nth-child(7).animate { animation-delay: 0.28s; }
+        .cake-card:nth-child(8).animate { animation-delay: 0.32s; }
+
+        .cake-card:hover { transform: translateY(-8px); box-shadow: 0 16px 36px rgba(0,0,0,0.14); }
+
+        .cake-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+        .cake-card:hover img { transform: scale(1.04); }
+
+        .cake-info { padding: 14px 16px 18px; flex: 1; }
+        .cake-info h3 { font-size: clamp(0.85rem, 1.8vw, 1rem); color: #2e8b57; margin-bottom: 5px; font-weight: 600; }
+        .cake-info p  { font-size: clamp(0.75rem, 1.5vw, 0.83rem); color: #4a7c5e; line-height: 1.5; }
+
+        /* ── Location ── */
+        .location-section { padding: clamp(36px, 6vw, 60px) 0; background: #e8f5ee; }
+        .location-section .section-title { margin-bottom: 28px; }
+
+        .map-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.12);
+            position: relative;
+            /* 16:9 aspect ratio trick for responsiveness */
+            padding-bottom: 45%;
+            height: 0;
+        }
+        .map-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .map-btn-wrap { text-align: center; margin-top: 20px; }
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            background: #2e8b57;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: clamp(0.82rem, 2vw, 0.95rem);
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(46,139,87,0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .map-link:hover  { background: #1e6b40; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,139,87,0.4); }
+        .map-link:active { transform: translateY(0); }
+
+        /* ── Lightbox ── */
+        .lightbox {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.90);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .lightbox.open { display: flex; }
+        .lightbox img {
+            max-width: min(90vw, 900px);
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute; top: 16px; right: 22px;
+            font-size: 2.4rem; color: white; cursor: pointer;
+            line-height: 1; user-select: none;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.15); }
+
+        /* ── Scroll to top ── */
+        .scroll-top {
+            position: fixed; bottom: 24px; right: 24px;
+            width: 46px; height: 46px;
+            background: #2e8b57; color: white;
+            border-radius: 50%; border: none;
+            font-size: 1.4rem; cursor: pointer;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(46,139,87,0.35);
+            z-index: 999;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .scroll-top.active { opacity: 1; visibility: visible; }
+        .scroll-top:hover  { background: #1e6b40; transform: translateY(-3px); }
+
+        /* ── Animation ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ══════════════════════════════
+           RESPONSIVE BREAKPOINTS
+        ══════════════════════════════ */
+
+        /* Large desktop: 4 columns — already default */
+
+        /* Tablet landscape / small desktop */
+        @media (max-width: 1024px) {
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        }
+
+        /* Tablet portrait */
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .cake-card img { height: 180px; }
+            .map-wrapper { padding-bottom: 56%; }
+        }
+
+        /* Large mobile */
+        @media (max-width: 480px) {
+            .container { width: 95%; padding: 0 8px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .cake-card img { height: 150px; }
+            .cake-info { padding: 10px 12px 14px; }
+            .map-wrapper { padding-bottom: 70%; }
+            .scroll-top { width: 42px; height: 42px; bottom: 16px; right: 16px; }
+        }
+
+        /* Small mobile */
+        @media (max-width: 360px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .cake-card img { height: 200px; }
+            .map-wrapper { padding-bottom: 80%; }
+        }
+
+        /* Touch devices — disable hover lift to avoid sticky state */
+        @media (hover: none) {
+            .cake-card:hover { transform: none; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+            .cake-card:hover img { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>🎂 Cakes Gallery</h1>
+        <p>A delightful collection of beautiful cakes — from classic to creative.</p>
+        <div class="delivery-badge">
+            <span class="dot"></span>
+            🛵 10 Min Home Delivery — New Alipore Area
+        </div>
+        <div class="contact-row">
+            <a class="contact-btn btn-call" href="tel:+918420290133">
+                📞 +91 8420290133
+            </a>
+            <a class="contact-btn btn-whatsapp" href="https://wa.me/918420290133" target="_blank" rel="noopener">
+                💬 WhatsApp Us
+            </a>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Cake Collection</h2>
+                <p>Tap any cake to view it in full size.</p>
+            </div>
+            <div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Layer Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Chocolate Layer Cake</h3>
+                        <p>Rich dark chocolate layers with ganache frosting.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Shortcake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Strawberry Shortcake</h3>
+                        <p>Light sponge with fresh strawberries and whipped cream.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="Wedding Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Wedding Cake</h3>
+                        <p>Elegant multi-tier cake with floral decorations.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Birthday Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Birthday Cake</h3>
+                        <p>Colorful celebration cake with rainbow sprinkles.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1562440499-64c9a111f713?w=600&q=80" alt="Cheesecake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Classic Cheesecake</h3>
+                        <p>Creamy New York-style cheesecake with berry topping.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Vanilla Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Vanilla Dream Cake</h3>
+                        <p>Soft vanilla sponge with buttercream and fresh flowers.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Red Velvet Cake</h3>
+                        <p>Velvety red layers with cream cheese frosting.</p>
+                    </div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80" alt="Lemon Drizzle Cake" loading="lazy">
+                    <div class="cake-info">
+                        <h3>Lemon Drizzle Cake</h3>
+                        <p>Zesty lemon sponge with a tangy sugar glaze.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section class="location-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Find Us</h2>
+                <p>Visit Darun Delights Cake &amp; Pastry Shop in person.</p>
+            </div>
+            <div class="map-wrapper">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116.0!2d88.3324716!3d22.510981!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0271004a7861a9%3A0xd3b7a1e40d0625f8!2sDarun%20Delights%20Cake%20%26%20Pastry%20Shop!5e0!3m2!1sen!2sin!4v1700000000000"
+                    allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="map-btn-wrap">
+                <a class="map-link"
+                   href="https://www.google.com/maps/place/Darun+Delights+Cake+%26+Pastry+Shop/@22.510981,88.3324716,116m/data=!3m1!1e3!4m16!1m9!3m8!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!2sDarun+Delights+Cake+%26+Pastry+Shop!8m2!3d22.5110123!4d88.3326131!9m1!1b1!16s%2Fg%2F11zh24p5fc!3m5!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!8m2!3d22.5110123!4d88.3326131!16s%2Fg%2F11zh24p5fc"
+                   target="_blank" rel="noopener">
+                    📍 Open in Google Maps
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+        <span class="lightbox-close" id="lightboxClose" role="button" aria-label="Close">&times;</span>
+        <img id="lightboxImg" src="" alt="Cake preview">
+    </div>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">&#8679;</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Animate cards on scroll
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('animate'); observer.unobserve(e.target); }
+                });
+            }, { threshold: 0.08 });
+            document.querySelectorAll('.cake-card').forEach(c => observer.observe(c));
+
+            // Lightbox
+            const lightbox    = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+
+            document.querySelectorAll('.cake-card img').forEach(img => {
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src.replace('w=600', 'w=1200');
+                    lightbox.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            function closeLightbox() {
+                lightbox.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+            // Scroll to top
+            const btn = document.getElementById('scrollTop');
+            window.addEventListener('scroll', () => btn.classList.toggle('active', window.pageYOffset > 300));
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+</body>
+</html>
