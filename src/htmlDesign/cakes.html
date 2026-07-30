@@ -176,6 +176,59 @@
         .cake-info { padding: 14px 16px 18px; flex: 1; }
         .cake-info h3 { font-size: clamp(0.85rem, 1.8vw, 1rem); color: #2e8b57; margin-bottom: 5px; font-weight: 600; }
         .cake-info p  { font-size: clamp(0.75rem, 1.5vw, 0.83rem); color: #4a7c5e; line-height: 1.5; }
+        .cake-price { margin-top: 8px; font-size: clamp(0.82rem, 1.6vw, 0.92rem); font-weight: 700; color: #1a3d2b; }
+
+        /* ── Cart controls ── */
+        .cake-cart { padding: 0 16px 16px; }
+        .btn-add-cart {
+            width: 100%;
+            padding: 9px 0;
+            background: #2e8b57;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(0.78rem, 1.6vw, 0.88rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-add-cart:hover  { background: #1e6b40; }
+        .btn-add-cart:active { transform: scale(0.97); }
+        .qty-controls {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: #2e8b57;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .qty-controls.show { display: flex; }
+        .qty-btn {
+            width: 38px; height: 36px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+        .qty-btn:hover { background: rgba(255,255,255,0.18); }
+        .qty-num {
+            color: #fff;
+            font-size: clamp(0.82rem, 1.6vw, 0.9rem);
+            font-weight: 700;
+            min-width: 28px;
+            text-align: center;
+        }
+        @media (max-width: 480px) {
+            .cake-cart { padding: 0 12px 12px; }
+        }
 
         /* ── Location ── */
         .location-section { padding: clamp(36px, 6vw, 60px) 0; background: #e8f5ee; }
@@ -245,6 +298,217 @@
             transition: background 0.2s;
         }
         .lightbox-close:hover { background: rgba(255,255,255,0.15); }
+
+        /* ── Cart Drawer ── */
+        .drawer-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1999;
+        }
+        .drawer-overlay.open { display: block; }
+
+        .cart-drawer {
+            position: fixed; top: 0; right: 0;
+            width: min(380px, 100vw);
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            display: flex; flex-direction: column;
+            box-shadow: -6px 0 28px rgba(0,0,0,0.18);
+            transform: translateX(100%);
+            transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+        }
+        .cart-drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #e8f5ee;
+            flex-shrink: 0;
+        }
+        .drawer-header h2 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; }
+        .drawer-close {
+            width: 34px; height: 34px;
+            background: #f0f7f3; border: none; border-radius: 50%;
+            font-size: 1.1rem; cursor: pointer; color: #1a3d2b;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .drawer-close:hover { background: #d4edda; }
+
+        .drawer-items {
+            flex: 1; overflow-y: auto;
+            padding: 16px 20px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .drawer-empty {
+            text-align: center; color: #4a7c5e;
+            font-size: 0.9rem; margin: auto;
+            padding: 40px 0;
+        }
+        .drawer-item {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .drawer-item img {
+            width: 58px; height: 58px;
+            border-radius: 10px; object-fit: cover; flex-shrink: 0;
+        }
+        .drawer-item-info { flex: 1; min-width: 0; }
+        .drawer-item-info .di-name {
+            font-size: 0.85rem; font-weight: 600; color: #1a3d2b;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .drawer-item-info .di-unit { font-size: 0.75rem; color: #4a7c5e; }
+        .drawer-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+        .di-subtotal { font-size: 0.85rem; font-weight: 700; color: #1a3d2b; }
+        .di-qty {
+            display: flex; align-items: center; gap: 0;
+            background: #2e8b57; border-radius: 6px; overflow: hidden;
+        }
+        .di-qty button {
+            width: 28px; height: 26px;
+            background: none; border: none; color: #fff;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .di-qty button:hover { background: rgba(255,255,255,0.18); }
+        .di-qty span { color: #fff; font-size: 0.8rem; font-weight: 700; min-width: 24px; text-align: center; }
+        .di-remove {
+            background: none; border: none;
+            color: #c0392b; font-size: 0.72rem; font-weight: 600;
+            cursor: pointer; padding: 0;
+            text-decoration: underline; text-underline-offset: 2px;
+            transition: color 0.15s;
+            align-self: flex-end;
+        }
+        .di-remove:hover { color: #96281b; }
+
+        .drawer-footer {
+            border-top: 1px solid #e8f5ee;
+            padding: 16px 20px;
+            flex-shrink: 0;
+        }
+        .drawer-total {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px;
+        }
+        .drawer-total span { font-size: 0.9rem; color: #4a7c5e; }
+        .drawer-total strong { font-size: 1.1rem; color: #1a3d2b; font-weight: 700; }
+        .btn-checkout {
+            width: 100%; padding: 13px;
+            background: #2e8b57; color: #fff;
+            border: none; border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-checkout:hover { background: #1e6b40; }
+
+        /* ── Checkout Modal ── */
+        .co-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55); z-index: 3500;
+            align-items: center; justify-content: center; padding: 16px;
+        }
+        .co-overlay.open { display: flex; }
+        .co-modal {
+            background: #fff; border-radius: 18px;
+            width: min(420px, 100%);
+            padding: 28px 24px 24px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+            position: relative;
+            animation: fadeInUp 0.28s ease;
+        }
+        .co-modal h3 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; margin-bottom: 4px; }
+        .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 18px; }
+        .co-order-summary {
+            background: #f0f7f3; border-radius: 10px;
+            padding: 12px 14px; margin-bottom: 18px;
+            font-size: 0.82rem; color: #1a3d2b; line-height: 1.9;
+        }
+        .co-row { display: flex; justify-content: space-between; }
+        .co-total-row {
+            display: flex; justify-content: space-between;
+            border-top: 1px solid #c8e6d4; margin-top: 6px; padding-top: 6px;
+            font-weight: 700; font-size: 0.88rem;
+        }
+        .co-label { font-size: 0.82rem; color: #1a3d2b; font-weight: 600; margin-bottom: 6px; display: block; }
+        .co-input {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid #c8e6d4; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #1a3d2b;
+            outline: none; transition: border-color 0.2s; margin-bottom: 4px;
+        }
+        .co-input:focus { border-color: #2e8b57; }
+        .co-input.error  { border-color: #e63946; }
+        .co-err { font-size: 0.75rem; color: #e63946; min-height: 16px; margin-bottom: 14px; }
+        .co-actions { display: flex; gap: 10px; }
+        .co-cancel {
+            flex: 1; padding: 11px;
+            background: #f0f7f3; color: #1a3d2b;
+            border: none; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .co-cancel:hover { background: #d4edda; }
+        .co-confirm {
+            flex: 2; padding: 11px;
+            background: #25D366; color: #fff;
+            border: none; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+        }
+        .co-confirm:hover { background: #1da851; }
+        .co-close-x {
+            position: absolute; top: 14px; right: 16px;
+            background: none; border: none; font-size: 1.3rem;
+            cursor: pointer; color: #4a7c5e; line-height: 1;
+        }
+
+        /* ── Floating cart ── */
+        .float-cart {
+            position: fixed; bottom: 24px; left: 24px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 20px;
+            background: #1a3d2b;
+            color: #fff;
+            border: none; border-radius: 40px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            z-index: 999;
+            opacity: 0; visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .float-cart.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .float-cart:hover { background: #2e8b57; }
+        .float-cart-icon { font-size: 1.15rem; }
+        .float-cart-badge {
+            background: #e63946;
+            color: #fff;
+            font-size: 0.72rem; font-weight: 700;
+            min-width: 20px; height: 20px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 5px;
+            line-height: 1;
+        }
+        @keyframes badgePop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.45); }
+            100% { transform: scale(1); }
+        }
+        .float-cart-badge.pop { animation: badgePop 0.28s ease; }
+        @media (max-width: 480px) {
+            .float-cart { bottom: 16px; left: 16px; padding: 10px 16px; font-size: 0.84rem; }
+        }
 
         /* ── Scroll to top ── */
         .scroll-top {
@@ -345,6 +609,15 @@
                     <div class="cake-info">
                         <h3>Chocolate Layer Cake</h3>
                         <p>Rich dark chocolate layers with ganache frosting.</p>
+                        <p class="cake-price">₹ 649</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -353,6 +626,15 @@
                     <div class="cake-info">
                         <h3>Strawberry Shortcake</h3>
                         <p>Light sponge with fresh strawberries and whipped cream.</p>
+                        <p class="cake-price">₹ 549</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -361,6 +643,15 @@
                     <div class="cake-info">
                         <h3>Wedding Cake</h3>
                         <p>Elegant multi-tier cake with floral decorations.</p>
+                        <p class="cake-price">₹ 2,499</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -369,6 +660,15 @@
                     <div class="cake-info">
                         <h3>Birthday Cake</h3>
                         <p>Colorful celebration cake with rainbow sprinkles.</p>
+                        <p class="cake-price">₹ 799</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -377,6 +677,15 @@
                     <div class="cake-info">
                         <h3>Classic Cheesecake</h3>
                         <p>Creamy New York-style cheesecake with berry topping.</p>
+                        <p class="cake-price">₹ 699</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -385,6 +694,15 @@
                     <div class="cake-info">
                         <h3>Vanilla Dream Cake</h3>
                         <p>Soft vanilla sponge with buttercream and fresh flowers.</p>
+                        <p class="cake-price">₹ 599</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -393,6 +711,15 @@
                     <div class="cake-info">
                         <h3>Red Velvet Cake</h3>
                         <p>Velvety red layers with cream cheese frosting.</p>
+                        <p class="cake-price">₹ 749</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -401,6 +728,15 @@
                     <div class="cake-info">
                         <h3>Lemon Drizzle Cake</h3>
                         <p>Zesty lemon sponge with a tangy sugar glaze.</p>
+                        <p class="cake-price">₹ 499</p>
+                    </div>
+                    <div class="cake-cart">
+                        <button class="btn-add-cart">🛒 Add to Cart</button>
+                        <div class="qty-controls">
+                            <button class="qty-btn qty-minus">−</button>
+                            <span class="qty-num">1</span>
+                            <button class="qty-btn qty-plus">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -431,11 +767,53 @@
         </div>
     </section>
 
+    <!-- Checkout Modal -->
+    <div class="co-overlay" id="coOverlay">
+        <div class="co-modal">
+            <button class="co-close-x" id="coCloseX" aria-label="Close">&times;</button>
+            <h3>📱 Confirm Your Order</h3>
+            <p class="co-sub">Enter your mobile number — we'll send your order to WhatsApp.</p>
+            <div class="co-order-summary" id="coSummary"></div>
+            <label class="co-label" for="coPhone">Your Mobile Number</label>
+            <input class="co-input" id="coPhone" type="tel" placeholder="e.g. 9876543210" maxlength="15">
+            <div class="co-err" id="coErr"></div>
+            <div class="co-actions">
+                <button class="co-cancel" id="coCancel">Cancel</button>
+                <button class="co-confirm" id="coConfirm">💬 Send on WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Your cart">
+        <div class="drawer-header">
+            <h2>🛒 Your Cart</h2>
+            <button class="drawer-close" id="drawerClose" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="drawer-items" id="drawerItems">
+            <p class="drawer-empty">Your cart is empty 🎂<br>Add some cakes!</p>
+        </div>
+        <div class="drawer-footer">
+            <div class="drawer-total">
+                <span>Total</span>
+                <strong id="drawerTotal">₹ 0</strong>
+            </div>
+            <button class="btn-checkout">Proceed to Checkout</button>
+        </div>
+    </div>
+
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
         <span class="lightbox-close" id="lightboxClose" role="button" aria-label="Close">&times;</span>
         <img id="lightboxImg" src="" alt="Cake preview">
     </div>
+
+    <button class="float-cart" id="floatCart" aria-label="View cart">
+        <span class="float-cart-icon">🛒</span>
+        <span>Cart</span>
+        <span class="float-cart-badge" id="cartBadge">0</span>
+    </button>
 
     <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">&#8679;</button>
 
@@ -471,7 +849,201 @@
             lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-            // Scroll to top
+            // ── Cart state ──
+            const floatCart   = document.getElementById('floatCart');
+            const cartBadge   = document.getElementById('cartBadge');
+            const cartDrawer  = document.getElementById('cartDrawer');
+            const drawerOverlay = document.getElementById('drawerOverlay');
+            const drawerItems = document.getElementById('drawerItems');
+            const drawerTotal = document.getElementById('drawerTotal');
+
+            // cartData: key = cake name, value = { qty, price, imgSrc }
+            const cartData = {};
+
+            function openDrawer()  { cartDrawer.classList.add('open'); drawerOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+            function closeDrawer() { cartDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+            floatCart.addEventListener('click', openDrawer);
+            document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+            drawerOverlay.addEventListener('click', closeDrawer);
+
+            function syncDrawer() {
+                // badge
+                const totalQty = Object.values(cartData).reduce((s, v) => s + v.qty, 0);
+                cartBadge.textContent = totalQty;
+                cartBadge.classList.remove('pop');
+                void cartBadge.offsetWidth;
+                cartBadge.classList.add('pop');
+                floatCart.classList.toggle('show', totalQty > 0);
+
+                // total price
+                const totalPrice = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
+                drawerTotal.textContent = '\u20b9 ' + totalPrice.toLocaleString('en-IN');
+
+                // render rows
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) {
+                    drawerItems.innerHTML = '<p class="drawer-empty">Your cart is empty 🎂<br>Add some cakes!</p>';
+                    return;
+                }
+                drawerItems.innerHTML = entries.map(([name, v]) => `
+                    <div class="drawer-item">
+                        <img src="${v.imgSrc}" alt="${name}">
+                        <div class="drawer-item-info">
+                            <div class="di-name">${name}</div>
+                            <div class="di-unit">₹ ${v.price.toLocaleString('en-IN')} each</div>
+                        </div>
+                        <div class="drawer-item-right">
+                            <div class="di-subtotal">₹ ${(v.qty * v.price).toLocaleString('en-IN')}</div>
+                            <div class="di-qty">
+                                <button data-name="${name}" data-action="minus">−</button>
+                                <span>${v.qty}</span>
+                                <button data-name="${name}" data-action="plus">+</button>
+                            </div>
+                            <button class="di-remove" data-name="${name}">Remove</button>
+                        </div>
+                    </div>`).join('');
+
+                // drawer remove buttons
+                drawerItems.querySelectorAll('.di-remove').forEach(b => {
+                    b.addEventListener('click', () => {
+                        const name = b.dataset.name;
+                        const card = [...document.querySelectorAll('.cake-card')]
+                            .find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        // reset card UI
+                        const addBtn = card.querySelector('.btn-add-cart');
+                        const qty    = card.querySelector('.qty-controls');
+                        const num    = card.querySelector('.qty-num');
+                        qty.classList.remove('show');
+                        addBtn.style.display = '';
+                        num.textContent = 1;
+                        // reset card-local count via closure isn't accessible here,
+                        // so patch via a data attribute the card listener reads
+                        card.dataset.count = '0';
+                        delete cartData[name];
+                        syncDrawer();
+                    });
+                });
+
+                // drawer qty buttons sync back to cards
+                drawerItems.querySelectorAll('.di-qty button').forEach(b => {
+                    b.addEventListener('click', () => {
+                        const name   = b.dataset.name;
+                        const action = b.dataset.action;
+                        const card   = [...document.querySelectorAll('.cake-card')]
+                            .find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        const cardQtyBtn = card.querySelector(action === 'plus' ? '.qty-plus' : '.qty-minus');
+                        cardQtyBtn.click();
+                    });
+                });
+            }
+
+            document.querySelectorAll('.cake-card').forEach(card => {
+                const name    = card.querySelector('h3').textContent;
+                const priceEl = card.querySelector('.cake-price');
+                const price   = parseInt(priceEl.textContent.replace(/[^\d]/g, ''));
+                const imgSrc  = card.querySelector('img').src;
+                const addBtn  = card.querySelector('.btn-add-cart');
+                const qty     = card.querySelector('.qty-controls');
+                const num     = card.querySelector('.qty-num');
+                card.dataset.count = '0';
+
+                function getCount()  { return parseInt(card.dataset.count) || 0; }
+                function setCount(n) { card.dataset.count = n; }
+
+                addBtn.addEventListener('click', () => {
+                    setCount(1);
+                    num.textContent = 1;
+                    addBtn.style.display = 'none';
+                    qty.classList.add('show');
+                    cartData[name] = { qty: 1, price, imgSrc };
+                    syncDrawer();
+                });
+
+                card.querySelector('.qty-plus').addEventListener('click', () => {
+                    const c = getCount() + 1;
+                    setCount(c); num.textContent = c;
+                    cartData[name] = { qty: c, price, imgSrc };
+                    syncDrawer();
+                });
+
+                card.querySelector('.qty-minus').addEventListener('click', () => {
+                    const c = getCount();
+                    if (c > 1) {
+                        setCount(c - 1); num.textContent = c - 1;
+                        cartData[name] = { qty: c - 1, price, imgSrc };
+                    } else {
+                        setCount(0);
+                        qty.classList.remove('show');
+                        addBtn.style.display = '';
+                        num.textContent = 1;
+                        delete cartData[name];
+                    }
+                    syncDrawer();
+                });
+            });
+
+            // ── Checkout Modal ──
+            const SHOP_WA = '918420290133';
+            const coOverlay = document.getElementById('coOverlay');
+            const coSummary = document.getElementById('coSummary');
+            const coPhone   = document.getElementById('coPhone');
+            const coErr     = document.getElementById('coErr');
+
+            function openCheckout() {
+                // build order summary rows
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                coSummary.innerHTML =
+                    entries.map(([name, v]) =>
+                        `<div class="co-row"><span>${name} ×${v.qty}</span><span>₹ ${(v.qty * v.price).toLocaleString('en-IN')}</span></div>`
+                    ).join('') +
+                    `<div class="co-total-row"><span>Total</span><span>₹ ${totalPrice.toLocaleString('en-IN')}</span></div>`;
+                coPhone.value = '';
+                coPhone.classList.remove('error');
+                coErr.textContent = '';
+                coOverlay.classList.add('open');
+            }
+
+            function closeCheckout() { coOverlay.classList.remove('open'); }
+
+            document.querySelector('.btn-checkout').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) return;
+                openCheckout();
+            });
+            document.getElementById('coCloseX').addEventListener('click', closeCheckout);
+            document.getElementById('coCancel').addEventListener('click', closeCheckout);
+            coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
+
+            document.getElementById('coConfirm').addEventListener('click', () => {
+                const phone = coPhone.value.trim().replace(/\D/g, '');
+                if (phone.length < 10) {
+                    coPhone.classList.add('error');
+                    coErr.textContent = 'Please enter a valid 10-digit mobile number.';
+                    return;
+                }
+                coPhone.classList.remove('error');
+                coErr.textContent = '';
+
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const lines = entries.map(([name, v]) =>
+                    `  • ${name} x${v.qty} = ₹${(v.qty * v.price).toLocaleString('en-IN')}`
+                ).join('%0A');
+                const msg =
+                    `🎂 *New Order from Darun Delights*%0A%0A` +
+                    `📞 Customer: +91${phone}%0A%0A` +
+                    `🗭️ *Items:*%0A${lines}%0A%0A` +
+                    `💰 *Total: ₹${totalPrice.toLocaleString('en-IN')}*`;
+
+                window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
+                closeCheckout();
+            });
+
+            // ── Scroll to top ──
             const btn = document.getElementById('scrollTop');
             window.addEventListener('scroll', () => btn.classList.toggle('active', window.pageYOffset > 300));
             btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
