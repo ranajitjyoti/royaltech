@@ -468,6 +468,19 @@
             background: none; border: none; font-size: 1.3rem;
             cursor: pointer; color: #4a7c5e; line-height: 1;
         }
+        .co-loc-btn {
+            width: 100%; padding: 10px;
+            background: #f0f7f3; color: #1a3d2b;
+            border: 1.5px dashed #2e8b57; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 600;
+            cursor: pointer; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .co-loc-btn:hover  { background: #d4edda; }
+        .co-loc-btn.got    { background: #d4edda; border-style: solid; border-color: #2e8b57; color: #1a3d2b; }
+        .co-loc-btn.error  { border-color: #e63946; color: #e63946; background: #fff0f0; }
+        .co-loc-note { font-size: 0.72rem; color: #4a7c5e; text-align: center; margin-bottom: 14px; }
 
         /* ── Floating cart ── */
         .float-cart {
@@ -772,11 +785,10 @@
         <div class="co-modal">
             <button class="co-close-x" id="coCloseX" aria-label="Close">&times;</button>
             <h3>📱 Confirm Your Order</h3>
-            <p class="co-sub">Enter your mobile number — we'll send your order to WhatsApp.</p>
+            <p class="co-sub">Review your order and send it directly to WhatsApp.</p>
             <div class="co-order-summary" id="coSummary"></div>
-            <label class="co-label" for="coPhone">Your Mobile Number</label>
-            <input class="co-input" id="coPhone" type="tel" placeholder="e.g. 9876543210" maxlength="15">
-            <div class="co-err" id="coErr"></div>
+            <button class="co-loc-btn" id="coLocBtn">📍 Share My Location (optional)</button>
+            <p class="co-loc-note">Helps the delivery person find you faster.</p>
             <div class="co-actions">
                 <button class="co-cancel" id="coCancel">Cancel</button>
                 <button class="co-confirm" id="coConfirm">💬 Send on WhatsApp</button>
@@ -989,8 +1001,34 @@
             const SHOP_WA = '918420290133';
             const coOverlay = document.getElementById('coOverlay');
             const coSummary = document.getElementById('coSummary');
-            const coPhone   = document.getElementById('coPhone');
-            const coErr     = document.getElementById('coErr');
+            const coLocBtn  = document.getElementById('coLocBtn');
+            let userLocation = null;
+
+            coLocBtn.addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    coLocBtn.textContent = '❌ Location not supported';
+                    coLocBtn.classList.add('error');
+                    return;
+                }
+                coLocBtn.textContent = '⏳ Getting location...';
+                coLocBtn.disabled = true;
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        coLocBtn.innerHTML = '✅ Location captured!';
+                        coLocBtn.classList.add('got');
+                        coLocBtn.disabled = false;
+                    },
+                    () => {
+                        coLocBtn.innerHTML = '❌ Permission denied — tap to retry';
+                        coLocBtn.classList.add('error');
+                        coLocBtn.disabled = false;
+                        userLocation = null;
+                    },
+                    { timeout: 10000 }
+                );
+            });
+
 
             function openCheckout() {
                 // build order summary rows
@@ -1001,13 +1039,16 @@
                         `<div class="co-row"><span>${name} ×${v.qty}</span><span>₹ ${(v.qty * v.price).toLocaleString('en-IN')}</span></div>`
                     ).join('') +
                     `<div class="co-total-row"><span>Total</span><span>₹ ${totalPrice.toLocaleString('en-IN')}</span></div>`;
-                coPhone.value = '';
-                coPhone.classList.remove('error');
-                coErr.textContent = '';
                 coOverlay.classList.add('open');
             }
 
-            function closeCheckout() { coOverlay.classList.remove('open'); }
+            function closeCheckout() {
+                coOverlay.classList.remove('open');
+                userLocation = null;
+                coLocBtn.textContent = '📍 Share My Location (optional)';
+                coLocBtn.className = 'co-loc-btn';
+                coLocBtn.disabled = false;
+            }
 
             document.querySelector('.btn-checkout').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1019,25 +1060,19 @@
             coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
 
             document.getElementById('coConfirm').addEventListener('click', () => {
-                const phone = coPhone.value.trim().replace(/\D/g, '');
-                if (phone.length < 10) {
-                    coPhone.classList.add('error');
-                    coErr.textContent = 'Please enter a valid 10-digit mobile number.';
-                    return;
-                }
-                coPhone.classList.remove('error');
-                coErr.textContent = '';
-
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
                 const lines = entries.map(([name, v]) =>
-                    `  • ${name} x${v.qty} = ₹${(v.qty * v.price).toLocaleString('en-IN')}`
+                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${(v.qty * v.price).toLocaleString('en-IN')}`
                 ).join('%0A');
+                const locPart = userLocation
+                    ? `%0A%0A%F0%9F%93%8D *My Location:* https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}`
+                    : '';
                 const msg =
-                    `🎂 *New Order from Darun Delights*%0A%0A` +
-                    `📞 Customer: +91${phone}%0A%0A` +
-                    `🗭️ *Items:*%0A${lines}%0A%0A` +
-                    `💰 *Total: ₹${totalPrice.toLocaleString('en-IN')}*`;
+                    `%F0%9F%8E%82 *New Order from Darun Delights*%0A%0A` +
+                    `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
+                    `%F0%9F%92%B0 *Total: %E2%82%B9${totalPrice.toLocaleString('en-IN')}*` +
+                    locPart;
 
                 window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
                 closeCheckout();
