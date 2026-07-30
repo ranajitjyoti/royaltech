@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Darun Delights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7f3;
+            color: #1a3d2b;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 28px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            text-align: center;
+        }
+        .icon { font-size: 3rem; margin-bottom: 12px; }
+        h1 { font-size: 1.2rem; font-weight: 700; color: #1a3d2b; margin-bottom: 4px; }
+        .upi-id {
+            font-size: 0.85rem; color: #4a7c5e;
+            background: #f0f7f3; border-radius: 8px;
+            padding: 8px 14px; margin: 14px 0 24px;
+            display: inline-block; font-weight: 600;
+        }
+        .btn-pay {
+            display: block; width: 100%;
+            padding: 14px;
+            background: #2e8b57; color: #fff;
+            border: none; border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem; font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-pay:active { transform: scale(0.97); }
+        .btn-pay:hover  { background: #1e6b40; }
+        .note { font-size: 0.72rem; color: #4a7c5e; margin-top: 16px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">🎂</div>
+        <h1>Pay Darun Delights</h1>
+        <div class="upi-id">ranajit.jyoti@ybl</div>
+        <a class="btn-pay" id="payBtn" href="upi://pay?pa=ranajit.jyoti@ybl&pn=Darun%20Delights&cu=INR">
+            💳 Pay Now
+        </a>
+        <p class="note">Opens GPay, PhonePe, Paytm or any UPI app on your phone.</p>
+    </div>
+
+    <script>
+        document.getElementById('payBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'upi://pay?pa=ranajit.jyoti@ybl&pn=Darun%20Delights&cu=INR';
+        });
+    </script>
+</body>
+</html>
