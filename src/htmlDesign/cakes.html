@@ -131,6 +131,54 @@
         }
         .section-title p { margin-top: 20px; color: #4a7c5e; font-size: clamp(0.8rem, 2vw, 0.92rem); }
 
+        /* ── Collapsible group ── */
+        .group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 14px 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.2s;
+        }
+        .group-header:hover { background: #f0f7f3; }
+        .group-header h2 {
+            font-size: clamp(1rem, 2.8vw, 1.3rem);
+            color: #2e8b57;
+            font-weight: 700;
+            margin: 0;
+        }
+        .group-toggle {
+            width: 32px; height: 32px;
+            background: #2e8b57;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, background 0.2s;
+        }
+        .group-header.collapsed .group-toggle { transform: rotate(-90deg); }
+        .group-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            opacity: 1;
+            margin-top: 22px;
+            overflow: hidden;
+        }
+        .group-body.collapsed {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .group-body > .gallery-grid { min-height: 0; }
+
         /* ── Gallery ── */
         .gallery-section { padding: clamp(36px, 6vw, 70px) 0; }
 
@@ -594,152 +642,422 @@
         </div>
     </section>
 
-    <!-- Gallery -->
-    <section class="gallery-section">
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>✨ Cakes &amp; Pastries</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Black Forest Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Black Forest Cake Veg (Regular)</h3><p>Classic black forest flavour with cream and cherry finish.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Butterscotch Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Butterscotch Cake Veg (Regular)</h3><p>Classic butterscotch flavour with caramel crunch.</p><p class="cake-price">&#8377; 380.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Choco Chip Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Chip Cake Veg (Regular)</h3><p>Moist sponge with delightful chocolate chips.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" alt="Choco Truffle Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Truffle Cake Veg (Regular)</h3><p>Rich truffle-inspired chocolate indulgence.</p><p class="cake-price">&#8377; 420.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Choco Vanilla Cake Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Vanilla Cake (Regular)</h3><p>Perfect blend of chocolate and vanilla layers.</p><p class="cake-price">&#8377; 400.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Chocochip Cake Veg Junior" loading="lazy">
+                    <div class="cake-info"><h3>Chocochip Cake Veg (Junior)</h3><p>Soft and fluffy junior-sized chip cake.</p><p class="cake-price">&#8377; 290.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Cake Veg Junior" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Cake Veg (Junior)</h3><p>Classic junior chocolate cake with smooth icing.</p><p class="cake-price">&#8377; 290.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80" alt="Mango Malai Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Mango Malai Cake Veg (Regular)</h3><p>Tropical mango and creamy malai layered cake.</p><p class="cake-price">&#8377; 400.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Cake Veg (Regular)</h3><p>Velvety red sponge with cream cheese frosting.</p><p class="cake-price">&#8377; 480.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="White Forest Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>White Forest Cake Veg (Regular)</h3><p>White forest cake finished with whipped cream.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Choco Bento Cake" loading="lazy">
+                    <div class="cake-info"><h3>Choco Bento Cake</h3><p>Compact and cute chocolate bento-style celebration cake.</p><p class="cake-price">&#8377; 150.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Mango Bento Cake" loading="lazy">
+                    <div class="cake-info"><h3>Mango Bento Cake</h3><p>Fresh mango flavour in a compact bento cake design.</p><p class="cake-price">&#8377; 150.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80" alt="Black Forest Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Black Forest Pastry</h3><p>Classic black forest pastry with cherries and cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Blue Berry Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Blue Berry Pastry</h3><p>Blueberry pastry topped with fruity cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Butterscotch Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Butterscotch Pastry</h3><p>Caramel butterscotch pastry with crunchy topping.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Choco Chip Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Choco Chip Pastry</h3><p>Pastry packed with rich chocolate chips.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" alt="Choco Lava Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Choco Lava Pastry</h3><p>Warm pastry with a molten chocolate centre.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Heart Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Heart Pastry</h3><p>Heart-shaped pastry with rich chocolate cream.</p><p class="cake-price">&#8377; 25.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80" alt="Coconut Pastry Non Veg" loading="lazy">
+                    <div class="cake-info"><h3>Coconut Pastry (Non Veg)</h3><p>Tropical coconut pastry with light cream finish.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Milk Chocolate Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Milk Chocolate Pastry</h3><p>Smooth milk chocolate pastry with creamy layers.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Orange Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Orange Pastry</h3><p>Zesty orange pastry with citrus cream.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80" alt="Pineapple Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Pineapple Pastry</h3><p>Sweet pineapple pastry with soft cream topping.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Rahsmalai Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Rahsmalai Pastry</h3><p>Rich saffron-infused pastry with rasmalai cream.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Pastry</h3><p>Velvety pastry with cream cheese frosting.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Pastry</h3><p>Fresh strawberry pastry with whipped cream.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Sweetmilk Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Sweetmilk Pastry</h3><p>Delicate milk-flavoured pastry with soft cream.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="White Forest Pastry" loading="lazy">
+                    <div class="cake-info"><h3>White Forest Pastry</h3><p>Light white chocolate pastry with whipped cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Veg Puff Snacks Breads -->
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127828; Veg Puff, Snacks &amp; Breads</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Veg Puff" loading="lazy">
+                    <div class="cake-info"><h3>Veg Puff</h3><p>Crispy flaky puff pastry with spiced vegetable filling.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Veg Paneer Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Veg Paneer Samosa</h3><p>Crispy samosa stuffed with spiced paneer filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Paneer Puff" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Puff</h3><p>Flaky puff pastry filled with seasoned paneer.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Chinese Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Chinese Samosa</h3><p>Crispy samosa with Indo-Chinese spiced filling.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Panjabi Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Panjabi Samosa</h3><p>Classic Punjabi samosa with potato and pea filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Abric Veg Burger" loading="lazy">
+                    <div class="cake-info"><h3>Abric Veg Burger</h3><p>Soft bun with crispy veg patty and fresh toppings.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80" alt="Italian Sandwich" loading="lazy">
+                    <div class="cake-info"><h3>Italian Sandwich</h3><p>Loaded Italian-style sandwich with fresh veggies.</p><p class="cake-price">&#8377; 65</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=600&q=80" alt="Italian Mini Sandwich" loading="lazy">
+                    <div class="cake-info"><h3>Italian Mini Sandwich</h3><p>Bite-sized Italian sandwich with herbed filling.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1604908554020-6d5a872f87ef?w=600&q=80" alt="Paneer 65" loading="lazy">
+                    <div class="cake-info"><h3>Paneer 65</h3><p>Spicy crispy fried paneer with tangy seasoning.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80" alt="Turkish Bread Kebab" loading="lazy">
+                    <div class="cake-info"><h3>Turkish Bread Kebab</h3><p>Soft Turkish bread with spiced veg kebab filling.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Rolls Chops Snacks -->
+    <section class="gallery-section" style="padding-top:0;">
         <div class="container">
-            <div class="section-title">
-                <h2>Our Cake Collection</h2>
-                <p>Tap any cake to view it in full size.</p>
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127839; Rolls, Chops &amp; Other Snacks</h2>
+                <span class="group-toggle">▼</span>
             </div>
-            <div class="gallery-grid">
+            <div class="group-body"><div class="gallery-grid">
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Layer Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Chocolate Layer Cake</h3>
-                        <p>Rich dark chocolate layers with ganache frosting.</p>
-                        <p class="cake-price">₹ 649</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80" alt="Veg Kachori" loading="lazy">
+                    <div class="cake-info"><h3>Veg Kachori</h3><p>Crispy fried kachori with spiced lentil filling.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Shortcake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Strawberry Shortcake</h3>
-                        <p>Light sponge with fresh strawberries and whipped cream.</p>
-                        <p class="cake-price">₹ 549</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80" alt="Paneer Spring Roll" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Spring Roll</h3><p>Crispy spring roll stuffed with spiced paneer and veggies.</p><p class="cake-price">&#8377; 55</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="Wedding Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Wedding Cake</h3>
-                        <p>Elegant multi-tier cake with floral decorations.</p>
-                        <p class="cake-price">₹ 2,499</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80" alt="Veg Wrap" loading="lazy">
+                    <div class="cake-info"><h3>Veg Wrap</h3><p>Soft wrap filled with fresh veggies and sauces.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Birthday Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Birthday Cake</h3>
-                        <p>Colorful celebration cake with rainbow sprinkles.</p>
-                        <p class="cake-price">₹ 799</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Veg Chop" loading="lazy">
+                    <div class="cake-info"><h3>Veg Chop</h3><p>Crispy fried veg chop with spiced potato filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1562440499-64c9a111f713?w=600&q=80" alt="Cheesecake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Classic Cheesecake</h3>
-                        <p>Creamy New York-style cheesecake with berry topping.</p>
-                        <p class="cake-price">₹ 699</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1604908554020-6d5a872f87ef?w=600&q=80" alt="Egg Devil" loading="lazy">
+                    <div class="cake-info"><h3>Egg Devil</h3><p>Spiced devilled egg snack, a Bengali street food classic.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Vanilla Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Vanilla Dream Cake</h3>
-                        <p>Soft vanilla sponge with buttercream and fresh flowers.</p>
-                        <p class="cake-price">₹ 599</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&q=80" alt="Fry Momo" loading="lazy">
+                    <div class="cake-info"><h3>Fry Momo</h3><p>Crispy fried momos with spiced veg filling.</p><p class="cake-price">&#8377; 55</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Red Velvet Cake</h3>
-                        <p>Velvety red layers with cream cheese frosting.</p>
-                        <p class="cake-price">₹ 749</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80" alt="Steam Momo" loading="lazy">
+                    <div class="cake-info"><h3>Steam Momo</h3><p>Soft steamed momos with spiced veg filling.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
                 <div class="cake-card">
-                    <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80" alt="Lemon Drizzle Cake" loading="lazy">
-                    <div class="cake-info">
-                        <h3>Lemon Drizzle Cake</h3>
-                        <p>Zesty lemon sponge with a tangy sugar glaze.</p>
-                        <p class="cake-price">₹ 499</p>
-                    </div>
-                    <div class="cake-cart">
-                        <button class="btn-add-cart">🛒 Add to Cart</button>
-                        <div class="qty-controls">
-                            <button class="qty-btn qty-minus">−</button>
-                            <span class="qty-num">1</span>
-                            <button class="qty-btn qty-plus">+</button>
-                        </div>
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" alt="Paneer Pizza" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Pizza</h3><p>Mini pizza topped with paneer and fresh veggies.</p><p class="cake-price">&#8377; 60</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
 
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=600&q=80" alt="Small Vada Pav" loading="lazy">
+                    <div class="cake-info"><h3>Small Vada Pav</h3><p>Mini Mumbai-style vada pav with chutneys.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=600&q=80" alt="Vada Pav" loading="lazy">
+                    <div class="cake-info"><h3>Vada Pav</h3><p>Classic Mumbai vada pav with spicy green chutney.</p><p class="cake-price">&#8377; 60</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80" alt="Garlic Bread" loading="lazy">
+                    <div class="cake-info"><h3>Garlic Bread</h3><p>Toasted bread with herb garlic butter topping.</p><p class="cake-price">&#8377; 70</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Muffins and Brownies -->
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127849; Muffins &amp; Brownies</h2>
+                <span class="group-toggle">▼</span>
             </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Vanilla Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Vanilla Muffin</h3><p>Classic soft vanilla muffin with a golden top.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Muffin</h3><p>Soft muffin bursting with fresh strawberry flavour.</p><p class="cake-price">&#8377; 20</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Choco Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Muffin</h3><p>Moist chocolate muffin with rich cocoa flavour.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Dark Chocolate Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Dark Chocolate Muffin</h3><p>Intense dark chocolate muffin for serious choco lovers.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1562440499-64c9a111f713?w=600&q=80" alt="Brownie" loading="lazy">
+                    <div class="cake-info"><h3>Brownie</h3><p>Fudgy dense chocolate brownie with a crinkly top.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Mousse -->
+    <section class="gallery-section" style="padding-top:0;">
+        <div class="container">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127848; Mousse</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&q=80" alt="White Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>White Chocolate Mousse</h3><p>Silky smooth white chocolate mousse dessert.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Mousse</h3><p>Light and fruity strawberry mousse with fresh berry taste.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="Coffee Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Coffee Mousse</h3><p>Rich coffee-flavoured mousse with a creamy finish.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=600&q=80" alt="Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Mousse</h3><p>Classic creamy chocolate mousse with velvety texture.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=600&q=80" alt="Dark Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Dark Chocolate Mousse</h3><p>Rich and intense dark chocolate mousse.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Mousse</h3><p>Luscious red velvet mousse with cream cheese notes.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
         </div>
     </section>
 
@@ -1029,6 +1347,11 @@
             window.addEventListener('scroll', () => btn.classList.toggle('active', window.pageYOffset > 300));
             btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         });
+
+        function toggleGroup(header) {
+            header.classList.toggle('collapsed');
+            header.nextElementSibling.classList.toggle('collapsed');
+        }
     </script>
 </body>
 </html>
