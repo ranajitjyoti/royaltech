@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | User Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(145deg, #eef2f9, #e0e8f2);
+      font-family: 'Inter', sans-serif;
+      color: #13294b;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0;
+      width: 220px; height: 100vh;
+      background: linear-gradient(180deg, #1b2b4e, #0f1a2f);
+      color: white; padding: 24px 0;
+      display: flex; flex-direction: column; gap: 4px;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 0 20px 20px;
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo i { color: #c61a2f; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; font-size: 0.85rem;
+      cursor: pointer; transition: background 0.2s;
+      border-left: 3px solid transparent;
+      text-decoration: none; color: rgba(255,255,255,0.7);
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+    .nav-item.active {
+      background: rgba(198,26,47,0.2);
+      border-left-color: #c61a2f; color: white;
+    }
+    .nav-item i { width: 18px; text-align: center; }
+
+    /* Main */
+    .main {
+      margin-left: 220px;
+      padding: 28px 32px;
+    }
+    .topbar {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .topbar h2 { font-size: 1.5rem; font-weight: 700; }
+    .topbar p { font-size: 0.8rem; color: #4a5b7a; margin-top: 2px; }
+
+    .btn-download {
+      background: linear-gradient(135deg, #c61a2f, #9e1027);
+      color: white; border: none; border-radius: 12px;
+      padding: 10px 20px; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      font-family: inherit; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(198,26,47,0.3);
+    }
+    .btn-download:hover { opacity: 0.88; }
+
+    /* Stats row */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white; border-radius: 20px;
+      padding: 18px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .stat-card .label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #5c6f91; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 800; margin-top: 4px; }
+    .stat-card .value.red { color: #c61a2f; }
+    .stat-card .value.green { color: #15803d; }
+    .stat-card .value.blue { color: #1e4db7; }
+
+    /* Table card */
+    .table-card {
+      background: white; border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      overflow: hidden; border: 1px solid rgba(0,0,0,0.04);
+    }
+    .table-header {
+      padding: 18px 24px; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+      border-bottom: 1px solid #f0f3f9;
+    }
+    .table-header h3 { font-size: 0.95rem; font-weight: 600; }
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: #f0f3f9; border-radius: 10px; padding: 7px 14px;
+      font-size: 0.82rem; color: #5c6f91;
+    }
+    .search-box input {
+      border: none; background: none; outline: none;
+      font-family: inherit; font-size: 0.82rem; color: #13294b; width: 180px;
+    }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 0.82rem;
+    }
+    thead { background: #f8fafd; }
+    th {
+      text-align: left; padding: 12px 20px;
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.4px; color: #5c6f91; font-weight: 600;
+    }
+    td { padding: 13px 20px; border-top: 1px solid #f0f3f9; }
+    tr:hover td { background: #fafbfe; }
+    .badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 0.7rem; font-weight: 600;
+    }
+    .badge.high { background: #fde8eb; color: #c61a2f; }
+    .badge.medium { background: #fff3cd; color: #b45309; }
+    .badge.low { background: #d1fae5; color: #15803d; }
+    .badge.active { background: #d1fae5; color: #15803d; }
+    .badge.inactive { background: #f0f3f9; color: #5c6f91; }
+    .user-cell { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #c61a2f, #9e1027);
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .pagination {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 20px; border-top: 1px solid #f0f3f9;
+      font-size: 0.78rem; color: #5c6f91; flex-wrap: wrap; gap: 8px;
+    }
+    .page-btns { display: flex; gap: 6px; }
+    .page-btn {
+      width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid #e2e8f0; background: white;
+      cursor: pointer; font-size: 0.78rem; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      color: #13294b; transition: all 0.15s;
+    }
+    .page-btn:hover { background: #f0f3f9; }
+    .page-btn.active { background: #c61a2f; color: white; border-color: #c61a2f; }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 60px; }
+      .sidebar-logo span, .nav-item span { display: none; }
+      .main { margin-left: 60px; padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <i class="fas fa-heartbeat"></i>
+    <span>CardioAdmin</span>
+  </div>
+  <a class="nav-item" href="#"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+  <a class="nav-item active" href="#"><i class="fas fa-users"></i><span>Users</span></a>
+  <a class="nav-item" href="cakes-admin.html"><i class="fas fa-cake-candles"></i><span>Cake Catalog</span></a>
+  <a class="nav-item" href="#"><i class="fas fa-file-medical"></i><span>Reports</span></a>
+  <a class="nav-item" href="#"><i class="fas fa-cog"></i><span>Settings</span></a>
+  <a class="nav-item" href="cardioguard.html" style="margin-top:auto;"><i class="fas fa-arrow-left"></i><span>Back to App</span></a>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <h2><i class="fas fa-users" style="color:#c61a2f;margin-right:10px;"></i>User Management</h2>
+      <p>Manage all registered users and download their data</p>
+    </div>
+    <button class="btn-download" onclick="downloadExcel()">
+      <i class="fas fa-file-excel"></i> Download All Users (Excel)
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="label">Total Users</div>
+      <div class="value blue" id="totalCount">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Active</div>
+      <div class="value green" id="activeCount">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">High Risk</div>
+      <div class="value red" id="highRiskCount">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Avg. Risk Score</div>
+      <div class="value" id="avgRisk">—</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <h3>All Registered Users</h3>
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search name or email…" oninput="filterTable()">
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>BP (mmHg)</th>
+            <th>Cholesterol</th>
+            <th>Risk Score</th>
+            <th>Risk Level</th>
+            <th>Status</th>
+            <th>Registered</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span id="pageInfo">Showing 1–10 of 0</span>
+      <div class="page-btns" id="pageBtns"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // ── Sample user data (replace with real API/Firebase fetch) ──
+  const allUsers = [
+    { name:"Arjun Sharma",    email:"arjun.sharma@email.com",   age:54, gender:"Male",   bp:"142/90", cholesterol:230, risk:78, level:"high",   status:"active",   reg:"2024-01-15" },
+    { name:"Priya Nair",      email:"priya.nair@email.com",     age:47, gender:"Female", bp:"128/82", cholesterol:195, risk:45, level:"medium", status:"active",   reg:"2024-02-03" },
+    { name:"Rahul Mehta",     email:"rahul.mehta@email.com",    age:62, gender:"Male",   bp:"155/95", cholesterol:260, risk:85, level:"high",   status:"active",   reg:"2024-01-28" },
+    { name:"Sneha Kulkarni",  email:"sneha.k@email.com",        age:38, gender:"Female", bp:"118/76", cholesterol:172, risk:18, level:"low",    status:"active",   reg:"2024-03-10" },
+    { name:"Vikram Singh",    email:"vikram.singh@email.com",   age:58, gender:"Male",   bp:"148/92", cholesterol:245, risk:72, level:"high",   status:"inactive", reg:"2024-02-20" },
+    { name:"Ananya Iyer",     email:"ananya.iyer@email.com",    age:43, gender:"Female", bp:"132/84", cholesterol:208, risk:52, level:"medium", status:"active",   reg:"2024-03-01" },
+    { name:"Suresh Patel",    email:"suresh.patel@email.com",   age:67, gender:"Male",   bp:"160/98", cholesterol:275, risk:91, level:"high",   status:"active",   reg:"2024-01-05" },
+    { name:"Meena Reddy",     email:"meena.reddy@email.com",    age:50, gender:"Female", bp:"124/80", cholesterol:188, risk:35, level:"low",    status:"active",   reg:"2024-04-12" },
+    { name:"Aditya Kumar",    email:"aditya.kumar@email.com",   age:35, gender:"Male",   bp:"115/75", cholesterol:165, risk:12, level:"low",    status:"active",   reg:"2024-04-18" },
+    { name:"Kavitha Menon",   email:"kavitha.m@email.com",      age:55, gender:"Female", bp:"138/88", cholesterol:220, risk:61, level:"medium", status:"inactive", reg:"2024-02-14" },
+    { name:"Dinesh Rao",      email:"dinesh.rao@email.com",     age:60, gender:"Male",   bp:"150/94", cholesterol:255, risk:80, level:"high",   status:"active",   reg:"2024-01-22" },
+    { name:"Lakshmi Pillai",  email:"lakshmi.p@email.com",      age:44, gender:"Female", bp:"120/78", cholesterol:180, risk:22, level:"low",    status:"active",   reg:"2024-03-25" },
+  ];
+
+  const PAGE_SIZE = 10;
+  let currentPage = 1;
+  let filtered = [...allUsers];
+
+  function initStats() {
+    document.getElementById('totalCount').textContent = allUsers.length;
+    document.getElementById('activeCount').textContent = allUsers.filter(u => u.status === 'active').length;
+    document.getElementById('highRiskCount').textContent = allUsers.filter(u => u.level === 'high').length;
+    const avg = Math.round(allUsers.reduce((s, u) => s + u.risk, 0) / allUsers.length);
+    document.getElementById('avgRisk').textContent = avg + '%';
+  }
+
+  function renderTable() {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const page = filtered.slice(start, start + PAGE_SIZE);
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = page.map((u, i) => `
+      <tr>
+        <td style="color:#5c6f91">${start + i + 1}</td>
+        <td><div class="user-cell">
+          <div class="user-avatar">${u.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+          <span style="font-weight:600">${u.name}</span>
+        </div></td>
+        <td style="color:#5c6f91">${u.email}</td>
+        <td>${u.age}</td>
+        <td>${u.gender}</td>
+        <td>${u.bp}</td>
+        <td>${u.cholesterol} mg/dL</td>
+        <td><strong>${u.risk}%</strong></td>
+        <td><span class="badge ${u.level}">${u.level.charAt(0).toUpperCase()+u.level.slice(1)}</span></td>
+        <td><span class="badge ${u.status}">${u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></td>
+        <td style="color:#5c6f91">${u.reg}</td>
+      </tr>`).join('');
+
+    const total = filtered.length;
+    const end = Math.min(start + PAGE_SIZE, total);
+    document.getElementById('pageInfo').textContent = `Showing ${total ? start+1 : 0}–${end} of ${total}`;
+    renderPagination(total);
+  }
+
+  function renderPagination(total) {
+    const pages = Math.ceil(total / PAGE_SIZE);
+    const container = document.getElementById('pageBtns');
+    container.innerHTML = '';
+    for (let p = 1; p <= pages; p++) {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+      btn.textContent = p;
+      btn.onclick = () => { currentPage = p; renderTable(); };
+      container.appendChild(btn);
+    }
+  }
+
+  function filterTable() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    filtered = allUsers.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    currentPage = 1;
+    renderTable();
+  }
+
+  function downloadExcel() {
+    const data = allUsers.map((u, i) => ({
+      '#': i + 1,
+      'Full Name': u.name,
+      'Email': u.email,
+      'Age': u.age,
+      'Gender': u.gender,
+      'Blood Pressure': u.bp,
+      'Cholesterol (mg/dL)': u.cholesterol,
+      'Risk Score (%)': u.risk,
+      'Risk Level': u.level.charAt(0).toUpperCase() + u.level.slice(1),
+      'Status': u.status.charAt(0).toUpperCase() + u.status.slice(1),
+      'Registered Date': u.reg
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    ws['!cols'] = [4,22,30,6,8,16,20,16,12,10,16].map(w => ({ wch: w }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Users');
+    XLSX.writeFile(wb, `CardioGuard_Users_${new Date().toISOString().slice(0,10)}.xlsx`);
+  }
+
+  initStats();
+  renderTable();
+</script>
+</body>
+</html>

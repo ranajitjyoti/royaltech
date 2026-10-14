@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Cakes Catalog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7f3;
+            color: #1a3d2b;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background:
+                linear-gradient(135deg, rgba(20,70,40,0.85), rgba(46,139,87,0.80)),
+                url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1350&q=80')
+                no-repeat center / cover;
+            color: white;
+            text-align: center;
+            padding: clamp(50px, 10vw, 100px) 20px clamp(40px, 8vw, 80px);
+        }
+        .hero h1 {
+            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: clamp(0.88rem, 2.2vw, 1.1rem);
+            opacity: 0.88;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .delivery-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding: 10px 22px;
+            background: rgba(46,139,87,0.92);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 40px;
+            font-size: clamp(0.82rem, 2vw, 0.97rem);
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.2px;
+            backdrop-filter: blur(4px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .delivery-badge span.dot {
+            width: 9px; height: 9px;
+            background: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 40px;
+            font-size: clamp(0.82rem, 2vw, 0.95rem);
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .contact-btn:active { transform: scale(0.96); }
+        .btn-call {
+            background: #fff;
+            color: #1a3d2b;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        }
+        .btn-call:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+        .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+        }
+        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,211,102,0.45); }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(46,139,87,0.5); }
+            50%       { box-shadow: 0 0 0 10px rgba(46,139,87,0); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+
+        /* ── Section title ── */
+        .section-title { text-align: center; margin-bottom: 44px; }
+        .section-title h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            color: #2e8b57;
+            display: inline-block;
+            position: relative;
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute; bottom: -10px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 3px;
+            background: #2e8b57; border-radius: 3px;
+        }
+        .section-title p { margin-top: 20px; color: #4a7c5e; font-size: clamp(0.8rem, 2vw, 0.92rem); }
+
+        /* ── Collapsible group ── */
+        .group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 14px 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.2s;
+        }
+        .group-header:hover { background: #f0f7f3; }
+        .group-header h2 {
+            font-size: clamp(1rem, 2.8vw, 1.3rem);
+            color: #2e8b57;
+            font-weight: 700;
+            margin: 0;
+        }
+        .group-toggle {
+            width: 32px; height: 32px;
+            background: #2e8b57;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, background 0.2s;
+        }
+        .group-header.collapsed .group-toggle { transform: rotate(-90deg); }
+        .group-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            opacity: 1;
+            margin-top: 22px;
+            overflow: hidden;
+        }
+        .group-body.collapsed {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .group-body > .gallery-grid { min-height: 0; }
+
+        /* ── Gallery ── */
+        .gallery-section { padding: clamp(36px, 6vw, 70px) 0; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .cake-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(40px);
+            display: flex;
+            flex-direction: column;
+        }
+        .cake-card.animate { animation: fadeInUp 0.65s ease forwards; }
+        .cake-card:nth-child(1).animate { animation-delay: 0.04s; }
+        .cake-card:nth-child(2).animate { animation-delay: 0.08s; }
+        .cake-card:nth-child(3).animate { animation-delay: 0.12s; }
+        .cake-card:nth-child(4).animate { animation-delay: 0.16s; }
+        .cake-card:nth-child(5).animate { animation-delay: 0.20s; }
+        .cake-card:nth-child(6).animate { animation-delay: 0.24s; }
+        .cake-card:nth-child(7).animate { animation-delay: 0.28s; }
+        .cake-card:nth-child(8).animate { animation-delay: 0.32s; }
+
+        .cake-card:hover { transform: translateY(-8px); box-shadow: 0 16px 36px rgba(0,0,0,0.14); }
+
+        .cake-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+        .cake-card:hover img { transform: scale(1.04); }
+
+        .cake-info { padding: 14px 16px 18px; flex: 1; }
+        .cake-info h3 { font-size: clamp(0.85rem, 1.8vw, 1rem); color: #2e8b57; margin-bottom: 5px; font-weight: 600; }
+        .cake-info p  { font-size: clamp(0.75rem, 1.5vw, 0.83rem); color: #4a7c5e; line-height: 1.5; }
+        .cake-price { margin-top: 8px; font-size: clamp(0.82rem, 1.6vw, 0.92rem); font-weight: 700; color: #1a3d2b; }
+
+        /* ── Cart controls ── */
+        .cake-cart { padding: 0 16px 16px; }
+        .btn-add-cart {
+            width: 100%;
+            padding: 9px 0;
+            background: #2e8b57;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(0.78rem, 1.6vw, 0.88rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-add-cart:hover  { background: #1e6b40; }
+        .btn-add-cart:active { transform: scale(0.97); }
+        .qty-controls {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: #2e8b57;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .qty-controls.show { display: flex; }
+        .qty-btn {
+            width: 38px; height: 36px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+        .qty-btn:hover { background: rgba(255,255,255,0.18); }
+        .qty-num {
+            color: #fff;
+            font-size: clamp(0.82rem, 1.6vw, 0.9rem);
+            font-weight: 700;
+            min-width: 28px;
+            text-align: center;
+        }
+        @media (max-width: 480px) {
+            .cake-cart { padding: 0 12px 12px; }
+        }
+
+        /* ── Location ── */
+        .location-section { padding: clamp(36px, 6vw, 60px) 0; background: #e8f5ee; }
+        .location-section .section-title { margin-bottom: 28px; }
+
+        .map-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.12);
+            position: relative;
+            /* 16:9 aspect ratio trick for responsiveness */
+            padding-bottom: 45%;
+            height: 0;
+        }
+        .map-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .map-btn-wrap { text-align: center; margin-top: 20px; }
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            background: #2e8b57;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: clamp(0.82rem, 2vw, 0.95rem);
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(46,139,87,0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .map-link:hover  { background: #1e6b40; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,139,87,0.4); }
+        .map-link:active { transform: translateY(0); }
+
+        /* ── Lightbox ── */
+        .lightbox {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.90);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .lightbox.open { display: flex; }
+        .lightbox img {
+            max-width: min(90vw, 900px);
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute; top: 16px; right: 22px;
+            font-size: 2.4rem; color: white; cursor: pointer;
+            line-height: 1; user-select: none;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.15); }
+
+        /* ── Cart Drawer ── */
+        .drawer-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1999;
+        }
+        .drawer-overlay.open { display: block; }
+
+        .cart-drawer {
+            position: fixed; top: 0; right: 0;
+            width: min(380px, 100vw);
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            display: flex; flex-direction: column;
+            box-shadow: -6px 0 28px rgba(0,0,0,0.18);
+            transform: translateX(100%);
+            transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+        }
+        .cart-drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #e8f5ee;
+            flex-shrink: 0;
+        }
+        .drawer-header h2 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; }
+        .drawer-close {
+            width: 34px; height: 34px;
+            background: #f0f7f3; border: none; border-radius: 50%;
+            font-size: 1.1rem; cursor: pointer; color: #1a3d2b;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .drawer-close:hover { background: #d4edda; }
+
+        .drawer-items {
+            flex: 1; overflow-y: auto;
+            padding: 16px 20px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .drawer-empty {
+            text-align: center; color: #4a7c5e;
+            font-size: 0.9rem; margin: auto;
+            padding: 40px 0;
+        }
+        .drawer-item {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .drawer-item img {
+            width: 58px; height: 58px;
+            border-radius: 10px; object-fit: cover; flex-shrink: 0;
+        }
+        .drawer-item-info { flex: 1; min-width: 0; }
+        .drawer-item-info .di-name {
+            font-size: 0.85rem; font-weight: 600; color: #1a3d2b;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .drawer-item-info .di-unit { font-size: 0.75rem; color: #4a7c5e; }
+        .drawer-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+        .di-subtotal { font-size: 0.85rem; font-weight: 700; color: #1a3d2b; }
+        .di-qty {
+            display: flex; align-items: center; gap: 0;
+            background: #2e8b57; border-radius: 6px; overflow: hidden;
+        }
+        .di-qty button {
+            width: 28px; height: 26px;
+            background: none; border: none; color: #fff;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .di-qty button:hover { background: rgba(255,255,255,0.18); }
+        .di-qty span { color: #fff; font-size: 0.8rem; font-weight: 700; min-width: 24px; text-align: center; }
+        .di-remove {
+            background: none; border: none;
+            color: #c0392b; font-size: 0.72rem; font-weight: 600;
+            cursor: pointer; padding: 0;
+            text-decoration: underline; text-underline-offset: 2px;
+            transition: color 0.15s;
+            align-self: flex-end;
+        }
+        .di-remove:hover { color: #96281b; }
+
+        .drawer-footer {
+            border-top: 1px solid #e8f5ee;
+            padding: 16px 20px;
+            flex-shrink: 0;
+        }
+        .drawer-total {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px;
+        }
+        .drawer-total span { font-size: 0.9rem; color: #4a7c5e; }
+        .drawer-total strong { font-size: 1.1rem; color: #1a3d2b; font-weight: 700; }
+        .btn-checkout {
+            width: 100%; padding: 13px;
+            background: #2e8b57; color: #fff;
+            border: none; border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-checkout:hover { background: #1e6b40; }
+
+        /* ── Checkout Modal ── */
+        .co-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55); z-index: 3500;
+            align-items: center; justify-content: center; padding: 16px;
+        }
+        .co-overlay.open { display: flex; }
+        .co-modal {
+            background: #fff; border-radius: 18px;
+            width: min(420px, 100%);
+            padding: 28px 24px 24px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+            position: relative;
+            animation: fadeInUp 0.28s ease;
+        }
+        .co-modal h3 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; margin-bottom: 4px; }
+        .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 18px; }
+        .co-order-summary {
+            background: #f0f7f3; border-radius: 10px;
+            padding: 12px 14px; margin-bottom: 18px;
+            font-size: 0.82rem; color: #1a3d2b; line-height: 1.9;
+        }
+        .co-row { display: flex; justify-content: space-between; }
+        .co-total-row {
+            display: flex; justify-content: space-between;
+            border-top: 1px solid #c8e6d4; margin-top: 6px; padding-top: 6px;
+            font-weight: 700; font-size: 0.88rem;
+        }
+        .co-label { font-size: 0.82rem; color: #1a3d2b; font-weight: 600; margin-bottom: 6px; display: block; }
+        .co-input {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid #c8e6d4; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #1a3d2b;
+            outline: none; transition: border-color 0.2s; margin-bottom: 4px;
+        }
+        .co-input:focus { border-color: #2e8b57; }
+        .co-input.error  { border-color: #e63946; }
+        .co-err { font-size: 0.75rem; color: #e63946; min-height: 16px; margin-bottom: 14px; }
+        .co-actions { display: flex; gap: 10px; }
+        .co-cancel {
+            flex: 1; padding: 11px;
+            background: #f0f7f3; color: #1a3d2b;
+            border: none; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .co-cancel:hover { background: #d4edda; }
+        .co-confirm {
+            flex: 2; padding: 11px;
+            background: #25D366; color: #fff;
+            border: none; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+        }
+        .co-confirm:hover { background: #1da851; }
+        .co-close-x {
+            position: absolute; top: 14px; right: 16px;
+            background: none; border: none; font-size: 1.3rem;
+            cursor: pointer; color: #4a7c5e; line-height: 1;
+        }
+        /* ── Floating cart ── */
+        .float-cart {
+            position: fixed; bottom: 24px; left: 24px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 20px;
+            background: #1a3d2b;
+            color: #fff;
+            border: none; border-radius: 40px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            z-index: 999;
+            opacity: 0; visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .float-cart.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        .float-cart:hover { background: #2e8b57; }
+        .float-cart-icon { font-size: 1.15rem; }
+        .float-cart-badge {
+            background: #e63946;
+            color: #fff;
+            font-size: 0.72rem; font-weight: 700;
+            min-width: 20px; height: 20px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 5px;
+            line-height: 1;
+        }
+        @keyframes badgePop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.45); }
+            100% { transform: scale(1); }
+        }
+        .float-cart-badge.pop { animation: badgePop 0.28s ease; }
+        @media (max-width: 480px) {
+            .float-cart { bottom: 16px; left: 16px; padding: 10px 16px; font-size: 0.84rem; }
+        }
+
+        /* ── Scroll to top ── */
+        .scroll-top {
+            position: fixed; bottom: 24px; right: 24px;
+            width: 46px; height: 46px;
+            background: #2e8b57; color: white;
+            border-radius: 50%; border: none;
+            font-size: 1.4rem; cursor: pointer;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(46,139,87,0.35);
+            z-index: 999;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .scroll-top.active { opacity: 1; visibility: visible; }
+        .scroll-top:hover  { background: #1e6b40; transform: translateY(-3px); }
+
+        /* ── Animation ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ══════════════════════════════
+           RESPONSIVE BREAKPOINTS
+        ══════════════════════════════ */
+
+        /* Large desktop: 4 columns — already default */
+
+        /* Tablet landscape / small desktop */
+        @media (max-width: 1024px) {
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        }
+
+        /* Tablet portrait */
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .cake-card img { height: 180px; }
+            .map-wrapper { padding-bottom: 56%; }
+        }
+
+        /* Large mobile */
+        @media (max-width: 480px) {
+            .container { width: 95%; padding: 0 8px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .cake-card img { height: 150px; }
+            .cake-info { padding: 10px 12px 14px; }
+            .map-wrapper { padding-bottom: 70%; }
+            .scroll-top { width: 42px; height: 42px; bottom: 16px; right: 16px; }
+        }
+
+        /* Small mobile */
+        @media (max-width: 360px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .cake-card img { height: 200px; }
+            .map-wrapper { padding-bottom: 80%; }
+        }
+
+        /* Touch devices — disable hover lift to avoid sticky state */
+        @media (hover: none) {
+            .cake-card:hover { transform: none; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+            .cake-card:hover img { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>🎂 Admin Cakes Catalog</h1>
+        <p>Read-only menu preview for staff and admin. Same product list as the customer-facing cake gallery.</p>
+        <div class="delivery-badge">
+            <span class="dot"></span>
+            🔒 Admin View • Menu Preview
+        </div>
+        <div class="contact-row">
+            <a class="contact-btn btn-call" href="admin-users.html">
+                🏠 Back to Admin
+            </a>
+            <a class="contact-btn btn-whatsapp" href="cakes.html" target="_blank" rel="noopener">
+                🛍️ Customer View
+            </a>
+        </div>
+    </section>
+
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>✨ Cakes &amp; Pastries</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Black Forest Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Black Forest Cake Veg (Regular)</h3><p>Classic black forest flavour with cream and cherry finish.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Butterscotch Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Butterscotch Cake Veg (Regular)</h3><p>Classic butterscotch flavour with caramel crunch.</p><p class="cake-price">&#8377; 380.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Choco Chip Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Chip Cake Veg (Regular)</h3><p>Moist sponge with delightful chocolate chips.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" alt="Choco Truffle Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Truffle Cake Veg (Regular)</h3><p>Rich truffle-inspired chocolate indulgence.</p><p class="cake-price">&#8377; 420.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Choco Vanilla Cake Regular" loading="lazy">
+                    <div class="cake-info"><h3>Choco Vanilla Cake (Regular)</h3><p>Perfect blend of chocolate and vanilla layers.</p><p class="cake-price">&#8377; 400.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Chocochip Cake Veg Junior" loading="lazy">
+                    <div class="cake-info"><h3>Chocochip Cake Veg (Junior)</h3><p>Soft and fluffy junior-sized chip cake.</p><p class="cake-price">&#8377; 290.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Cake Veg Junior" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Cake Veg (Junior)</h3><p>Classic junior chocolate cake with smooth icing.</p><p class="cake-price">&#8377; 290.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80" alt="Mango Malai Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Mango Malai Cake Veg (Regular)</h3><p>Tropical mango and creamy malai layered cake.</p><p class="cake-price">&#8377; 400.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Cake Veg (Regular)</h3><p>Velvety red sponge with cream cheese frosting.</p><p class="cake-price">&#8377; 480.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="White Forest Cake Veg Regular" loading="lazy">
+                    <div class="cake-info"><h3>White Forest Cake Veg (Regular)</h3><p>White forest cake finished with whipped cream.</p><p class="cake-price">&#8377; 430.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Choco Bento Cake" loading="lazy">
+                    <div class="cake-info"><h3>Choco Bento Cake</h3><p>Compact and cute chocolate bento-style celebration cake.</p><p class="cake-price">&#8377; 150.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Mango Bento Cake" loading="lazy">
+                    <div class="cake-info"><h3>Mango Bento Cake</h3><p>Fresh mango flavour in a compact bento cake design.</p><p class="cake-price">&#8377; 150.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80" alt="Black Forest Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Black Forest Pastry</h3><p>Classic black forest pastry with cherries and cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Blue Berry Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Blue Berry Pastry</h3><p>Blueberry pastry topped with fruity cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Butterscotch Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Butterscotch Pastry</h3><p>Caramel butterscotch pastry with crunchy topping.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80" alt="Choco Chip Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Choco Chip Pastry</h3><p>Pastry packed with rich chocolate chips.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" alt="Choco Lava Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Choco Lava Pastry</h3><p>Warm pastry with a molten chocolate centre.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Chocolate Heart Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Heart Pastry</h3><p>Heart-shaped pastry with rich chocolate cream.</p><p class="cake-price">&#8377; 25.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80" alt="Coconut Pastry Non Veg" loading="lazy">
+                    <div class="cake-info"><h3>Coconut Pastry (Non Veg)</h3><p>Tropical coconut pastry with light cream finish.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Milk Chocolate Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Milk Chocolate Pastry</h3><p>Smooth milk chocolate pastry with creamy layers.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Orange Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Orange Pastry</h3><p>Zesty orange pastry with citrus cream.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80" alt="Pineapple Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Pineapple Pastry</h3><p>Sweet pineapple pastry with soft cream topping.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Rahsmalai Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Rahsmalai Pastry</h3><p>Rich saffron-infused pastry with rasmalai cream.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Pastry</h3><p>Velvety pastry with cream cheese frosting.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Pastry</h3><p>Fresh strawberry pastry with whipped cream.</p><p class="cake-price">&#8377; 35.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Sweetmilk Pastry" loading="lazy">
+                    <div class="cake-info"><h3>Sweetmilk Pastry</h3><p>Delicate milk-flavoured pastry with soft cream.</p><p class="cake-price">&#8377; 45.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&q=80" alt="White Forest Pastry" loading="lazy">
+                    <div class="cake-info"><h3>White Forest Pastry</h3><p>Light white chocolate pastry with whipped cream.</p><p class="cake-price">&#8377; 40.00</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Veg Puff Snacks Breads -->
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127828; Veg Puff, Snacks &amp; Breads</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Veg Puff" loading="lazy">
+                    <div class="cake-info"><h3>Veg Puff</h3><p>Crispy flaky puff pastry with spiced vegetable filling.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Veg Paneer Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Veg Paneer Samosa</h3><p>Crispy samosa stuffed with spiced paneer filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Paneer Puff" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Puff</h3><p>Flaky puff pastry filled with seasoned paneer.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Chinese Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Chinese Samosa</h3><p>Crispy samosa with Indo-Chinese spiced filling.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&q=80" alt="Panjabi Samosa" loading="lazy">
+                    <div class="cake-info"><h3>Panjabi Samosa</h3><p>Classic Punjabi samosa with potato and pea filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Abric Veg Burger" loading="lazy">
+                    <div class="cake-info"><h3>Abric Veg Burger</h3><p>Soft bun with crispy veg patty and fresh toppings.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80" alt="Italian Sandwich" loading="lazy">
+                    <div class="cake-info"><h3>Italian Sandwich</h3><p>Loaded Italian-style sandwich with fresh veggies.</p><p class="cake-price">&#8377; 65</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=600&q=80" alt="Italian Mini Sandwich" loading="lazy">
+                    <div class="cake-info"><h3>Italian Mini Sandwich</h3><p>Bite-sized Italian sandwich with herbed filling.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1604908554020-6d5a872f87ef?w=600&q=80" alt="Paneer 65" loading="lazy">
+                    <div class="cake-info"><h3>Paneer 65</h3><p>Spicy crispy fried paneer with tangy seasoning.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80" alt="Turkish Bread Kebab" loading="lazy">
+                    <div class="cake-info"><h3>Turkish Bread Kebab</h3><p>Soft Turkish bread with spiced veg kebab filling.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Rolls Chops Snacks -->
+    <section class="gallery-section" style="padding-top:0;">
+        <div class="container">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127839; Rolls, Chops &amp; Other Snacks</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80" alt="Veg Kachori" loading="lazy">
+                    <div class="cake-info"><h3>Veg Kachori</h3><p>Crispy fried kachori with spiced lentil filling.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80" alt="Paneer Spring Roll" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Spring Roll</h3><p>Crispy spring roll stuffed with spiced paneer and veggies.</p><p class="cake-price">&#8377; 55</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80" alt="Veg Wrap" loading="lazy">
+                    <div class="cake-info"><h3>Veg Wrap</h3><p>Soft wrap filled with fresh veggies and sauces.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Veg Chop" loading="lazy">
+                    <div class="cake-info"><h3>Veg Chop</h3><p>Crispy fried veg chop with spiced potato filling.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1604908554020-6d5a872f87ef?w=600&q=80" alt="Egg Devil" loading="lazy">
+                    <div class="cake-info"><h3>Egg Devil</h3><p>Spiced devilled egg snack, a Bengali street food classic.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&q=80" alt="Fry Momo" loading="lazy">
+                    <div class="cake-info"><h3>Fry Momo</h3><p>Crispy fried momos with spiced veg filling.</p><p class="cake-price">&#8377; 55</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80" alt="Steam Momo" loading="lazy">
+                    <div class="cake-info"><h3>Steam Momo</h3><p>Soft steamed momos with spiced veg filling.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" alt="Paneer Pizza" loading="lazy">
+                    <div class="cake-info"><h3>Paneer Pizza</h3><p>Mini pizza topped with paneer and fresh veggies.</p><p class="cake-price">&#8377; 60</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=600&q=80" alt="Small Vada Pav" loading="lazy">
+                    <div class="cake-info"><h3>Small Vada Pav</h3><p>Mini Mumbai-style vada pav with chutneys.</p><p class="cake-price">&#8377; 35</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=600&q=80" alt="Vada Pav" loading="lazy">
+                    <div class="cake-info"><h3>Vada Pav</h3><p>Classic Mumbai vada pav with spicy green chutney.</p><p class="cake-price">&#8377; 60</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80" alt="Garlic Bread" loading="lazy">
+                    <div class="cake-info"><h3>Garlic Bread</h3><p>Toasted bread with herb garlic butter topping.</p><p class="cake-price">&#8377; 70</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Muffins and Brownies -->
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127849; Muffins &amp; Brownies</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&q=80" alt="Vanilla Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Vanilla Muffin</h3><p>Classic soft vanilla muffin with a golden top.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Muffin</h3><p>Soft muffin bursting with fresh strawberry flavour.</p><p class="cake-price">&#8377; 20</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Choco Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Muffin</h3><p>Moist chocolate muffin with rich cocoa flavour.</p><p class="cake-price">&#8377; 25</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" alt="Dark Chocolate Muffin" loading="lazy">
+                    <div class="cake-info"><h3>Dark Chocolate Muffin</h3><p>Intense dark chocolate muffin for serious choco lovers.</p><p class="cake-price">&#8377; 30</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1562440499-64c9a111f713?w=600&q=80" alt="Brownie" loading="lazy">
+                    <div class="cake-info"><h3>Brownie</h3><p>Fudgy dense chocolate brownie with a crinkly top.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Mousse -->
+    <section class="gallery-section" style="padding-top:0;">
+        <div class="container">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>&#127848; Mousse</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&q=80" alt="White Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>White Chocolate Mousse</h3><p>Silky smooth white chocolate mousse dessert.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80" alt="Strawberry Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Strawberry Mousse</h3><p>Light and fruity strawberry mousse with fresh berry taste.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="Coffee Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Coffee Mousse</h3><p>Rich coffee-flavoured mousse with a creamy finish.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=600&q=80" alt="Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Chocolate Mousse</h3><p>Classic creamy chocolate mousse with velvety texture.</p><p class="cake-price">&#8377; 45</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=600&q=80" alt="Dark Chocolate Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Dark Chocolate Mousse</h3><p>Rich and intense dark chocolate mousse.</p><p class="cake-price">&#8377; 50</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+                <div class="cake-card">
+                    <img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&q=80" alt="Red Velvet Mousse" loading="lazy">
+                    <div class="cake-info"><h3>Red Velvet Mousse</h3><p>Luscious red velvet mousse with cream cheese notes.</p><p class="cake-price">&#8377; 40</p></div>
+                    <div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
+                </div>
+
+            </div></div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section class="location-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Find Us</h2>
+                <p>Visit Darun Delights Cake &amp; Pastry Shop in person.</p>
+            </div>
+            <div class="map-wrapper">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116.0!2d88.3324716!3d22.510981!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0271004a7861a9%3A0xd3b7a1e40d0625f8!2sDarun%20Delights%20Cake%20%26%20Pastry%20Shop!5e0!3m2!1sen!2sin!4v1700000000000"
+                    allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="map-btn-wrap">
+                <a class="map-link"
+                   href="https://www.google.com/maps/place/Darun+Delights+Cake+%26+Pastry+Shop/@22.510981,88.3324716,116m/data=!3m1!1e3!4m16!1m9!3m8!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!2sDarun+Delights+Cake+%26+Pastry+Shop!8m2!3d22.5110123!4d88.3326131!9m1!1b1!16s%2Fg%2F11zh24p5fc!3m5!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!8m2!3d22.5110123!4d88.3326131!16s%2Fg%2F11zh24p5fc"
+                   target="_blank" rel="noopener">
+                    📍 Open in Google Maps
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div class="co-overlay" id="coOverlay">
+        <div class="co-modal">
+            <button class="co-close-x" id="coCloseX" aria-label="Close">&times;</button>
+            <h3>📱 Confirm Your Order</h3>
+            <p class="co-sub">Review your order and send it directly to WhatsApp.</p>
+            <div class="co-order-summary" id="coSummary"></div>
+            <div class="co-actions">
+                <button class="co-cancel" id="coCancel">Cancel</button>
+                <button class="co-confirm" id="coConfirm">💬 Send on WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Your cart">
+        <div class="drawer-header">
+            <h2>🛒 Your Cart</h2>
+            <button class="drawer-close" id="drawerClose" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="drawer-items" id="drawerItems">
+            <p class="drawer-empty">Your cart is empty 🎂<br>Add some cakes!</p>
+        </div>
+        <div class="drawer-footer">
+            <div class="drawer-total">
+                <span>Total</span>
+                <strong id="drawerTotal">₹ 0</strong>
+            </div>
+            <button class="btn-checkout">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+        <span class="lightbox-close" id="lightboxClose" role="button" aria-label="Close">&times;</span>
+        <img id="lightboxImg" src="" alt="Cake preview">
+    </div>
+
+    <button class="float-cart" id="floatCart" aria-label="View cart">
+        <span class="float-cart-icon">🛒</span>
+        <span>Cart</span>
+        <span class="float-cart-badge" id="cartBadge">0</span>
+    </button>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">&#8679;</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Animate cards on scroll
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('animate'); observer.unobserve(e.target); }
+                });
+            }, { threshold: 0.08 });
+            document.querySelectorAll('.cake-card').forEach(c => observer.observe(c));
+
+            // Lightbox
+            const lightbox    = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+
+            document.querySelectorAll('.cake-card img').forEach(img => {
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src.replace('w=600', 'w=1200');
+                    lightbox.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            function closeLightbox() {
+                lightbox.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+            // ── Cart state ──
+            const floatCart   = document.getElementById('floatCart');
+            const cartBadge   = document.getElementById('cartBadge');
+            const cartDrawer  = document.getElementById('cartDrawer');
+            const drawerOverlay = document.getElementById('drawerOverlay');
+            const drawerItems = document.getElementById('drawerItems');
+            const drawerTotal = document.getElementById('drawerTotal');
+
+            // cartData: key = cake name, value = { qty, price, imgSrc }
+            const cartData = {};
+
+            function openDrawer()  { cartDrawer.classList.add('open'); drawerOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+            function closeDrawer() { cartDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+            floatCart.addEventListener('click', openDrawer);
+            document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+            drawerOverlay.addEventListener('click', closeDrawer);
+
+            function syncDrawer() {
+                // badge
+                const totalQty = Object.values(cartData).reduce((s, v) => s + v.qty, 0);
+                cartBadge.textContent = totalQty;
+                cartBadge.classList.remove('pop');
+                void cartBadge.offsetWidth;
+                cartBadge.classList.add('pop');
+                floatCart.classList.toggle('show', totalQty > 0);
+
+                // total price
+                const totalPrice = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
+                drawerTotal.textContent = '\u20b9 ' + totalPrice.toLocaleString('en-IN');
+
+                // render rows
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) {
+                    drawerItems.innerHTML = '<p class="drawer-empty">Your cart is empty 🎂<br>Add some cakes!</p>';
+                    return;
+                }
+                drawerItems.innerHTML = entries.map(([name, v]) => `
+                    <div class="drawer-item">
+                        <img src="${v.imgSrc}" alt="${name}">
+                        <div class="drawer-item-info">
+                            <div class="di-name">${name}</div>
+                            <div class="di-unit">₹ ${v.price.toLocaleString('en-IN')} each</div>
+                        </div>
+                        <div class="drawer-item-right">
+                            <div class="di-subtotal">₹ ${(v.qty * v.price).toLocaleString('en-IN')}</div>
+                            <div class="di-qty">
+                                <button data-name="${name}" data-action="minus">−</button>
+                                <span>${v.qty}</span>
+                                <button data-name="${name}" data-action="plus">+</button>
+                            </div>
+                            <button class="di-remove" data-name="${name}">Remove</button>
+                        </div>
+                    </div>`).join('');
+
+                // drawer remove buttons
+                drawerItems.querySelectorAll('.di-remove').forEach(b => {
+                    b.addEventListener('click', () => {
+                        const name = b.dataset.name;
+                        const card = [...document.querySelectorAll('.cake-card')]
+                            .find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        // reset card UI
+                        const addBtn = card.querySelector('.btn-add-cart');
+                        const qty    = card.querySelector('.qty-controls');
+                        const num    = card.querySelector('.qty-num');
+                        qty.classList.remove('show');
+                        addBtn.style.display = '';
+                        num.textContent = 1;
+                        // reset card-local count via closure isn't accessible here,
+                        // so patch via a data attribute the card listener reads
+                        card.dataset.count = '0';
+                        delete cartData[name];
+                        syncDrawer();
+                    });
+                });
+
+                // drawer qty buttons sync back to cards
+                drawerItems.querySelectorAll('.di-qty button').forEach(b => {
+                    b.addEventListener('click', () => {
+                        const name   = b.dataset.name;
+                        const action = b.dataset.action;
+                        const card   = [...document.querySelectorAll('.cake-card')]
+                            .find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        const cardQtyBtn = card.querySelector(action === 'plus' ? '.qty-plus' : '.qty-minus');
+                        cardQtyBtn.click();
+                    });
+                });
+            }
+
+            document.querySelectorAll('.cake-card').forEach(card => {
+                const name    = card.querySelector('h3').textContent;
+                const priceEl = card.querySelector('.cake-price');
+                const price   = parseInt(priceEl.textContent.replace(/[^\d]/g, ''));
+                const imgSrc  = card.querySelector('img').src;
+                const addBtn  = card.querySelector('.btn-add-cart');
+                const qty     = card.querySelector('.qty-controls');
+                const num     = card.querySelector('.qty-num');
+                card.dataset.count = '0';
+
+                function getCount()  { return parseInt(card.dataset.count) || 0; }
+                function setCount(n) { card.dataset.count = n; }
+
+                addBtn.addEventListener('click', () => {
+                    setCount(1);
+                    num.textContent = 1;
+                    addBtn.style.display = 'none';
+                    qty.classList.add('show');
+                    cartData[name] = { qty: 1, price, imgSrc };
+                    syncDrawer();
+                });
+
+                card.querySelector('.qty-plus').addEventListener('click', () => {
+                    const c = getCount() + 1;
+                    setCount(c); num.textContent = c;
+                    cartData[name] = { qty: c, price, imgSrc };
+                    syncDrawer();
+                });
+
+                card.querySelector('.qty-minus').addEventListener('click', () => {
+                    const c = getCount();
+                    if (c > 1) {
+                        setCount(c - 1); num.textContent = c - 1;
+                        cartData[name] = { qty: c - 1, price, imgSrc };
+                    } else {
+                        setCount(0);
+                        qty.classList.remove('show');
+                        addBtn.style.display = '';
+                        num.textContent = 1;
+                        delete cartData[name];
+                    }
+                    syncDrawer();
+                });
+            });
+
+            // ── Checkout Modal ──
+            const SHOP_WA = '918420290133';
+            const coOverlay = document.getElementById('coOverlay');
+            const coSummary = document.getElementById('coSummary');
+            function openCheckout() {
+                // build order summary rows
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                coSummary.innerHTML =
+                    entries.map(([name, v]) =>
+                        `<div class="co-row"><span>${name} ×${v.qty}</span><span>₹ ${(v.qty * v.price).toLocaleString('en-IN')}</span></div>`
+                    ).join('') +
+                    `<div class="co-total-row"><span>Total</span><span>₹ ${totalPrice.toLocaleString('en-IN')}</span></div>`;
+                coOverlay.classList.add('open');
+            }
+
+            function closeCheckout() { coOverlay.classList.remove('open'); }
+
+            document.querySelector('.btn-checkout').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) return;
+                openCheckout();
+            });
+            document.getElementById('coCloseX').addEventListener('click', closeCheckout);
+            document.getElementById('coCancel').addEventListener('click', closeCheckout);
+            coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
+
+            document.getElementById('coConfirm').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const lines = entries.map(([name, v]) =>
+                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${(v.qty * v.price).toLocaleString('en-IN')}`
+                ).join('%0A');
+                const msg =
+                    `%F0%9F%8E%82 *New Order from Darun Delights*%0A%0A` +
+                    `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
+                    `%F0%9F%92%B0 *Total: %E2%82%B9${totalPrice.toLocaleString('en-IN')}*%0A%0A` +
+                    `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
+
+                window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
+                closeCheckout();
+            });
+
+            // ── Scroll to top ──
+            const btn = document.getElementById('scrollTop');
+            window.addEventListener('scroll', () => btn.classList.toggle('active', window.pageYOffset > 300));
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+
+        function toggleGroup(header) {
+            header.classList.toggle('collapsed');
+            header.nextElementSibling.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>
