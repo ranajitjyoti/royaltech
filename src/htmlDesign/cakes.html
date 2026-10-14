@@ -1213,6 +1213,16 @@
             function openDrawer()  { cartDrawer.classList.add('open'); drawerOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
             function closeDrawer() { cartDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); document.body.style.overflow = ''; }
 
+            function parsePrice(value) {
+                const cleaned = String(value ?? '').replace(/[^\d.]/g, '');
+                const numeric = Number(cleaned);
+                return Number.isFinite(numeric) ? numeric : 0;
+            }
+
+            function formatWholeRupees(value) {
+                return '₹ ' + Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+            }
+
             floatCart.addEventListener('click', openDrawer);
             document.getElementById('drawerClose').addEventListener('click', closeDrawer);
             drawerOverlay.addEventListener('click', closeDrawer);
@@ -1228,7 +1238,7 @@
 
                 // total price
                 const totalPrice = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
-                drawerTotal.textContent = '\u20b9 ' + totalPrice.toLocaleString('en-IN');
+                drawerTotal.textContent = formatWholeRupees(totalPrice);
 
                 // render rows
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1241,10 +1251,10 @@
                         <img src="${v.imgSrc}" alt="${name}">
                         <div class="drawer-item-info">
                             <div class="di-name">${name}</div>
-                            <div class="di-unit">₹ ${v.price.toLocaleString('en-IN')} each</div>
+                            <div class="di-unit">${formatWholeRupees(v.price)} each</div>
                         </div>
                         <div class="drawer-item-right">
-                            <div class="di-subtotal">₹ ${(v.qty * v.price).toLocaleString('en-IN')}</div>
+                            <div class="di-subtotal">${formatWholeRupees(v.qty * v.price)}</div>
                             <div class="di-qty">
                                 <button data-name="${name}" data-action="minus">−</button>
                                 <span>${v.qty}</span>
@@ -1293,7 +1303,7 @@
             document.querySelectorAll('.cake-card').forEach(card => {
                 const name    = card.querySelector('h3').textContent;
                 const priceEl = card.querySelector('.cake-price');
-                const price   = parseInt(priceEl.textContent.replace(/[^\d]/g, ''));
+                const price   = parsePrice(priceEl.textContent);
                 const imgSrc  = card.querySelector('img').src;
                 const addBtn  = card.querySelector('.btn-add-cart');
                 const qty     = card.querySelector('.qty-controls');
@@ -1345,9 +1355,9 @@
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
                 coSummary.innerHTML =
                     entries.map(([name, v]) =>
-                        `<div class="co-row"><span>${name} ×${v.qty}</span><span>₹ ${(v.qty * v.price).toLocaleString('en-IN')}</span></div>`
+                        `<div class="co-row"><span>${name} ×${v.qty}</span><span>${formatWholeRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-total-row"><span>Total</span><span>₹ ${totalPrice.toLocaleString('en-IN')}</span></div>`;
+                    `<div class="co-total-row"><span>Total</span><span>${formatWholeRupees(totalPrice)}</span></div>`;
                 coOverlay.classList.add('open');
             }
 
@@ -1365,13 +1375,20 @@
             document.getElementById('coConfirm').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
                 const lines = entries.map(([name, v]) =>
-                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${(v.qty * v.price).toLocaleString('en-IN')}`
+                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
                 ).join('%0A');
                 const msg =
-                    `%F0%9F%8E%82 *New Order from Darun Delights*%0A%0A` +
+                    `%F0%9F%8E%82 *New Order from Darun Delights*%0A` +
+                    `%F0%9F%93%85 *Date:* ${formattedDate}%0A%0A` +
                     `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
-                    `%F0%9F%92%B0 *Total: %E2%82%B9${totalPrice.toLocaleString('en-IN')}*%0A%0A` +
+                    `%F0%9F%92%B0 *Total: %E2%82%B9${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}*%0A%0A` +
                     `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
 
                 window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
