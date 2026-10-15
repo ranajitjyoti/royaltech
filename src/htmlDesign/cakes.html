@@ -465,10 +465,13 @@
         .co-modal {
             background: #fff; border-radius: 18px;
             width: min(420px, 100%);
+            max-height: 90vh;
             padding: 28px 24px 24px;
             box-shadow: 0 16px 48px rgba(0,0,0,0.22);
             position: relative;
             animation: fadeInUp 0.28s ease;
+            display: flex;
+            flex-direction: column;
         }
         .co-modal h3 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; margin-bottom: 4px; }
         .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 18px; }
@@ -476,6 +479,9 @@
             background: #f0f7f3; border-radius: 10px;
             padding: 12px 14px; margin-bottom: 18px;
             font-size: 0.82rem; color: #1a3d2b; line-height: 1.9;
+            max-height: 40vh;
+            overflow-y: auto;
+            overscroll-behavior: contain;
         }
         .co-row { display: flex; justify-content: space-between; }
         .co-total-row {
@@ -493,7 +499,7 @@
         .co-input:focus { border-color: #2e8b57; }
         .co-input.error  { border-color: #e63946; }
         .co-err { font-size: 0.75rem; color: #e63946; min-height: 16px; margin-bottom: 14px; }
-        .co-actions { display: flex; gap: 10px; }
+        .co-actions { display: flex; gap: 10px; flex-shrink: 0; }
         .co-cancel {
             flex: 1; padding: 11px;
             background: #f0f7f3; color: #1a3d2b;
@@ -511,6 +517,20 @@
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
         .co-confirm:hover { background: #1da851; }
+        .co-factory {
+            flex: 2; padding: 11px;
+            background: #e67e22; color: #fff;
+            border: none; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+        }
+        .co-factory:hover { background: #ca6f1e; }
+        .co-actions-row2 { display: flex; gap: 10px; flex-shrink: 0; margin-top: 8px; }
+        .co-factory-note {
+            font-size: 0.72rem; color: #e67e22; font-weight: 600;
+            text-align: center; margin-top: 6px; flex-shrink: 0;
+        }
         .co-close-x {
             position: absolute; top: 14px; right: 16px;
             background: none; border: none; font-size: 1.3rem;
@@ -620,6 +640,111 @@
             .cake-card:hover { transform: none; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
             .cake-card:hover img { transform: none; }
         }
+
+        /* ── Search ── */
+        .search-bar-wrap {
+            background: #1a3d2b;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        }
+        .search-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 92%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 40px;
+            padding: 8px 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+        .search-inner span { font-size: 1.1rem; flex-shrink: 0; }
+        #searchInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            color: #1a3d2b;
+            background: transparent;
+        }
+        #searchInput::placeholder { color: #8ab49a; }
+        #searchClear {
+            background: none; border: none;
+            font-size: 1.1rem; cursor: pointer;
+            color: #4a7c5e; display: none;
+            padding: 0; line-height: 1;
+        }
+        /* Search results panel */
+        .search-results-wrap {
+            display: none;
+            position: sticky;
+            top: 61px;
+            z-index: 899;
+            background: #fff;
+            border-bottom: 2px solid #e8f5ee;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+        }
+        .search-results-wrap.open { display: block; }
+        .search-results-inner {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 12px;
+        }
+        .search-results-inner .sr-label {
+            font-size: 0.78rem;
+            color: #4a7c5e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+        .sr-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0f7f3;
+            border-radius: 10px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sr-card:hover { background: #d4edda; }
+        .sr-card img {
+            width: 46px; height: 46px;
+            border-radius: 8px; object-fit: cover; flex-shrink: 0;
+        }
+        .sr-card-info { flex: 1; min-width: 0; }
+        .sr-card-info .sr-name {
+            font-size: 0.78rem; font-weight: 600; color: #1a3d2b;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .sr-card-info .sr-price { font-size: 0.72rem; color: #2e8b57; font-weight: 700; }
+        .sr-add {
+            background: #2e8b57; color: #fff;
+            border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 700;
+            padding: 5px 10px; cursor: pointer;
+            white-space: nowrap; flex-shrink: 0;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.2s;
+        }
+        .sr-add:hover { background: #1e6b40; }
+        .sr-add.in-cart { background: #1a3d2b; }
+        .sr-no-results {
+            text-align: center; color: #4a7c5e;
+            font-size: 0.88rem; padding: 20px 0;
+        }
+        @media (max-width: 768px) { .search-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .search-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -641,6 +766,21 @@
             </a>
         </div>
     </section>
+
+    <!-- Search Bar -->
+    <div class="search-bar-wrap">
+        <div class="search-inner">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Search cakes, pastries, snacks..." autocomplete="off">
+            <button id="searchClear" aria-label="Clear search">&times;</button>
+        </div>
+    </div>
+    <div class="search-results-wrap" id="searchResultsWrap">
+        <div class="search-results-inner">
+            <div class="sr-label" id="srLabel"></div>
+            <div class="search-grid" id="searchGrid"></div>
+        </div>
+    </div>
 
     <!-- Cakes -->
     <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
@@ -1162,13 +1302,17 @@
     <div class="co-overlay" id="coOverlay">
         <div class="co-modal">
             <button class="co-close-x" id="coCloseX" aria-label="Close">&times;</button>
-            <h3>📱 Confirm Your Order</h3>
-            <p class="co-sub">Review your order and send it directly to WhatsApp.</p>
+            <h3>📋 Confirm Your Order</h3>
+            <p class="co-sub">Choose how to send your order.</p>
             <div class="co-order-summary" id="coSummary"></div>
             <div class="co-actions">
                 <button class="co-cancel" id="coCancel">Cancel</button>
-                <button class="co-confirm" id="coConfirm">💬 Send on WhatsApp</button>
+                <button class="co-confirm" id="coConfirm">💬 Send Current Stock Details</button>
             </div>
+            <div class="co-actions-row2">
+                <button class="co-factory" id="coFactory">🏭 Order to Factory (−25%)</button>
+            </div>
+            <p class="co-factory-note" id="coFactoryNote"></p>
         </div>
     </div>
 
@@ -1387,15 +1531,21 @@
             const SHOP_WA = '918420290133';
             const coOverlay = document.getElementById('coOverlay');
             const coSummary = document.getElementById('coSummary');
+            function getFormattedDate() {
+                return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            }
+
             function openCheckout() {
-                // build order summary rows
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const factoryTotal = totalPrice * 0.75;
                 coSummary.innerHTML =
                     entries.map(([name, v]) =>
                         `<div class="co-row"><span>${name} ×${v.qty}</span><span>${formatWholeRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-total-row"><span>Total</span><span>${formatWholeRupees(totalPrice)}</span></div>`;
+                    `<div class="co-total-row"><span>Total (MRP)</span><span>${formatWholeRupees(totalPrice)}</span></div>`;
+                document.getElementById('coFactoryNote').textContent =
+                    `Factory price (25% off): ${formatWholeRupees(factoryTotal)}`;
                 coOverlay.classList.add('open');
             }
 
@@ -1410,25 +1560,39 @@
             document.getElementById('coCancel').addEventListener('click', closeCheckout);
             coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
 
+            // Send Current Stock Details (actual prices) — opens group + copies message
             document.getElementById('coConfirm').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
-                const today = new Date();
-                const formattedDate = today.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                });
                 const lines = entries.map(([name, v]) =>
-                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
-                ).join('%0A');
+                    `  • ${name} x${v.qty} = ₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
+                ).join('\n');
                 const msg =
-                    `%F0%9F%8E%82 *New Order from Darun Delights*%0A` +
-                    `%F0%9F%93%85 *Date:* ${formattedDate}%0A%0A` +
-                    `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
-                    `%F0%9F%92%B0 *Total: %E2%82%B9${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}*%0A%0A` +
-                    `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
+                    `📢 *Current Stock Details - Darun Delights*\n` +
+                    `📅 *Date:* ${getFormattedDate()}\n\n` +
+                    `🛍️ *Items:*\n${lines}\n\n` +
+                    `💰 *Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 0 })}*\n\n` +
+                    `💳 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
+                navigator.clipboard.writeText(msg).catch(() => {});
+                window.open('https://chat.whatsapp.com/LYtrPKuMYh7FW3XrahklnV?mode=gi_t', '_blank');
+                closeCheckout();
+            });
 
+            // Order to Factory (25% discount on each item)
+            document.getElementById('coFactory').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                const factoryTotal = entries.reduce((s, [, v]) => s + v.qty * v.price * 0.75, 0);
+                const lines = entries.map(([name, v]) => {
+                    const unitFactory = v.price * 0.75;
+                    return `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${Number(v.qty * unitFactory).toLocaleString('en-IN', { maximumFractionDigits: 0 })} (%E2%82%B9${Number(unitFactory).toLocaleString('en-IN', { maximumFractionDigits: 0 })} each)`;
+                }).join('%0A');
+                const msg =
+                    `%F0%9F%8F%AD *Factory Order - Darun Delights*%0A` +
+                    `%F0%9F%93%85 *Date:* ${getFormattedDate()}%0A` +
+                    `%F0%9F%94%96 *25%25 Factory Discount Applied*%0A%0A` +
+                    `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
+                    `%F0%9F%92%B0 *Factory Total: %E2%82%B9${Number(factoryTotal).toLocaleString('en-IN', { maximumFractionDigits: 0 })}*%0A%0A` +
+                    `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
                 window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
                 closeCheckout();
             });
@@ -1437,6 +1601,83 @@
             const btn = document.getElementById('scrollTop');
             window.addEventListener('scroll', () => btn.classList.toggle('active', window.pageYOffset > 300));
             btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            // ── Search ──
+            const searchInput       = document.getElementById('searchInput');
+            const searchClear       = document.getElementById('searchClear');
+            const searchResultsWrap = document.getElementById('searchResultsWrap');
+            const searchGrid        = document.getElementById('searchGrid');
+            const srLabel           = document.getElementById('srLabel');
+
+            function renderSearchResults(query) {
+                const q = query.trim().toLowerCase();
+                if (!q) {
+                    searchResultsWrap.classList.remove('open');
+                    searchClear.style.display = 'none';
+                    return;
+                }
+                searchClear.style.display = 'block';
+                const allCards = [...document.querySelectorAll('.cake-card')];
+                const matches = allCards.filter(c => c.querySelector('h3').textContent.toLowerCase().includes(q));
+                searchResultsWrap.classList.add('open');
+                if (!matches.length) {
+                    srLabel.textContent = '';
+                    searchGrid.innerHTML = '<div class="sr-no-results">No items found for "' + query.trim() + '"</div>';
+                    return;
+                }
+                srLabel.textContent = matches.length + ' result' + (matches.length > 1 ? 's' : '') + ' for "' + query.trim() + '"';
+                searchGrid.innerHTML = matches.map((card, i) => {
+                    const name  = card.querySelector('h3').textContent;
+                    const price = card.querySelector('.cake-price').textContent;
+                    const img   = card.querySelector('img').src;
+                    const inCart = !!cartData[name];
+                    return `<div class="sr-card" data-idx="${i}">
+                        <img src="${img}" alt="${name}">
+                        <div class="sr-card-info">
+                            <div class="sr-name">${name}</div>
+                            <div class="sr-price">${price.trim()}</div>
+                        </div>
+                        <button class="sr-add${inCart ? ' in-cart' : ''}" data-name="${name}">${inCart ? '✓ Added' : '+ Add'}</button>
+                    </div>`;
+                }).join('');
+
+                searchGrid.querySelectorAll('.sr-add').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const name = btn.dataset.name;
+                        const card = allCards.find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        if (!cartData[name]) {
+                            card.querySelector('.btn-add-cart').click();
+                        }
+                        btn.textContent = '✓ Added';
+                        btn.classList.add('in-cart');
+                    });
+                });
+
+                searchGrid.querySelectorAll('.sr-card').forEach(srCard => {
+                    srCard.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('sr-add')) return;
+                        const name = srCard.querySelector('.sr-name').textContent;
+                        const card = allCards.find(c => c.querySelector('h3').textContent === name);
+                        if (!card) return;
+                        searchResultsWrap.classList.remove('open');
+                        searchInput.value = '';
+                        searchClear.style.display = 'none';
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.outline = '3px solid #2e8b57';
+                        setTimeout(() => card.style.outline = '', 1800);
+                    });
+                });
+            }
+
+            searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                searchResultsWrap.classList.remove('open');
+                searchClear.style.display = 'none';
+                searchInput.focus();
+            });
         });
 
         function toggleGroup(header) {
