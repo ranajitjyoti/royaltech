@@ -219,6 +219,13 @@
             cursor: pointer;
             transition: transform 0.4s ease;
         }
+        .product-placeholder {
+            height: 200px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #e8f5ee, #c8e6d2);
+            font-size: 3rem;
+        }
         .cake-card:hover img { transform: scale(1.04); }
 
         .cake-info { padding: 14px 16px 18px; flex: 1; }
@@ -401,6 +408,12 @@
         .drawer-item img {
             width: 58px; height: 58px;
             border-radius: 10px; object-fit: cover; flex-shrink: 0;
+        }
+        .drawer-item-placeholder {
+            width: 58px; height: 58px;
+            display: grid; place-items: center;
+            border-radius: 10px; flex-shrink: 0;
+            background: #e8f5ee; font-size: 1.5rem;
         }
         .drawer-item-info { flex: 1; min-width: 0; }
         .drawer-item-info .di-name {
@@ -595,6 +608,7 @@
         @media (max-width: 768px) {
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
             .cake-card img { height: 180px; }
+            .product-placeholder { height: 180px; }
             .map-wrapper { padding-bottom: 56%; }
         }
 
@@ -603,6 +617,7 @@
             .container { width: 95%; padding: 0 8px; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .cake-card img { height: 150px; }
+            .product-placeholder { height: 150px; }
             .cake-info { padding: 10px 12px 14px; }
             .map-wrapper { padding-bottom: 70%; }
             .scroll-top { width: 42px; height: 42px; bottom: 16px; right: 16px; }
@@ -612,6 +627,7 @@
         @media (max-width: 360px) {
             .gallery-grid { grid-template-columns: 1fr; }
             .cake-card img { height: 200px; }
+            .product-placeholder { height: 200px; }
             .map-wrapper { padding-bottom: 80%; }
         }
 
@@ -1061,6 +1077,39 @@
         </div>
     </section>
 
+    <!-- Non-Food Items and Packaging -->
+    <section class="gallery-section" style="background:#e8f5ee; padding-top:0;">
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2>🎁 Non-Food Items and Packaging</h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid">
+
+                <div class="cake-card" data-unit="Pac"><img src="../../image/cakes/Crown.jpg" alt="Decorative cake crown" loading="lazy"><div class="cake-info"><h3>Crown</h3><p class="item-unit">Unit: Pac</p><p class="cake-price">&#8377; 95.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pac"><img src="../../image/cakes/Balloon.jpg" alt="Balloon pack" loading="lazy"><div class="cake-info"><h3>Balloon</h3><p class="item-unit">Unit: Pac</p><p class="cake-price">&#8377; 100.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Sparkle.webp" alt="Big Sparkle cake candle" loading="lazy"><div class="cake-info"><h3>Big Sparkle</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 30.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pac"><img src="../../image/cakes/Sparkle.webp" alt="Small Sparkle cake candles" loading="lazy"><div class="cake-info"><h3>Sparkle Small</h3><p class="item-unit">Unit: Pac</p><p class="cake-price">&#8377; 15.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Snow Spray.jpg" alt="Cake decorating snow spray" loading="lazy"><div class="cake-info"><h3>Snow Spray</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 30.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Candle.jpg" alt="Cake candles" loading="lazy"><div class="cake-info"><h3>Candle</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 15.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Paper Tray.webp" alt="Paper tray for serving cake" loading="lazy"><div class="cake-info"><h3>Paper Tray</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 1.27</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/cake box.jpg" alt="Small cake box" loading="lazy"><div class="cake-info"><h3>Small Box</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 5.94</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/cake box.jpg" alt="Medium cake box" loading="lazy"><div class="cake-info"><h3>Medium Box</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 390.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/cake box.jpg" alt="8 by 8 cake box" loading="lazy"><div class="cake-info"><h3>8×8 Cake Box</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 13.10</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Kg"><img src="../../image/cakes/Carry.avif" alt="18×20 Carry bag" loading="lazy"><div class="cake-info"><h3>18×20 Carry</h3><p class="item-unit">Unit: Kg</p><p class="cake-price">&#8377; 240.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Kg"><img src="../../image/cakes/Carry.avif" alt="14×14 Carry bag" loading="lazy"><div class="cake-info"><h3>14×14 Carry</h3><p class="item-unit">Unit: Kg</p><p class="cake-price">&#8377; 240.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Kg"><img src="../../image/cakes/Carry.avif" alt="24×21 Carry bag" loading="lazy"><div class="cake-info"><h3>24×21 Carry</h3><p class="item-unit">Unit: Kg</p><p class="cake-price">&#8377; 180.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Ketchup.webp" alt="Tomato ketchup sachet" loading="lazy"><div class="cake-info"><h3>Ketchup</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 1.40</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Spoon.webp" alt="Disposable spoons" loading="lazy"><div class="cake-info"><h3>Spoon</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 0.50</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Knife.webp" alt="Disposable knife" loading="lazy"><div class="cake-info"><h3>Knife</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 1.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Anniversary Tag.webp" alt="Anniversary cake topper tag" loading="lazy"><div class="cake-info"><h3>Anniversary Tag</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 140.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Pcs"><img src="../../image/cakes/Happy Birthday Tag.webp" alt="Happy Birthday cake tag" loading="lazy"><div class="cake-info"><h3>Happy Birthday Tag</h3><p class="item-unit">Unit: Pcs</p><p class="cake-price">&#8377; 0.95</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+                <div class="cake-card" data-unit="Kg"><img src="../../image/cakes/Carry.avif" alt="27×24 Carry bag" loading="lazy"><div class="cake-info"><h3>27×24 Carry</h3><p class="item-unit">Unit: Kg</p><p class="cake-price">&#8377; 240.00</p></div><div class="cake-cart"><button class="btn-add-cart">&#128722; Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div></div>
+
+            </div></div>
+        </div>
+    </section>
+
     <!-- Location -->
     <section class="location-section">
         <div class="container">
@@ -1174,6 +1223,10 @@
             // cartData: key = cake name, value = { qty, price, imgSrc }
             const cartData = {};
 
+            function formatRupees(value) {
+                return '₹ ' + Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+            }
+
             function openDrawer()  { cartDrawer.classList.add('open'); drawerOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
             function closeDrawer() { cartDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); document.body.style.overflow = ''; }
 
@@ -1192,7 +1245,7 @@
 
                 // total price
                 const totalPrice = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
-                drawerTotal.textContent = '\u20b9 ' + totalPrice.toLocaleString('en-IN');
+                drawerTotal.textContent = formatRupees(totalPrice);
 
                 // render rows
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1202,13 +1255,13 @@
                 }
                 drawerItems.innerHTML = entries.map(([name, v]) => `
                     <div class="drawer-item">
-                        <img src="${v.imgSrc}" alt="${name}">
+                        ${v.imgSrc ? `<img src="${v.imgSrc}" alt="${name}">` : '<div class="drawer-item-placeholder" aria-hidden="true">📦</div>'}
                         <div class="drawer-item-info">
                             <div class="di-name">${name}</div>
-                            <div class="di-unit">₹ ${v.price.toLocaleString('en-IN')} each</div>
+                            <div class="di-unit">${formatRupees(v.price)} each${v.unit ? ` · ${v.unit}` : ''}</div>
                         </div>
                         <div class="drawer-item-right">
-                            <div class="di-subtotal">₹ ${(v.qty * v.price).toLocaleString('en-IN')}</div>
+                            <div class="di-subtotal">${formatRupees(v.qty * v.price)}</div>
                             <div class="di-qty">
                                 <button data-name="${name}" data-action="minus">−</button>
                                 <span>${v.qty}</span>
@@ -1257,8 +1310,10 @@
             document.querySelectorAll('.cake-card').forEach(card => {
                 const name    = card.querySelector('h3').textContent;
                 const priceEl = card.querySelector('.cake-price');
-                const price   = parseInt(priceEl.textContent.replace(/[^\d]/g, ''));
-                const imgSrc  = card.querySelector('img').src;
+                const price   = Number(priceEl.textContent.replace(/[^\d.]/g, ''));
+                const img     = card.querySelector('img');
+                const imgSrc  = img ? img.src : '';
+                const unit    = card.dataset.unit || '';
                 const addBtn  = card.querySelector('.btn-add-cart');
                 const qty     = card.querySelector('.qty-controls');
                 const num     = card.querySelector('.qty-num');
@@ -1272,14 +1327,14 @@
                     num.textContent = 1;
                     addBtn.style.display = 'none';
                     qty.classList.add('show');
-                    cartData[name] = { qty: 1, price, imgSrc };
+                    cartData[name] = { qty: 1, price, imgSrc, unit };
                     syncDrawer();
                 });
 
                 card.querySelector('.qty-plus').addEventListener('click', () => {
                     const c = getCount() + 1;
                     setCount(c); num.textContent = c;
-                    cartData[name] = { qty: c, price, imgSrc };
+                    cartData[name] = { qty: c, price, imgSrc, unit };
                     syncDrawer();
                 });
 
@@ -1287,7 +1342,7 @@
                     const c = getCount();
                     if (c > 1) {
                         setCount(c - 1); num.textContent = c - 1;
-                        cartData[name] = { qty: c - 1, price, imgSrc };
+                        cartData[name] = { qty: c - 1, price, imgSrc, unit };
                     } else {
                         setCount(0);
                         qty.classList.remove('show');
@@ -1309,9 +1364,9 @@
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
                 coSummary.innerHTML =
                     entries.map(([name, v]) =>
-                        `<div class="co-row"><span>${name} ×${v.qty}</span><span>₹ ${(v.qty * v.price).toLocaleString('en-IN')}</span></div>`
+                        `<div class="co-row"><span>${name} ×${v.qty}${v.unit ? ` (${v.unit})` : ''}</span><span>${formatRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-total-row"><span>Total</span><span>₹ ${totalPrice.toLocaleString('en-IN')}</span></div>`;
+                    `<div class="co-total-row"><span>Total</span><span>${formatRupees(totalPrice)}</span></div>`;
                 coOverlay.classList.add('open');
             }
 
@@ -1330,12 +1385,12 @@
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
                 const lines = entries.map(([name, v]) =>
-                    `  %E2%80%A2 ${name} x${v.qty} = %E2%82%B9${(v.qty * v.price).toLocaleString('en-IN')}`
+                    `  %E2%80%A2 ${name} x${v.qty}${v.unit ? ` (${v.unit})` : ''} = %E2%82%B9${(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
                 ).join('%0A');
                 const msg =
                     `%F0%9F%8E%82 *New Order from Darun Delights*%0A%0A` +
                     `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
-                    `%F0%9F%92%B0 *Total: %E2%82%B9${totalPrice.toLocaleString('en-IN')}*%0A%0A` +
+                    `%F0%9F%92%B0 *Total: %E2%82%B9${totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}*%0A%0A` +
                     `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
 
                 window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
