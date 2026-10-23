@@ -541,6 +541,7 @@
         }
         .co-factory:hover { background: #ca6f1e; }
         .co-actions-row2 { display: flex; gap: 10px; flex-shrink: 0; margin-top: 8px; }
+        .co-order-only { width: 100%; flex: 0 0 auto; }
         .co-factory-note {
             font-size: 0.72rem; color: #e67e22; font-weight: 600;
             text-align: center; margin-top: 6px; flex-shrink: 0;
@@ -1543,6 +1544,9 @@
             <div class="co-actions-row2">
                 <button class="co-factory" id="coFactory">🏭 Order to Factory (−25%)</button>
             </div>
+            <div class="co-actions-row2">
+                <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
+            </div>
             <p class="co-factory-note" id="coFactoryNote"></p>
         </div>
     </div>
@@ -1580,6 +1584,7 @@
 
     <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">&#8679;</button>
 
+    <script type="module" src="./catalog-manager.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -1811,6 +1816,15 @@
                 closeCheckout();
             });
 
+            document.getElementById('coWhatsappOrder').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) return;
+                const lines = entries.map(([name, v], index) => `${index + 1}. ${name} - ${v.qty}`).join('\n');
+                const message = `${getFormattedDate()}\nDarun Delight New Alipore Order\n\n${lines}`;
+                window.open(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`, '_blank');
+                closeCheckout();
+            });
+
             // Order to Factory (25% discount on each item)
             document.getElementById('coFactory').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1851,7 +1865,7 @@
                 }
                 searchClear.style.display = 'block';
                 const allCards = [...document.querySelectorAll('.cake-card')];
-                const matches = allCards.filter(c => c.querySelector('h3').textContent.toLowerCase().includes(q));
+                const matches = allCards.filter(c => !c.hidden && c.querySelector('h3').textContent.toLowerCase().includes(q));
                 searchResultsWrap.classList.add('open');
                 if (!matches.length) {
                     srLabel.textContent = '';
