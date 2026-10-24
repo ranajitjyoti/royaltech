@@ -445,13 +445,17 @@ async function startAdmin() {
         if (!record) throw new Error('Product not found. Reload and try again.');
 
         const isChecked = availableInput.dataset.state === 'on';
+        console.log('[save-debug] key:', recordKey, 'name:', name, 'price:', price, 'available:', isChecked);
         if (name === record.name && price === record.price && isChecked) {
+            console.log('[save-debug] DELETING override');
             const { error } = await supabase.from(TABLE).delete().eq('product_key', recordKey);
             if (error) throw error;
             delete catalog[recordKey];
         } else {
             const override = { name, price, available: isChecked };
-            const { error } = await supabase.from(TABLE).upsert({ product_key: recordKey, ...override, updated_at: new Date().toISOString() });
+            console.log('[save-debug] UPSERTING override:', override);
+            const { data: upsertData, error } = await supabase.from(TABLE).upsert({ product_key: recordKey, ...override, updated_at: new Date().toISOString() }).select();
+            console.log('[save-debug] upsert result:', upsertData, error);
             if (error) throw error;
             catalog[recordKey] = override;
         }
