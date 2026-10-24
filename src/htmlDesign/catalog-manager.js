@@ -135,7 +135,7 @@ function injectAdminProducts(products, pageId, isCustomer) {
 async function applyCustomerCatalog() {
     const isOrderPage = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html');
     const pageId = isOrderPage ? 'order-cakes' : 'cakes';
-    const isCustomer = isOrderPage;
+    const isCustomer = true;
 
     const [catalog, adminProducts] = await Promise.all([fetchCatalog(), fetchAdminProducts()]);
 
