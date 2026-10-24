@@ -414,7 +414,7 @@ async function startAdmin() {
         resetAll.disabled = !canEdit;
         toggleNonfood.disabled = !canEdit;
 
-        const nonfoodRecords = (pageRecords[page.id] ?? []).filter(r => r.category === 'Non-Food Items and Packaging');
+        const nonfoodRecords = (pageRecords[page.id] ?? []).filter(r => r.category.includes('Non-Food Items and Packaging'));
         const allHidden = nonfoodRecords.length > 0 && nonfoodRecords.every(r => (catalog[r.key]?.available ?? true) === false);
         toggleNonfood.textContent = allHidden ? 'Show all non-food' : 'Hide all non-food';
     }
@@ -632,7 +632,7 @@ async function startAdmin() {
         if (!canEdit) return;
         const pageId = pageSelect.value;
         const records = pageRecords[pageId] ?? [];
-        const nonfoodRecords = records.filter(r => r.category === 'Non-Food Items and Packaging');
+        const nonfoodRecords = records.filter(r => r.category.includes('Non-Food Items and Packaging'));
         if (!nonfoodRecords.length) { setStatus('No non-food items found on this page.', true); return; }
         const allHidden = nonfoodRecords.every(r => (catalog[r.key]?.available ?? true) === false);
         const newAvailable = allHidden;
