@@ -1,0 +1,530 @@
+::1 - - [25/Oct/2026 02:06:09] "GET /cakes.html HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:06:09] "GET /catalog-manager.js HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:09] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:09] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:12] "GET /cakes-management.html HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:06:18] "GET /order-cakes.html HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:06:18] "GET /catalog-manager.js HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:18] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:18] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:19] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:19] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:19] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:19] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:19] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:19] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:19] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:19] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:20] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:20] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:20] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:20] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:20] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:20] "GET /image/cakes/mango%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:20] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:20] "GET /image/cakes/Choco%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:21] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:21] "GET /image/cakes/Black%20Forest%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:21] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:21] "GET /image/cakes/Blue%20Berry%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:21] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:21] "GET /image/cakes/Butterscotch%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:21] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:21] "GET /image/cakes/Choco%20Chip%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Choco%20Lava%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Coconut%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Milk%20Chocolate%20pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Orange%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Pineapple%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Rahsmalai%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Red%20Velvet%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Sweetmilk%20Pastry.png HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/White%20Forest%20Pastry%20image.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:22] "GET /image/cakes/Strawberry%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Choco%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/mango%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Black%20Forest%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Blue%20Berry%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Choco%20Chip%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Butterscotch%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Choco%20Lava%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Coconut%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:31] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:31] "GET /image/cakes/Milk%20Chocolate%20pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Orange%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Pineapple%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Rahsmalai%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Red%20Velvet%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Strawberry%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/Sweetmilk%20Pastry.png HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:32] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:32] "GET /image/cakes/White%20Forest%20Pastry%20image.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:34] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:34] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:34] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:34] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:34] code 404, message File not found
+::1 - - [25/Oct/2026 02:06:34] "GET /image/cakes/Chinese%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:34] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:06:34] "GET /image/cakes/Veg%20Paneer%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:08:02] "GET /cakes-management.html HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:08:02] "GET /catalog-manager.js HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:09:00] "GET /cakes-management.html HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:09:00] "GET /catalog-manager.js HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:09:00] "GET /cakes.html HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:09:00] "GET /order-cakes.html HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:00] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:00] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:01] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:01] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:02] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:02] "GET /image/cakes/Choco%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/mango%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Black%20Forest%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Blue%20Berry%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Butterscotch%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Choco%20Chip%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Choco%20Lava%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Coconut%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Milk%20Chocolate%20pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Orange%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Pineapple%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Rahsmalai%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Red%20Velvet%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Strawberry%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/Sweetmilk%20Pastry.png HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:03] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:03] "GET /image/cakes/White%20Forest%20Pastry%20image.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Veg%20Paneer%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Chinese%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Veg%20Paneer%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Paneer%20Pizza.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:04] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:04] "GET /image/cakes/Italian%20Sandwich.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:05] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:05] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:05] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:05] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:05] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:05] "GET /image/cakes/turkish%20break%20kabab.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:05] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:05] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:05] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:05] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Veg%20Kachori.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/paneer%20spring.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Paneer%20Pizza.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Veg%20Chop.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Egg%20Devil.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Fry%20Momo.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/steem%20momo.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Small%20Vada%20Pav.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Paneer%20Pizza.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Vada%20Pav.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Garlic%20Bread.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Egg%20Patties.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Egg%20Spring%20Roll.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Veg%20Cutlet.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/strayberry%20muffin.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/choco%20muffin.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/dark-chocolate.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/matichur%20laddu.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/gulab-jamun-recipe-01.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/matichur%20laddu.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/RAM%20BALL.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Chocolate%20Mousse.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/dark-chocolate.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Chocolate%20Mousse.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:06] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:06] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:07] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:07] "GET /image/cakes/Chocolate%20Mousse.jpeg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:07] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:07] "GET /image/cakes/strawberry-mousse-recipe.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:07] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:07] "GET /image/cakes/Crown.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Balloon.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Sparkle.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Snow%20Spray.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Sparkle.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Candle.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Paper%20Tray.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/cake%20box.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/cake%20box.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Carry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Ketchup.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Spoon.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Knife.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Anniversary%20Tag.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Happy%20Birthday%20Tag.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:12] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:12] "GET /image/cakes/Carry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:22] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:22] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:25] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:25] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:39] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:39] "GET /image/cakes/Choco%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:39] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:39] "GET /image/cakes/mango%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Black%20Forest%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Blue%20Berry%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Butterscotch%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Choco%20Chip%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Choco%20Lava%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Coconut%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Milk%20Chocolate%20pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Orange%20Pastry.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Pineapple%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Red%20Velvet%20Pastry.avif HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Strawberry%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Rahsmalai%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Sweetmilk%20Pastry.png HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/White%20Forest%20Pastry%20image.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Veg%20Paneer%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Chinese%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:40] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:40] "GET /image/cakes/Veg%20Paneer%20Samosa.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Paneer%20Pizza.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Italian%20Sandwich.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/turkish%20break%20kabab.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Veg%20Puff.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Paneer%20Puff.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/Veg%20Kachori.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:09:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:09:41] "GET /image/cakes/paneer%20spring.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:41] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:41] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] "GET /order-cakes.html HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:13:46] "GET /catalog-manager.js HTTP/1.1" 200 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:46] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:46] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:48] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:48] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:48] "GET /image/cakes/Red%20Velvet%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:48] "GET /image/cakes/White%20Forest%20Cake.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:48] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:48] "GET /image/cakes/mango%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:48] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:48] "GET /image/cakes/Choco%20Bento.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] "GET /catalog-manager.js HTTP/1.1" 304 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Black%20Forest%20Cake%20Veg%20(Regular).webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Honey%20Almond%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Pineapple%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Butterscotch%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Choco%20Chip%20Cake%20Veg.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Choco%20Truffle%20Cake%20Veg.webp HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Choco%20Vanilla%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Chocolate%20Heart%20Pastry.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Dual%20Forest%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Chocolate%20Cake.jpg HTTP/1.1" 404 -
+::1 - - [25/Oct/2026 02:13:52] code 404, message File not found
+::1 - - [25/Oct/2026 02:13:52] "GET /image/cakes/Mango%20Malai%20Cake.jpg HTTP/1.1" 404 -

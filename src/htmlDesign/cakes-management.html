@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog Manager | Darun Delights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #f0f7f3;
+            color: #1a3d2b;
+            font-family: 'Poppins', sans-serif;
+        }
+        .page { width: min(1120px, 94%); margin: 0 auto; padding: 28px 0 56px; }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        h1 { margin: 0; font-size: clamp(1.35rem, 4vw, 2rem); }
+        header p { margin: 5px 0 0; color: #557462; font-size: 0.9rem; }
+        .preview-links { display: flex; flex-wrap: wrap; gap: 10px; }
+        .preview-links a, button {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 14px;
+            color: #fff;
+            background: #2e8b57;
+            font: inherit;
+            font-size: 0.86rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .preview-links a:hover, button:hover { background: #1e6b40; }
+        .notice {
+            border: 1px solid #e6c86e;
+            border-radius: 12px;
+            background: #fff8dc;
+            color: #654d0a;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+        }
+        .toolbar {
+            display: grid;
+            grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
+            gap: 12px;
+            align-items: end;
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+        }
+        .toolbar label, .field { display: grid; gap: 6px; color: #557462; font-size: 0.78rem; font-weight: 600; }
+        input, select {
+            min-width: 0;
+            border: 1px solid #cbdccf;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fff;
+            color: #1a3d2b;
+            font: inherit;
+            font-size: 0.9rem;
+        }
+        #reset-all { background: #9b3d3d; }
+        #reset-all:hover { background: #7a2c2c; }
+        .status {
+            min-height: 24px;
+            margin: 14px 2px;
+            color: #2e6c45;
+            font-size: 0.86rem;
+        }
+        .status.error { color: #a52626; }
+        .auth-panel {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 10px;
+            margin: 14px 0;
+            padding: 14px;
+            border-radius: 12px;
+            background: #fff;
+        }
+        .auth-panel[hidden] { display: none; }
+        .auth-panel .field { min-width: min(220px, 100%); }
+        .product-count { margin: 0 0 10px; color: #557462; font-size: 0.82rem; }
+        #product-list { display: grid; gap: 10px; }
+        .product-row {
+            display: grid;
+            grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.4fr) minmax(120px, 0.7fr) auto auto;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #e0ebe3;
+            border-radius: 12px;
+            background: #fff;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.035);
+        }
+        .product-heading { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .product-image { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 8px; object-fit: cover; background: #edf4ee; }
+        .product-heading strong { display: block; overflow-wrap: anywhere; font-size: 0.9rem; }
+        .product-category { display: block; color: #718777; font-size: 0.7rem; margin-bottom: 3px; }
+        .toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 0;
+            border-radius: 20px;
+            padding: 7px 14px;
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #2e8b57;
+            color: #fff;
+            transition: background 0.2s;
+        }
+        .toggle-btn[data-state="off"] { background: #9b3d3d; }
+        .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .row-actions { display: flex; gap: 7px; }
+        .row-actions button { padding: 8px 11px; font-size: 0.8rem; }
+        .row-actions .reset-product { background: #64756a; }
+        .row-actions .reset-product:hover { background: #48574d; }
+        .add-product-section {
+            background: #fff;
+            border: 2px dashed #7b5ea7;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+        .add-product-section h2 {
+            margin: 0 0 16px;
+            font-size: 1rem;
+            color: #7b5ea7;
+        }
+        .add-product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+        .add-product-grid .field { display: grid; gap: 5px; font-size: 0.78rem; font-weight: 600; color: #557462; }
+        .add-product-grid input, .add-product-grid select, .add-product-grid textarea {
+            min-width: 0; border: 1px solid #cbdccf; border-radius: 8px;
+            padding: 9px 10px; font: inherit; font-size: 0.88rem; color: #1a3d2b; background: #fff;
+        }
+        .add-product-grid textarea { resize: vertical; min-height: 60px; }
+        #new-image-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; display: block; margin-top: 6px; }
+        #new-image-size { font-size: 0.75rem; margin-top: 3px; display: block; }
+        .btn-add-product { background: #7b5ea7; margin-top: 4px; }
+        .btn-add-product:hover { background: #5e4480; }
+        .admin-product-row { background: #fdf8ff; }
+        @media (max-width: 800px) {
+            .product-row { grid-template-columns: minmax(180px, 1fr) minmax(150px, 1fr) minmax(115px, auto); }
+            .availability { justify-content: start; }
+            .row-actions { grid-column: 2 / -1; }
+        }
+        @media (max-width: 560px) {
+            .page { width: 92%; padding-top: 18px; }
+            .toolbar { grid-template-columns: 1fr; }
+            .product-row { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+            .product-heading { grid-column: 1 / -1; }
+            .field { grid-column: 1 / -1; }
+            .availability { grid-column: 1; }
+            .row-actions { grid-column: 2; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page" id="catalog-manager">
+        <header>
+            <div>
+                <h1>Darun Delights Catalog Manager</h1>
+                <p>Sign in with the authorized admin account to manage the catalog.</p>
+            </div>
+        </header>
+
+        <form class="auth-panel" id="admin-login">
+            <label class="field" for="admin-email">Admin email
+                <input id="admin-email" type="email" autocomplete="username" required>
+            </label>
+            <label class="field" for="admin-password">Password
+                <input id="admin-password" type="password" autocomplete="current-password" required>
+            </label>
+            <button type="submit">Sign in</button>
+        </form>
+
+        <p class="status" id="catalog-status" role="status" aria-live="polite"></p>
+
+        <div id="admin-panel" hidden>
+            <header style="margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <aside class="notice" style="margin:0; flex:1;">Catalog changes are stored in Supabase and shared with customers.</aside>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <nav class="preview-links" aria-label="Customer catalog previews">
+                        <a href="./cakes.html" target="_blank" rel="noopener">Preview Cakes page</a>
+                        <a href="./order-cakes.html" target="_blank" rel="noopener">Preview Order Cakes</a>
+                    </nav>
+                    <button id="admin-logout" type="button" style="background:#9b3d3d;">Sign out</button>
+                </div>
+            </header>
+
+            <section class="add-product-section">
+                <h2>✦ Add New Product</h2>
+                <form id="add-product-form">
+                    <div class="add-product-grid">
+                        <label class="field">Product name *
+                            <input id="new-product-name" type="text" maxlength="120" required placeholder="e.g. Mango Cake">
+                        </label>
+                        <label class="field">Price (₹) *
+                            <input id="new-product-price" type="number" min="0" step="0.01" required placeholder="0.00">
+                        </label>
+                        <label class="field">Category
+                            <input id="new-product-category" type="text" placeholder="e.g. 🎂 Cakes" list="category-suggestions">
+                            <datalist id="category-suggestions">
+                                <option value="🎂 Cakes">
+                                <option value="🍰 Pastries">
+                                <option value="🍔 Veg Puff, Snacks &amp; Breads">
+                                <option value="🌯 Rolls, Chops &amp; Other Snacks">
+                                <option value="🧁 Muffins &amp; Brownies">
+                                <option value="🍬 Sweets">
+                                <option value="🍮 Mousse">
+                                <option value="🎁 Non-Food Items and Packaging">
+                            </datalist>
+                        </label>
+                        <label class="field">Show on page
+                            <select id="new-product-page">
+                                <option value="both">Both pages</option>
+                                <option value="cakes">Cakes page only</option>
+                                <option value="order-cakes">Order Cakes only</option>
+                            </select>
+                        </label>
+                        <label class="field">Description
+                            <textarea id="new-product-desc" placeholder="Short description (optional)"></textarea>
+                        </label>
+                        <label class="field">Photo (max 500 KB)
+                            <input id="new-product-image" type="file" accept="image/jpeg,image/png,image/webp">
+                            <span id="new-image-size"></span>
+                            <img id="new-image-preview" alt="Preview" hidden>
+                        </label>
+                        <button type="submit" class="btn-add-product">+ Add Product</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="toolbar" aria-label="Catalog controls">
+                <label for="catalog-page">Customer page
+                    <select id="catalog-page">
+                        <option value="cakes">Cakes page</option>
+                        <option value="order-cakes">Order cakes page</option>
+                    </select>
+                </label>
+                <label for="product-search">Find a product
+                    <input id="product-search" type="search" placeholder="Search by product or category">
+                </label>
+                <button id="reset-all" type="button">Reset all changes</button>
+                <button id="toggle-nonfood" type="button" style="background:#7b5ea7;">Hide all non-food</button>
+            </section>
+
+            <p class="product-count" id="product-count"></p>
+            <section id="product-list" aria-label="Products"></section>
+        </div>
+    </main>
+    <script type="module" src="./catalog-manager.js"></script>
+</body>
+</html>

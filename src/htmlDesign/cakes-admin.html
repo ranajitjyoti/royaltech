@@ -524,6 +524,8 @@
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
         .co-confirm:hover { background: #1da851; }
+        .co-actions-row2 { display: flex; gap: 10px; margin-top: 8px; }
+        .co-order-only { width: 100%; flex: 0 0 auto; }
         .co-close-x {
             position: absolute; top: 14px; right: 16px;
             background: none; border: none; font-size: 1.3rem;
@@ -654,6 +656,9 @@
             </a>
             <a class="contact-btn btn-whatsapp" href="https://wa.me/918420290133" target="_blank" rel="noopener">
                 💬 WhatsApp Us
+            </a>
+            <a class="contact-btn btn-call" href="./cakes-management.html">
+                ⚙️ Manage Customer Catalogs
             </a>
         </div>
     </section>
@@ -1144,6 +1149,9 @@
                 <button class="co-cancel" id="coCancel">Cancel</button>
                 <button class="co-confirm" id="coConfirm">💬 Send on WhatsApp</button>
             </div>
+            <div class="co-actions-row2">
+                <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
+            </div>
         </div>
     </div>
 
@@ -1394,6 +1402,16 @@
                     `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
 
                 window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
+                closeCheckout();
+            });
+
+            document.getElementById('coWhatsappOrder').addEventListener('click', () => {
+                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
+                if (!entries.length) return;
+                const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                const lines = entries.map(([name, v], index) => `${index + 1}. ${name} - ${v.qty}`).join('\n');
+                const message = `${date}\nDarun Delight New Alipore Order\n\n${lines}`;
+                window.open(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`, '_blank');
                 closeCheckout();
             });
 
