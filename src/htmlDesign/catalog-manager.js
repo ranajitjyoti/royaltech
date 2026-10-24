@@ -140,14 +140,22 @@ async function applyCustomerCatalog() {
     const [catalog, adminProducts] = await Promise.all([fetchCatalog(), fetchAdminProducts()]);
 
     // Apply overrides to existing HTML products
+    const allCards = [...document.querySelectorAll('.cake-card')];
     const records = getProductRecords(document, pageId, location.href);
+
+    console.log('[catalog-debug] pageId:', pageId);
+    console.log('[catalog-debug] DB keys:', Object.keys(catalog));
+    console.log('[catalog-debug] Page keys:', records.map(r => r.key));
+
     records.forEach((record, index) => {
         const override = catalog[record.key];
-        if (!override) return;
-        const card = document.querySelectorAll('.cake-card')[index];
-        card.querySelector('h3').textContent = override.name;
-        card.querySelector('.cake-price').textContent = formatPrice(override.price);
-        if (isCustomer) card.hidden = !override.available;
+        const card = allCards[index];
+        if (!card) return;
+        if (override) {
+            card.querySelector('h3').textContent = override.name;
+            card.querySelector('.cake-price').textContent = formatPrice(override.price);
+        }
+        if (isCustomer) card.hidden = override ? !override.available : false;
     });
 
     // Inject admin-added products
