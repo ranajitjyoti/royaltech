@@ -1814,8 +1814,7 @@
                 const message =
                     `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
                     `Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
-                window.open(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`, '_blank');
-                closeCheckout();
+                window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`);
             });
 
             // Order to Factory (25% discount on each item)
