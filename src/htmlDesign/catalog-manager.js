@@ -62,9 +62,13 @@ async function applyCustomerCatalog() {
         if (override) {
             card.querySelector('h3').textContent = override.name;
             card.querySelector('.cake-price').textContent = formatPrice(override.price);
-            card.hidden = !override.available;
+            if (!override.available) {
+                card.style.setProperty('display', 'none', 'important');
+            } else {
+                card.style.removeProperty('display');
+            }
         } else {
-            card.hidden = false;
+            card.style.removeProperty('display');
         }
     });
 
