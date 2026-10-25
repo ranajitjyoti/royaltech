@@ -40,7 +40,7 @@
             .hero { padding: 22px 16px 18px; }
             .hero h1 { margin-bottom: 6px; }
             .hero p { display: none; }
-            .delivery-badge { margin-top: 12px; }
+            .delivery-badge { margin-top: 2px; }
             .contact-row { margin-top: 10px; gap: 8px; }
         }
         .hero h1 {
@@ -60,25 +60,18 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-top: 22px;
-            padding: 10px 22px;
-            background: rgba(46,139,87,0.92);
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 40px;
+            margin-top: 0;
+            padding: 0;
+            background: none;
+            border: 0;
+            border-radius: 0;
             font-size: clamp(0.82rem, 2vw, 0.97rem);
-            font-weight: 600;
+            font-weight: 500;
             color: #fff;
             letter-spacing: 0.2px;
-            backdrop-filter: blur(4px);
-            animation: pulse 2s ease-in-out infinite;
         }
-        .delivery-badge span.dot {
-            width: 9px; height: 9px;
-            background: #fff;
-            border-radius: 50%;
-            display: inline-block;
-            animation: blink 1.2s ease-in-out infinite;
-        }
+        .delivery-badge span.dot { display: none; }
+        .hero-whatsapp { margin-top: 10px; padding: 9px 18px; }
         .contact-row {
             display: flex;
             align-items: center;
@@ -485,9 +478,9 @@
         .co-overlay.open { display: flex; }
         .co-modal {
             background: #fff; border-radius: 18px;
-            width: min(420px, 100%);
-            max-height: 90vh;
-            padding: 28px 24px 24px;
+            width: min(360px, 100%);
+            max-height: 84vh;
+            padding: 20px 18px 18px;
             box-shadow: 0 16px 48px rgba(0,0,0,0.22);
             position: relative;
             animation: fadeInUp 0.28s ease;
@@ -495,12 +488,12 @@
             flex-direction: column;
         }
         .co-modal h3 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; margin-bottom: 4px; }
-        .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 18px; }
+        .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 10px; }
         .co-order-summary {
             background: #f0f7f3; border-radius: 10px;
-            padding: 12px 14px; margin-bottom: 18px;
-            font-size: 0.82rem; color: #1a3d2b; line-height: 1.9;
-            max-height: 40vh;
+            padding: 9px 11px; margin-bottom: 10px;
+            font-size: 0.8rem; color: #1a3d2b; line-height: 1.6;
+            max-height: 32vh;
             overflow-y: auto;
             overscroll-behavior: contain;
         }
@@ -522,7 +515,7 @@
         .co-err { font-size: 0.75rem; color: #e63946; min-height: 16px; margin-bottom: 14px; }
         .co-actions { display: flex; gap: 10px; flex-shrink: 0; }
         .co-cancel {
-            flex: 1; padding: 11px;
+            flex: 1; padding: 9px;
             background: #f0f7f3; color: #1a3d2b;
             border: none; border-radius: 8px;
             font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 600;
@@ -530,10 +523,10 @@
         }
         .co-cancel:hover { background: #d4edda; }
         .co-confirm {
-            flex: 2; padding: 11px;
+            flex: 2; padding: 9px;
             background: #25D366; color: #fff;
             border: none; border-radius: 8px;
-            font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 700;
             cursor: pointer; transition: background 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 7px;
         }
@@ -784,9 +777,11 @@
     <section class="hero">
         <h1>🛵 Darun Delight's</h1>
         <div class="delivery-badge">
-            <span class="dot"></span>
-            🛵 5 Min Home Delivery
+            5 Min Home Delivery
         </div>
+        <a class="contact-btn btn-whatsapp hero-whatsapp" href="https://wa.me/918420290133?text=Hi" target="_blank" rel="noopener">
+            💬 WhatsApp Us
+        </a>
     </section>
 
     <!-- Search Bar -->
