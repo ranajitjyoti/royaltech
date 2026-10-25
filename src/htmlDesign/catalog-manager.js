@@ -3,6 +3,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.118.0';
 const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
+const STORAGE_BUCKET = 'product-images';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const PAGES = [
@@ -41,9 +42,9 @@ function getProductRecords(root, pageId) {
 }
 
 async function fetchCatalog() {
-    const { data, error } = await supabase.from(TABLE).select('product_key, name, price, available');
+    const { data, error } = await supabase.from(TABLE).select('product_key, name, price, available, image_url, category');
     if (error) throw error;
-    return Object.fromEntries(data.map(p => [p.product_key, { name: p.name, price: Number(p.price), available: p.available }]));
+    return Object.fromEntries(data.map(p => [p.product_key, { name: p.name, price: Number(p.price), available: p.available, imageUrl: p.image_url ?? '', category: p.category ?? '' }]));
 }
 
 // ─── Customer page ────────────────────────────────────────────────────────────
@@ -65,6 +66,45 @@ async function applyCustomerCatalog() {
         } else {
             card.hidden = false;
         }
+    });
+
+    // Inject new products (keys starting with "new:" for this pageId)
+    const newEntries = Object.entries(catalog).filter(([k, v]) =>
+        k.startsWith(`new:${pageId}:`) && v.available !== false
+    );
+    if (!newEntries.length) return;
+
+    // Find or create a section to append new products
+    let newSection = document.getElementById('new-products-section');
+    if (!newSection) {
+        newSection = document.createElement('section');
+        newSection.id = 'new-products-section';
+        newSection.className = 'gallery-section';
+        newSection.style.cssText = 'padding-top:0; background:#e8f5ee;';
+        newSection.innerHTML = `
+            <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+                <div class="group-header" onclick="toggleGroup(this)">
+                    <h2>✦ New Products</h2>
+                    <span class="group-toggle">▼</span>
+                </div>
+                <div class="group-body"><div class="gallery-grid" id="new-products-grid"></div></div>
+            </div>`;
+        document.querySelector('.location-section')?.before(newSection);
+    }
+    const grid = newSection.querySelector('#new-products-grid');
+    grid.innerHTML = '';
+    newEntries.forEach(([, p]) => {
+        const card = document.createElement('div');
+        card.className = 'cake-card';
+        card.innerHTML = `
+            ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy">` : `<div class="product-placeholder">🎂</div>`}
+            <div class="cake-info">
+                <h3>${p.name}</h3>
+                ${p.category ? `<p style="font-size:0.75rem;color:#718777;">${p.category}</p>` : ''}
+                <p class="cake-price">${formatPrice(p.price)}</p>
+            </div>
+            <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>`;
+        grid.appendChild(card);
     });
 }
 
@@ -310,6 +350,82 @@ async function startAdmin() {
 
     pageSelect.addEventListener('change', renderProducts);
     searchInput.addEventListener('input', renderProducts);
+
+    // ─── Add New Product ──────────────────────────────────────────────────────
+    const addForm = document.getElementById('add-product-form');
+    const newNameInput = document.getElementById('new-product-name');
+    const newPriceInput = document.getElementById('new-product-price');
+    const newCategoryInput = document.getElementById('new-product-category');
+    const newPageSelect = document.getElementById('new-product-page');
+    const newImageInput = document.getElementById('new-product-image');
+    const newImagePreview = document.getElementById('new-image-preview');
+    const newImageSize = document.getElementById('new-image-size');
+
+    newImageInput.addEventListener('change', () => {
+        const file = newImageInput.files[0];
+        if (!file) { newImagePreview.hidden = true; newImageSize.textContent = ''; return; }
+        if (file.size > 500 * 1024) {
+            newImageSize.textContent = `⚠ File too large (${(file.size / 1024).toFixed(0)} KB). Max 500 KB.`;
+            newImageInput.value = '';
+            newImagePreview.hidden = true;
+            return;
+        }
+        newImageSize.textContent = `${(file.size / 1024).toFixed(0)} KB`;
+        newImagePreview.src = URL.createObjectURL(file);
+        newImagePreview.hidden = false;
+    });
+
+    addForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!canEdit) return;
+        const name = newNameInput.value.trim();
+        const price = Number(newPriceInput.value);
+        const category = newCategoryInput.value.trim();
+        const targetPage = newPageSelect.value; // 'both', 'cakes', 'order-cakes'
+        if (!name || !Number.isFinite(price) || price < 0) {
+            setStatus('Enter a valid name and price.', true); return;
+        }
+        const submitBtn = addForm.querySelector('.btn-add-product');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Adding…';
+        try {
+            let imageUrl = '';
+            const file = newImageInput.files[0];
+            if (file) {
+                const ext = file.name.split('.').pop();
+                const path = `${Date.now()}-${encodeURIComponent(normalizeName(name))}.${ext}`;
+                const { error: uploadError } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, { upsert: true });
+                if (!uploadError) {
+                    const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+                    imageUrl = urlData.publicUrl;
+                }
+            }
+            const pageIds = targetPage === 'both' ? ['cakes', 'order-cakes'] : [targetPage];
+            for (const pageId of pageIds) {
+                const norm = normalizeName(name);
+                const key = `new:${pageId}:${encodeURIComponent(norm)}:${Date.now()}`;
+                const { error } = await supabase.from(TABLE).upsert({
+                    product_key: key, name, price, available: true,
+                    image_url: imageUrl, category,
+                    updated_at: new Date().toISOString()
+                });
+                if (error) throw error;
+                catalog[key] = { name, price, available: true, imageUrl, category };
+                if (!pageRecords[pageId]) pageRecords[pageId] = [];
+                pageRecords[pageId].push({ key, name, price, imageUrl, category });
+            }
+            setStatus(`Added "${name}" successfully.`);
+            addForm.reset();
+            newImagePreview.hidden = true;
+            newImageSize.textContent = '';
+            renderProducts();
+        } catch (err) {
+            setStatus(err instanceof Error ? err.message : 'Could not add product.', true);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '+ Add Product';
+        }
+    });
 
     resetAll.addEventListener('click', async () => {
         if (!canEdit || !window.confirm('Reset all changes for both catalogs?')) return;
