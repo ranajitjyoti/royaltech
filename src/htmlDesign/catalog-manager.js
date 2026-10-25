@@ -72,13 +72,11 @@ async function applyCustomerCatalog() {
         }
     });
 
-    // Inject new products (keys starting with "new:" for this pageId)
     const newEntries = Object.entries(catalog).filter(([k, v]) =>
         k.startsWith(`new:${pageId}:`) && v.available !== false
     );
     if (!newEntries.length) return;
 
-    // Find or create a section to append new products
     let newSection = document.getElementById('new-products-section');
     if (!newSection) {
         newSection = document.createElement('section');
@@ -123,7 +121,7 @@ function createField(labelText, input) {
     return label;
 }
 
-function createProductRow(record, override, canEdit) {
+function createProductRow(record, override, canEdit, pendingChanges, updateSaveAllBtn) {
     const row = document.createElement('article');
     row.className = 'product-row';
     row.dataset.key = record.key;
@@ -163,58 +161,28 @@ function createProductRow(record, override, canEdit) {
     priceInput.disabled = !canEdit;
 
     const isAvailable = override?.available ?? true;
+    const origState = isAvailable ? 'on' : 'off';
+
     const availabilityBtn = document.createElement('button');
     availabilityBtn.className = 'product-availability toggle-btn';
     availabilityBtn.type = 'button';
-    availabilityBtn.dataset.state = isAvailable ? 'on' : 'off';
+    availabilityBtn.dataset.state = origState;
     availabilityBtn.textContent = isAvailable ? '✔ Visible' : '✖ Hidden';
     availabilityBtn.disabled = !canEdit;
     availabilityBtn.addEventListener('click', () => {
         const on = availabilityBtn.dataset.state !== 'on';
         availabilityBtn.dataset.state = on ? 'on' : 'off';
         availabilityBtn.textContent = on ? '✔ Visible' : '✖ Hidden';
-        markDirty();
+        if (availabilityBtn.dataset.state !== origState) {
+            pendingChanges.set(record.key, on);
+        } else {
+            pendingChanges.delete(record.key);
+        }
+        updateSaveAllBtn();
     });
 
-    const controls = document.createElement('div');
-    controls.className = 'row-actions';
-    const saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'save-product';
-    saveButton.textContent = 'Save';
-    saveButton.disabled = !canEdit;
-    saveButton.style.background = '#64756a';
-    const resetButton = document.createElement('button');
-    resetButton.type = 'button';
-    resetButton.className = 'reset-product';
-    resetButton.textContent = 'Reset';
-    resetButton.disabled = !canEdit;
-    controls.append(saveButton, resetButton);
-
-    const origName = override?.name ?? record.name;
-    const origPrice = String(override?.price ?? record.price);
-    const origState = isAvailable ? 'on' : 'off';
-
-    function markDirty() {
-        const changed = nameInput.value.trim() !== origName ||
-            priceInput.value !== origPrice ||
-            availabilityBtn.dataset.state !== origState;
-        saveButton.style.background = changed ? '#c47c00' : '#64756a';
-        saveButton.textContent = changed ? 'Save ●' : 'Save';
-    }
-
-    nameInput.addEventListener('input', markDirty);
-    priceInput.addEventListener('input', markDirty);
-
-    row.append(heading, createField('Product name', nameInput), createField('Price (₹)', priceInput), availabilityBtn, controls);
+    row.append(heading, createField('Product name', nameInput), createField('Price (₹)', priceInput), availabilityBtn);
     return row;
-}
-
-function flashSaved(btn) {
-    if (!btn) return;
-    btn.textContent = '✔ Saved';
-    btn.style.background = '#2e8b57';
-    setTimeout(() => { btn.textContent = 'Save'; btn.style.background = '#64756a'; }, 2000);
 }
 
 async function startAdmin() {
@@ -230,10 +198,19 @@ async function startAdmin() {
     const passwordInput = document.getElementById('admin-password');
     const logoutButton = document.getElementById('admin-logout');
     const adminPanel = document.getElementById('admin-panel');
+    const saveAllBtn = document.getElementById('save-all-visibility');
     const pageRecords = {};
+    const pendingChanges = new Map(); // key -> available (boolean)
     let catalog = {};
     let canEdit = false;
     let pagesLoaded = false;
+
+    function updateSaveAllBtn() {
+        saveAllBtn.disabled = !canEdit || pendingChanges.size === 0;
+        saveAllBtn.textContent = pendingChanges.size > 0
+            ? `Save All Visibility (${pendingChanges.size})`
+            : 'Save All Visibility';
+    }
 
     function setStatus(msg, isError = false) {
         status.textContent = msg;
@@ -259,40 +236,14 @@ async function startAdmin() {
             const override = catalog[r.key];
             return `${override?.name ?? r.name} ${r.category}`.toLocaleLowerCase().includes(query);
         });
-        productList.replaceChildren(...records.map(r => createProductRow(r, catalog[r.key], canEdit)));
+        productList.replaceChildren(...records.map(r => createProductRow(r, catalog[r.key], canEdit, pendingChanges, updateSaveAllBtn)));
         count.textContent = `${records.length} products`;
         resetAll.disabled = !canEdit;
         toggleNonfood.disabled = !canEdit;
+        updateSaveAllBtn();
         const nonfoodRecords = (pageRecords[page.id] ?? []).filter(r => r.category.includes('Non-Food Items and Packaging'));
         const allHidden = nonfoodRecords.length > 0 && nonfoodRecords.every(r => (catalog[r.key]?.available ?? true) === false);
         toggleNonfood.textContent = allHidden ? 'Show all non-food' : 'Hide all non-food';
-    }
-
-    async function saveRow(row) {
-        const key = row.dataset.key;
-        const nameInput = row.querySelector('.product-name');
-        const priceInput = row.querySelector('.product-price');
-        const availBtn = row.querySelector('.product-availability');
-        if (!nameInput.reportValidity() || !priceInput.reportValidity()) return;
-        const name = nameInput.value.trim();
-        const price = Number(priceInput.value);
-        if (!name || name.length > 120 || !Number.isFinite(price) || price < 0) {
-            setStatus('Enter a valid name and non-negative price.', true); return;
-        }
-        const record = pageRecords[pageSelect.value].find(r => r.key === key);
-        if (!record) throw new Error('Product not found.');
-        const available = availBtn.dataset.state === 'on';
-        if (name === record.name && price === record.price && available) {
-            const { error } = await supabase.from(TABLE).delete().eq('product_key', key);
-            if (error) throw error;
-            delete catalog[key];
-        } else {
-            const { error } = await supabase.from(TABLE).upsert({ product_key: key, name, price, available, updated_at: new Date().toISOString() });
-            if (error) throw error;
-            catalog[key] = { name, price, available };
-        }
-        setStatus(`Saved "${name}".`);
-        renderProducts();
     }
 
     function updateAuthUI(session) {
@@ -332,27 +283,35 @@ async function startAdmin() {
         }
     });
 
-    productList.addEventListener('click', async e => {
-        const button = e.target.closest('button');
-        const row = button?.closest('.product-row');
-        if (!row || !canEdit) return;
+    saveAllBtn.addEventListener('click', async () => {
+        if (!canEdit || pendingChanges.size === 0) return;
+        saveAllBtn.disabled = true;
+        saveAllBtn.textContent = 'Saving…';
         try {
-            if (button.classList.contains('save-product')) {
-                await saveRow(row);
-                flashSaved(row.querySelector('.save-product'));
-            } else if (button.classList.contains('reset-product')) {
-                const { error } = await supabase.from(TABLE).delete().eq('product_key', row.dataset.key);
-                if (error) throw error;
-                delete catalog[row.dataset.key];
-                setStatus('Product restored to original.');
-                renderProducts();
+            for (const [key, available] of pendingChanges) {
+                const pageId = key.startsWith('new:') ? key.split(':')[1] : key.split(':')[0];
+                const record = (pageRecords[pageId] ?? []).find(r => r.key === key);
+                if (!record) continue;
+                const name = catalog[key]?.name ?? record.name;
+                const price = catalog[key]?.price ?? record.price;
+                if (available && !catalog[key]) {
+                    // was already default visible, no override needed — skip
+                } else {
+                    const { error } = await supabase.from(TABLE).upsert({ product_key: key, name, price, available, updated_at: new Date().toISOString() });
+                    if (error) throw error;
+                    catalog[key] = { ...(catalog[key] ?? {}), name, price, available };
+                }
             }
+            setStatus(`Saved visibility for ${pendingChanges.size} product(s).`);
+            pendingChanges.clear();
+            renderProducts();
         } catch (err) {
             setStatus(err instanceof Error ? err.message : 'Could not save changes.', true);
+            updateSaveAllBtn();
         }
     });
 
-    pageSelect.addEventListener('change', renderProducts);
+    pageSelect.addEventListener('change', () => { pendingChanges.clear(); renderProducts(); });
     searchInput.addEventListener('input', renderProducts);
 
     // ─── Add New Product ──────────────────────────────────────────────────────
@@ -385,7 +344,7 @@ async function startAdmin() {
         const name = newNameInput.value.trim();
         const price = Number(newPriceInput.value);
         const category = newCategoryInput.value.trim();
-        const targetPage = newPageSelect.value; // 'both', 'cakes', 'order-cakes'
+        const targetPage = newPageSelect.value;
         if (!name || !Number.isFinite(price) || price < 0) {
             setStatus('Enter a valid name and price.', true); return;
         }
@@ -437,6 +396,7 @@ async function startAdmin() {
             const { error } = await supabase.from(TABLE).delete().not('product_key', 'is', null);
             if (error) throw error;
             catalog = {};
+            pendingChanges.clear();
             setStatus('All catalog changes reset.');
             renderProducts();
         } catch (err) {
