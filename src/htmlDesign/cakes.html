@@ -513,7 +513,8 @@
         .co-input:focus { border-color: #2e8b57; }
         .co-input.error  { border-color: #e63946; }
         .co-err { font-size: 0.75rem; color: #e63946; min-height: 16px; margin-bottom: 14px; }
-        .co-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        .co-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .co-actions > button { flex: 0 0 auto; width: 100%; min-width: 0; }
         .co-cancel {
             flex: 1; padding: 9px;
             background: #f0f7f3; color: #1a3d2b;
@@ -541,7 +542,7 @@
         }
         .co-factory:hover { background: #ca6f1e; }
         .co-actions-row2 { display: flex; gap: 10px; flex-shrink: 0; margin-top: 8px; }
-        .co-order-only { width: 100%; flex: 0 0 auto; }
+        .co-order-only { width: 100%; flex: 0 0 auto; min-width: 0; }
         .co-factory-note {
             font-size: 0.72rem; color: #e67e22; font-weight: 600;
             text-align: center; margin-top: 6px; flex-shrink: 0;
@@ -1786,24 +1787,6 @@
             document.getElementById('coCancel').addEventListener('click', closeCheckout);
             coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
 
-            // Send Current Stock Details (actual prices) — opens group + copies message
-            document.getElementById('coConfirm').addEventListener('click', () => {
-                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
-                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
-                const lines = entries.map(([name, v]) =>
-                    `  • ${name} x${v.qty}${v.unit ? ` (${v.unit})` : ''} = ₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
-                ).join('\n');
-                const msg =
-                    `📢 *Current Stock Details - Darun Delights*\n` +
-                    `📅 *Date:* ${getFormattedDate()}\n\n` +
-                    `🛍️ *Items:*\n${lines}\n\n` +
-                    `💰 *Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}*\n\n` +
-                    `💳 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
-                navigator.clipboard.writeText(msg).catch(() => {});
-                window.open('https://chat.whatsapp.com/LYtrPKuMYh7FW3XrahklnV?mode=gi_t', '_blank');
-                closeCheckout();
-            });
-
             document.getElementById('coWhatsappOrder').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
@@ -1815,25 +1798,6 @@
                     `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
                     `Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
                 window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`);
-            });
-
-            // Order to Factory (25% discount on each item)
-            document.getElementById('coFactory').addEventListener('click', () => {
-                const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
-                const factoryTotal = entries.reduce((s, [, v]) => s + v.qty * v.price * 0.75, 0);
-                const lines = entries.map(([name, v]) => {
-                    const unitFactory = v.price * 0.75;
-                    return `  %E2%80%A2 ${name} x${v.qty}${v.unit ? ` (${v.unit})` : ''} = %E2%82%B9${Number(v.qty * unitFactory).toLocaleString('en-IN', { maximumFractionDigits: 2 })} (%E2%82%B9${Number(unitFactory).toLocaleString('en-IN', { maximumFractionDigits: 2 })} each)`;
-                }).join('%0A');
-                const msg =
-                    `%F0%9F%8F%AD *Factory Order - Darun Delights*%0A` +
-                    `%F0%9F%93%85 *Date:* ${getFormattedDate()}%0A` +
-                    `%F0%9F%94%96 *25%25 Factory Discount Applied*%0A%0A` +
-                    `%F0%9F%9B%8D%EF%B8%8F *Items:*%0A${lines}%0A%0A` +
-                    `%F0%9F%92%B0 *Factory Total: %E2%82%B9${Number(factoryTotal).toLocaleString('en-IN', { maximumFractionDigits: 2 })}*%0A%0A` +
-                    `%F0%9F%92%B3 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
-                window.open(`https://wa.me/${SHOP_WA}?text=${msg}`, '_blank');
-                closeCheckout();
             });
 
             // ── Scroll to top ──
