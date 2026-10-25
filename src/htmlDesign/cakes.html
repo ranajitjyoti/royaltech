@@ -1772,14 +1772,11 @@
             function openCheckout() {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
-                const factoryTotal = totalPrice * 0.75;
                 coSummary.innerHTML =
                     entries.map(([name, v]) =>
                         `<div class="co-row"><span>${name} ×${v.qty}${v.unit ? ` (${v.unit})` : ''}</span><span>${formatRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-total-row"><span>Total (MRP)</span><span>${formatRupees(totalPrice)}</span></div>`;
-                document.getElementById('coFactoryNote').textContent =
-                    `Factory price (25% off): ${formatRupees(factoryTotal)}`;
+                    `<div class="co-total-row"><span>Total</span><span>${formatRupees(totalPrice)}</span></div>`;
                 coOverlay.classList.add('open');
             }
 
@@ -1815,8 +1812,13 @@
             document.getElementById('coWhatsappOrder').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
-                const lines = entries.map(([name, v], index) => `${index + 1}. ${name} - ${v.qty}`).join('\n');
-                const message = `${getFormattedDate()}\nDarun Delight New Alipore Order\n\n${lines}`;
+                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const lines = entries.map(([name, v], i) =>
+                    `${i + 1}. ${name} x${v.qty} = ₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
+                ).join('\n');
+                const message =
+                    `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
+                    `Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
                 window.open(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`, '_blank');
                 closeCheckout();
             });
