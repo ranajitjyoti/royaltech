@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.118.0';
+import { installCatalogAdditions } from './catalog-additions.js';
 
 const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
@@ -50,6 +51,7 @@ async function fetchCatalog() {
 // ─── Customer page ────────────────────────────────────────────────────────────
 
 async function applyCustomerCatalog() {
+    installCatalogAdditions(document);
     const pageId = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html') ? 'order-cakes' : 'cakes';
     const catalog = await fetchCatalog();
     const cards = [...document.querySelectorAll('.cake-card')];
@@ -223,6 +225,7 @@ async function startAdmin() {
             const res = await fetch(pageUrl);
             if (!res.ok) throw new Error(`Could not load ${page.file} (HTTP ${res.status}).`);
             const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+            installCatalogAdditions(doc);
             pageRecords[page.id] = getProductRecords(doc, page.id);
             if (!pageRecords[page.id].length) throw new Error(`No products found in ${page.file}.`);
         }
