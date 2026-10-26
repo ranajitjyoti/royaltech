@@ -275,6 +275,8 @@
             flex-shrink: 0;
         }
         .qty-btn:hover { background: rgba(255,255,255,0.18); }
+        .qty-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .qty-btn:disabled:hover { background: none; }
         .qty-num {
             color: #fff;
             font-size: clamp(0.82rem, 1.6vw, 0.9rem);
@@ -306,25 +308,6 @@
             border: none;
             display: block;
         }
-
-        .map-btn-wrap { text-align: center; margin-top: 20px; }
-        .map-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 13px 28px;
-            background: #2e8b57;
-            color: white;
-            border-radius: 30px;
-            text-decoration: none;
-            font-size: clamp(0.82rem, 2vw, 0.95rem);
-            font-weight: 500;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 14px rgba(46,139,87,0.3);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .map-link:hover  { background: #1e6b40; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,139,87,0.4); }
-        .map-link:active { transform: translateY(0); }
 
         /* ── Lightbox ── */
         .lightbox {
@@ -552,6 +535,23 @@
             background: none; border: none; font-size: 1.3rem;
             cursor: pointer; color: #4a7c5e; line-height: 1;
         }
+        .advance-booking-notice {
+            position: fixed;
+            left: 50%;
+            bottom: 92px;
+            z-index: 4000;
+            width: min(420px, calc(100vw - 32px));
+            margin: 0;
+            padding: 12px 16px;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            background: #1a3d2b;
+            color: #fff;
+            text-align: center;
+            font-size: 0.86rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+        }
+        .advance-booking-notice[hidden] { display: none; }
         /* ── Floating cart ── */
         .float-cart {
             position: fixed; bottom: 24px; left: 24px;
@@ -1511,19 +1511,9 @@
                     allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
             </div>
-            <div class="map-btn-wrap">
-                <a class="map-link"
-                   href="https://www.google.com/maps/place/Darun+Delights+Cake+%26+Pastry+Shop/@22.510981,88.3324716,116m/data=!3m1!1e3!4m16!1m9!3m8!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!2sDarun+Delights+Cake+%26+Pastry+Shop!8m2!3d22.5110123!4d88.3326131!9m1!1b1!16s%2Fg%2F11zh24p5fc!3m5!1s0x3a0271004a7861a9:0xd3b7a1e40d0625f8!8m2!3d22.5110123!4d88.3326131!16s%2Fg%2F11zh24p5fc"
-                   target="_blank" rel="noopener">
-                    📍 Open in Google Maps
-                </a>
-            </div>
             <div class="contact-row" style="margin-top:20px; justify-content:center;">
                 <a class="contact-btn btn-call" href="../../image/pdf/Darun%20Delights%20special%20custom%20cakes%20catlogue%20.pdf" target="_blank" rel="noopener">
                     📖 View Custom Cake Catalogue
-                </a>
-                <a class="contact-btn btn-whatsapp" href="https://wa.me/918420290133?text=Hi" target="_blank" rel="noopener">
-                    💬 WhatsApp Us
                 </a>
             </div>
         </div>
@@ -1574,6 +1564,10 @@
         <span class="float-cart-badge" id="cartBadge">0</span>
     </button>
 
+    <p class="advance-booking-notice" id="advanceBookingNotice" role="status" aria-live="polite" hidden>
+        Maximum 5 of each item. High-volume orders need advance booking.
+    </p>
+
     <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">&#8679;</button>
 
     <script type="module" src="./catalog-manager.js"></script>
@@ -1616,6 +1610,18 @@
             const drawerOverlay = document.getElementById('drawerOverlay');
             const drawerItems = document.getElementById('drawerItems');
             const drawerTotal = document.getElementById('drawerTotal');
+            const advanceBookingNotice = document.getElementById('advanceBookingNotice');
+            const MAX_ITEM_QUANTITY = 5;
+            let advanceBookingNoticeTimer;
+
+            function showAdvanceBookingNotice(message = 'Maximum 5 of each item. High-volume orders need advance booking.') {
+                advanceBookingNotice.textContent = message;
+                advanceBookingNotice.hidden = false;
+                window.clearTimeout(advanceBookingNoticeTimer);
+                advanceBookingNoticeTimer = window.setTimeout(() => {
+                    advanceBookingNotice.hidden = true;
+                }, 4000);
+            }
 
             // cartData: key = cake name, value = { qty, price, imgSrc }
             const cartData = {};
@@ -1668,7 +1674,7 @@
                             <div class="di-qty">
                                 <button data-name="${name}" data-action="minus">−</button>
                                 <span>${v.qty}</span>
-                                <button data-name="${name}" data-action="plus">+</button>
+                                <button data-name="${name}" data-action="plus" ${!v.isCake && v.qty >= v.maxQuantity ? 'disabled aria-label="Maximum quantity reached"' : ''}>+</button>
                             </div>
                             <button class="di-remove" data-name="${name}">Remove</button>
                         </div>
@@ -1720,32 +1726,49 @@
                 const addBtn  = card.querySelector('.btn-add-cart');
                 const qty     = card.querySelector('.qty-controls');
                 const num     = card.querySelector('.qty-num');
+                const plusBtn = card.querySelector('.qty-plus');
+                const sectionName = card.closest('.gallery-section')?.querySelector('.group-header h2')?.textContent ?? '';
+                const isCake = sectionName.toLocaleLowerCase().includes('cakes');
+                const maxQuantity = isCake ? 1 : MAX_ITEM_QUANTITY;
                 card.dataset.count = '0';
 
                 function getCount()  { return parseInt(card.dataset.count) || 0; }
-                function setCount(n) { card.dataset.count = n; }
+                function setCount(n) {
+                    card.dataset.count = n;
+                    plusBtn.disabled = !isCake && n >= maxQuantity;
+                }
 
                 addBtn.addEventListener('click', () => {
                     setCount(1);
                     num.textContent = 1;
                     addBtn.style.display = 'none';
                     qty.classList.add('show');
-                    cartData[name] = { qty: 1, price, imgSrc, unit };
+                    cartData[name] = { qty: 1, price, imgSrc, unit, isCake, maxQuantity };
                     syncDrawer();
                 });
 
-                card.querySelector('.qty-plus').addEventListener('click', () => {
-                    const c = getCount() + 1;
+                plusBtn.addEventListener('click', () => {
+                    const currentCount = getCount();
+                    if (currentCount >= maxQuantity) {
+                        showAdvanceBookingNotice(
+                            isCake
+                                ? 'For more than one of the same cake, please contact our shop.'
+                                : 'Maximum 5 of each item. High-volume orders need advance booking.'
+                        );
+                        return;
+                    }
+                    const c = currentCount + 1;
                     setCount(c); num.textContent = c;
-                    cartData[name] = { qty: c, price, imgSrc, unit };
+                    cartData[name] = { qty: c, price, imgSrc, unit, isCake, maxQuantity };
                     syncDrawer();
+                    if (c === maxQuantity && !isCake) showAdvanceBookingNotice();
                 });
 
                 card.querySelector('.qty-minus').addEventListener('click', () => {
                     const c = getCount();
                     if (c > 1) {
                         setCount(c - 1); num.textContent = c - 1;
-                        cartData[name] = { qty: c - 1, price, imgSrc, unit };
+                        cartData[name] = { qty: c - 1, price, imgSrc, unit, isCake, maxQuantity };
                     } else {
                         setCount(0);
                         qty.classList.remove('show');
