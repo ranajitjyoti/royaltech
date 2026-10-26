@@ -441,6 +441,7 @@
         }
         .drawer-total span { font-size: 0.9rem; color: #4a7c5e; }
         .drawer-total strong { font-size: 1.1rem; color: #1a3d2b; font-weight: 700; }
+        .delivery-charge-note { margin: -8px 0 12px; color: #718777; font-size: 0.7rem; text-align: center; }
         .btn-checkout {
             width: 100%; padding: 13px;
             background: #2e8b57; color: #fff;
@@ -1548,6 +1549,7 @@
                 <span>Total</span>
                 <strong id="drawerTotal">₹ 0</strong>
             </div>
+            <p class="delivery-charge-note">₹10 delivery below ₹100; free delivery on orders of ₹100 or more.</p>
             <button class="btn-checkout">Proceed to Checkout</button>
         </div>
     </div>
@@ -1639,6 +1641,10 @@
                 return '₹ ' + Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
             }
 
+            function getDeliveryCharge(itemTotal) {
+                return itemTotal > 0 && itemTotal < 100 ? 10 : 0;
+            }
+
             floatCart.addEventListener('click', openDrawer);
             document.getElementById('drawerClose').addEventListener('click', closeDrawer);
             drawerOverlay.addEventListener('click', closeDrawer);
@@ -1653,8 +1659,8 @@
                 floatCart.classList.toggle('show', totalQty > 0);
 
                 // total price
-                const totalPrice = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
-                drawerTotal.textContent = formatRupees(totalPrice);
+                const itemTotal = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
+                drawerTotal.textContent = formatRupees(itemTotal + getDeliveryCharge(itemTotal));
 
                 // render rows
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1790,12 +1796,14 @@
 
             function openCheckout() {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
-                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const itemTotal = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const deliveryCharge = getDeliveryCharge(itemTotal);
                 coSummary.innerHTML =
                     entries.map(([name, v]) =>
                         `<div class="co-row"><span>${name} ×${v.qty}${v.unit ? ` (${v.unit})` : ''}</span><span>${formatRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-total-row"><span>Total</span><span>${formatRupees(totalPrice)}</span></div>`;
+                    `<div class="co-row"><span>Delivery</span><span>${deliveryCharge ? formatRupees(deliveryCharge) : 'Free'}</span></div>` +
+                    `<div class="co-total-row"><span>Total</span><span>${formatRupees(itemTotal + deliveryCharge)}</span></div>`;
                 coOverlay.classList.add('open');
             }
 
@@ -1813,13 +1821,17 @@
             document.getElementById('coWhatsappOrder').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
-                const totalPrice = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const itemTotal = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
+                const deliveryCharge = getDeliveryCharge(itemTotal);
                 const lines = entries.map(([name, v], i) =>
                     `${i + 1}. ${name} x${v.qty} = ₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
                 ).join('\n');
                 const message =
                     `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
-                    `Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+                    `Items total: ${formatRupees(itemTotal)}\n` +
+                    `Delivery: ${deliveryCharge ? formatRupees(deliveryCharge) : 'Free'}\n` +
+                    `Total: ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
+                    `Scan and pay via UPI: ${new URL('./pay.html', window.location.href).href}`;
                 window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`);
             });
 

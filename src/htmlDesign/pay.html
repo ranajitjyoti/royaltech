@@ -32,6 +32,13 @@
             padding: 8px 14px; margin: 14px 0 24px;
             display: inline-block; font-weight: 600;
         }
+        .upi-qr {
+            display: block;
+            width: min(220px, 100%);
+            height: auto;
+            margin: 0 auto 16px;
+            image-rendering: pixelated;
+        }
         .btn-pay {
             display: block; width: 100%;
             padding: 14px;
@@ -54,6 +61,8 @@
         <div class="icon">🎂</div>
         <h1>Pay Darun Delights</h1>
         <div class="upi-id">ranajit.jyoti@ybl</div>
+        <p class="note">Scan this QR code to pay via UPI.</p>
+        <img class="upi-qr" src="./upi-payment-qr.svg" alt="UPI payment QR code for ranajit.jyoti@ybl">
         <a class="btn-pay" id="payBtn" href="upi://pay?pa=ranajit.jyoti@ybl&pn=Darun%20Delights&cu=INR">
             💳 Pay Now
         </a>
