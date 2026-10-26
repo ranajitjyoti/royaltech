@@ -1529,7 +1529,7 @@
             <div class="co-order-summary" id="coSummary"></div>
             <div class="co-actions">
                 <button class="co-cancel" id="coCancel">Cancel</button>
-                <button class="co-confirm co-order-only" id="coWhatsappOrder" disabled>📲 Preparing payment QR…</button>
+                <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
             </div>
         </div>
     </div>
@@ -1823,26 +1823,7 @@
 
             const whatsappOrderButton = document.getElementById('coWhatsappOrder');
             const paymentQrUrl = new URL('../../image/payment%20Scannar/scannarPayment.jpeg', window.location.href);
-            let paymentQrFile = null;
-            let paymentQrError = null;
-            fetch(paymentQrUrl)
-                .then((response) => {
-                    if (!response.ok) throw new Error(`Could not load payment QR image (HTTP ${response.status}).`);
-                    return response.blob();
-                })
-                .then((imageBlob) => {
-                    paymentQrFile = new File([imageBlob], 'scannarPayment.jpeg', { type: imageBlob.type || 'image/jpeg' });
-                })
-                .catch((error) => {
-                    paymentQrError = error;
-                    console.error('Could not prepare payment QR image for sharing:', error);
-                })
-                .finally(() => {
-                    whatsappOrderButton.disabled = false;
-                    whatsappOrderButton.textContent = '📲 Send Order to WhatsApp';
-                });
-
-            whatsappOrderButton.addEventListener('click', async () => {
+            whatsappOrderButton.addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
                 const itemTotal = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
@@ -1855,24 +1836,8 @@
                     `Items total: ${formatRupees(itemTotal)}\n` +
                     (deliveryCharge ? `Delivery: ${formatRupees(deliveryCharge)}\n` : '') +
                     `Total: ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
-                    'Scan and pay via UPI (QR image attached).';
-
-                if (paymentQrFile && navigator.share && navigator.canShare?.({ files: [paymentQrFile] })) {
-                    try {
-                        await navigator.share({ files: [paymentQrFile], text: message });
-                        return;
-                    } catch (error) {
-                        if (error instanceof DOMException && error.name === 'AbortError') return;
-                        console.error('Could not share order and payment QR image:', error);
-                    }
-                } else if (paymentQrError) {
-                    console.error('Payment QR image is unavailable:', paymentQrError);
-                }
-
-                const fallbackMessage =
-                    `${message}\n\nQR image: ${paymentQrUrl.href}\n` +
-                    'This browser could not attach the image; please open the QR link or attach it manually.';
-                window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(fallbackMessage)}`);
+                    `Scan and pay via UPI: ${paymentQrUrl.href}`;
+                window.location.href = `https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`;
             });
 
             // ── Scroll to top ──
