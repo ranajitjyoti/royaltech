@@ -1529,7 +1529,7 @@
             <div class="co-order-summary" id="coSummary"></div>
             <div class="co-actions">
                 <button class="co-cancel" id="coCancel">Cancel</button>
-                <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
+                <button class="co-confirm co-order-only" id="coWhatsappOrder" disabled>📲 Preparing payment QR…</button>
             </div>
         </div>
     </div>
@@ -1549,7 +1549,7 @@
                 <span>Total</span>
                 <strong id="drawerTotal">₹ 0</strong>
             </div>
-            <p class="delivery-charge-note">₹10 delivery below ₹100; free delivery on orders of ₹100 or more.</p>
+            <p class="delivery-charge-note" id="deliveryChargeNote" hidden>Orders below ₹100 have a ₹10 delivery charge.</p>
             <button class="btn-checkout">Proceed to Checkout</button>
         </div>
     </div>
@@ -1612,6 +1612,7 @@
             const drawerOverlay = document.getElementById('drawerOverlay');
             const drawerItems = document.getElementById('drawerItems');
             const drawerTotal = document.getElementById('drawerTotal');
+            const deliveryChargeNote = document.getElementById('deliveryChargeNote');
             const advanceBookingNotice = document.getElementById('advanceBookingNotice');
             const MAX_ITEM_QUANTITY = 5;
             let advanceBookingNoticeTimer;
@@ -1660,7 +1661,9 @@
 
                 // total price
                 const itemTotal = Object.values(cartData).reduce((s, v) => s + v.qty * v.price, 0);
-                drawerTotal.textContent = formatRupees(itemTotal + getDeliveryCharge(itemTotal));
+                const deliveryCharge = getDeliveryCharge(itemTotal);
+                drawerTotal.textContent = formatRupees(itemTotal + deliveryCharge);
+                deliveryChargeNote.hidden = deliveryCharge === 0;
 
                 // render rows
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
@@ -1802,7 +1805,7 @@
                     entries.map(([name, v]) =>
                         `<div class="co-row"><span>${name} ×${v.qty}${v.unit ? ` (${v.unit})` : ''}</span><span>${formatRupees(v.qty * v.price)}</span></div>`
                     ).join('') +
-                    `<div class="co-row"><span>Delivery</span><span>${deliveryCharge ? formatRupees(deliveryCharge) : 'Free'}</span></div>` +
+                    (deliveryCharge ? `<div class="co-row"><span>Delivery</span><span>${formatRupees(deliveryCharge)}</span></div>` : '') +
                     `<div class="co-total-row"><span>Total</span><span>${formatRupees(itemTotal + deliveryCharge)}</span></div>`;
                 coOverlay.classList.add('open');
             }
@@ -1818,7 +1821,28 @@
             document.getElementById('coCancel').addEventListener('click', closeCheckout);
             coOverlay.addEventListener('click', e => { if (e.target === coOverlay) closeCheckout(); });
 
-            document.getElementById('coWhatsappOrder').addEventListener('click', () => {
+            const whatsappOrderButton = document.getElementById('coWhatsappOrder');
+            const paymentQrUrl = new URL('../../image/payment%20Scannar/scannarPayment.jpeg', window.location.href);
+            let paymentQrFile = null;
+            let paymentQrError = null;
+            fetch(paymentQrUrl)
+                .then((response) => {
+                    if (!response.ok) throw new Error(`Could not load payment QR image (HTTP ${response.status}).`);
+                    return response.blob();
+                })
+                .then((imageBlob) => {
+                    paymentQrFile = new File([imageBlob], 'scannarPayment.jpeg', { type: imageBlob.type || 'image/jpeg' });
+                })
+                .catch((error) => {
+                    paymentQrError = error;
+                    console.error('Could not prepare payment QR image for sharing:', error);
+                })
+                .finally(() => {
+                    whatsappOrderButton.disabled = false;
+                    whatsappOrderButton.textContent = '📲 Send Order to WhatsApp';
+                });
+
+            whatsappOrderButton.addEventListener('click', async () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
                 const itemTotal = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
@@ -1829,10 +1853,26 @@
                 const message =
                     `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
                     `Items total: ${formatRupees(itemTotal)}\n` +
-                    `Delivery: ${deliveryCharge ? formatRupees(deliveryCharge) : 'Free'}\n` +
+                    (deliveryCharge ? `Delivery: ${formatRupees(deliveryCharge)}\n` : '') +
                     `Total: ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
-                    `Scan and pay via UPI: ${new URL('./pay.html', window.location.href).href}`;
-                window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`);
+                    'Scan and pay via UPI (QR image attached).';
+
+                if (paymentQrFile && navigator.share && navigator.canShare?.({ files: [paymentQrFile] })) {
+                    try {
+                        await navigator.share({ files: [paymentQrFile], text: message });
+                        return;
+                    } catch (error) {
+                        if (error instanceof DOMException && error.name === 'AbortError') return;
+                        console.error('Could not share order and payment QR image:', error);
+                    }
+                } else if (paymentQrError) {
+                    console.error('Payment QR image is unavailable:', paymentQrError);
+                }
+
+                const fallbackMessage =
+                    `${message}\n\nQR image: ${paymentQrUrl.href}\n` +
+                    'This browser could not attach the image; please open the QR link or attach it manually.';
+                window.location.assign(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(fallbackMessage)}`);
             });
 
             // ── Scroll to top ──
