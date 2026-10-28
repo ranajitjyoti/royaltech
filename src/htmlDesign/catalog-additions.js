@@ -266,7 +266,7 @@ const PRODUCT_IMAGE_HINTS = [
     ['pasta', 'pasta.jpg'],
     ['chicken puff', 'Paneer Puff.webp'],
     ['paneer puff', 'Paneer Puff.webp'],
-    ['chicken pizza', 'Paneer Pizza.webp'],
+    ['chicken pizza', 'chicken-pitzza.jpg'],
     ['paneer pizza', 'Paneer Pizza.webp'],
     ['grill chicken sandwich', 'Italian Sandwich.jpg'],
     ['chicken sandwich', 'Italian Sandwich.jpg'],
