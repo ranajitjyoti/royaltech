@@ -1,5 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.118.0';
-import { installCatalogAdditions } from './catalog-additions.js';
+import { installCatalogAdditions, resolveProductImage } from './catalog-additions.js';
 
 const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
@@ -72,6 +72,22 @@ async function applyCustomerCatalog() {
         } else {
             card.style.removeProperty('display');
         }
+        const displayName = override?.name ?? record.name;
+        const imageSrc = override?.imageUrl || record.imageUrl;
+        let image = card.querySelector('img');
+        if (!image) {
+            const placeholder = card.querySelector('.product-placeholder');
+            image = document.createElement('img');
+            image.alt = displayName;
+            image.loading = 'lazy';
+            if (placeholder) placeholder.replaceWith(image);
+            else card.prepend(image);
+        }
+        image.src = imageSrc && !/product-placeholder/i.test(imageSrc)
+            ? imageSrc
+            : resolveProductImage(displayName);
+        image.alt = displayName;
+        image.hidden = false;
     });
 
     const newEntries = Object.entries(catalog).filter(([k, v]) =>
@@ -100,8 +116,11 @@ async function applyCustomerCatalog() {
     newEntries.forEach(([, p]) => {
         const card = document.createElement('div');
         card.className = 'cake-card';
+        const imageSrc = p.imageUrl && !/product-placeholder/i.test(p.imageUrl)
+            ? p.imageUrl
+            : resolveProductImage(p.name);
         card.innerHTML = `
-            ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy">` : `<div class="product-placeholder">🎂</div>`}
+            <img src="${imageSrc}" alt="${p.name}" loading="lazy">
             <div class="cake-info">
                 <h3>${p.name}</h3>
                 ${p.category ? `<p style="font-size:0.75rem;color:#718777;">${p.category}</p>` : ''}
@@ -134,8 +153,11 @@ function createProductRow(record, override, canEdit, pendingChanges, updateSaveA
     image.className = 'product-image';
     image.alt = '';
     image.loading = 'lazy';
-    if (record.imageUrl) image.src = record.imageUrl;
-    else image.hidden = true;
+    const imageUrl = override?.imageUrl || record.imageUrl;
+    image.src = imageUrl && !/product-placeholder/i.test(imageUrl)
+        ? imageUrl
+        : resolveProductImage(override?.name || record.name);
+    image.alt = override?.name || record.name;
     const productTitle = document.createElement('div');
     const category = document.createElement('span');
     category.className = 'product-category';
@@ -366,6 +388,7 @@ async function startAdmin() {
                     imageUrl = urlData.publicUrl;
                 }
             }
+            if (!imageUrl) imageUrl = resolveProductImage(name);
             const pageIds = targetPage === 'both' ? ['cakes', 'order-cakes'] : [targetPage];
             for (const pageId of pageIds) {
                 const norm = normalizeName(name);

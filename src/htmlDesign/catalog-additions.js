@@ -182,6 +182,157 @@ const GROUPS = [
     }
 ];
 
+const IMAGE_DIR = '../../image/cakes/';
+const PRODUCT_IMAGE_HINTS = [
+    ['choco almond', 'Honey Almond Cake.jpg'],
+    ['honey almond', 'Honey Almond Cake.jpg'],
+    ['pinata heart', 'Chocolate Heart Pastry.jpg'],
+    ['pinata ball', 'RAM BALL.jpg'],
+    ['chocolate heart', 'Chocolate Heart Pastry.jpg'],
+    ['heart cake', 'Chocolate Heart Pastry.jpg'],
+    ['strawberry bento', 'mango Bento.webp'],
+    ['vanilla bento', 'Choco Bento.webp'],
+    ['mango bento', 'mango Bento.webp'],
+    ['choco bento', 'Choco Bento.webp'],
+    ['donut strawberry', 'Strawberry Pastry.jpg'],
+    ['donut chocolate', 'Chocolate Cake.jpg'],
+    ['rasmalai cake', 'Rahsmalai Pastry.jpg'],
+    ['rasmalai pastry', 'Rahsmalai Pastry.jpg'],
+    ['rahsmalai', 'Rahsmalai Pastry.jpg'],
+    ['white forest pastry', 'White Forest Pastry image.webp'],
+    ['white forest', 'White Forest Cake.webp'],
+    ['black forest pastry', 'Black Forest Pastry.avif'],
+    ['black forest', 'Black Forest Cake Veg (Regular).webp'],
+    ['dual forest', 'Dual Forest Cake.jpg'],
+    ['mango malai pastry', 'Mango Malai Cake.jpg'],
+    ['mango malai', 'Mango Malai Cake.jpg'],
+    ['mango pastry', 'Mango Malai Cake.jpg'],
+    ['choco truffle', 'Choco Truffle Cake Veg.webp'],
+    ['choco vanilla', 'Choco Vanilla Cake.jpg'],
+    ['choco chip pastry', 'Choco Chip Pastry.webp'],
+    ['chocko chip', 'Choco Chip Pastry.webp'],
+    ['choco chips pastry', 'Choco Chip Pastry.webp'],
+    ['choco chip', 'Choco Chip Cake Veg.jpg'],
+    ['chocochip', 'Choco Chip Cake Veg.jpg'],
+    ['choco lava', 'Choco Lava Pastry.webp'],
+    ['chocko lava', 'Choco Lava Pastry.webp'],
+    ['choco delight', 'Choco Lava Pastry.webp'],
+    ['milk chocolate', 'Milk Chocolate pastry.jpg'],
+    ['butterscotch pastry', 'Butterscotch Pastry.jpg'],
+    ['butterscotch', 'Butterscotch Cake Veg.webp'],
+    ['pineapple pastry', 'Pineapple Pastry.jpg'],
+    ['pineapple', 'Pineapple Cake.jpg'],
+    ['red velvet pastry', 'Red Velvet Pastry.avif'],
+    ['red velvet', 'Red Velvet Cake.jpg'],
+    ['blueberry cake', 'Blue Berry Pastry.webp'],
+    ['blue berry pastry', 'Blue Berry Pastry.webp'],
+    ['blueberry', 'Blue Berry Pastry.webp'],
+    ['berry blast', 'Blue Berry Pastry.webp'],
+    ['strawberry pastry', 'Strawberry Pastry.jpg'],
+    ['strawberry muffin', 'strayberry muffin.jpeg'],
+    ['strawberry mousse', 'strawberry-mousse-recipe.webp'],
+    ['strawberry cake', 'Strawberry Pastry.jpg'],
+    ['strawberry', 'strawbery.jpeg'],
+    ['kiwi', 'Pineapple Pastry.jpg'],
+    ['orange pastry', 'Orange Pastry.webp'],
+    ['coconut pastry', 'Coconut Pastry.jpg'],
+    ['swiss roll', 'Sweetmilk Pastry.png'],
+    ['cream roll', 'Sweetmilk Pastry.png'],
+    ['ice cream pastry', 'White Forest Pastry image.webp'],
+    ['fantasy coffee', 'Chocolate Mousse.jpeg'],
+    ['coffee mousse', 'Chocolate Mousse.jpeg'],
+    ['lolipop', 'RAM BALL.jpg'],
+    ['lollipop', 'RAM BALL.jpg'],
+    ['dark chocolate pastry', 'dark-chocolate.jpeg'],
+    ['dark chocolate mousse', 'dark-chocolate.jpeg'],
+    ['dark chocolet muffin', 'dark-chocolate.jpeg'],
+    ['dark chocolate muffin', 'dark-chocolate.jpeg'],
+    ['white chocolate mousse', 'Chocolate Mousse.jpeg'],
+    ['chocolate mousse', 'Chocolate Mousse.jpeg'],
+    ['chocolate cake', 'Chocolate Cake.jpg'],
+    ['choco muffin', 'choco muffin.jpeg'],
+    ['vanilla muffin', 'Choco Vanilla Cake.jpg'],
+    ['venilla muffin', 'Choco Vanilla Cake.jpg'],
+    ['brownie', 'brownie.jpg'],
+    ['arabic veg burger', 'arabic veg burger.jpg'],
+    ['abric veg burger', 'arabic veg burger.jpg'],
+    ['chicken tikki burger', 'veg big burger.jpg'],
+    ['chicken mini burger', 'veg big burger.jpg'],
+    ['veg big burger', 'veg big burger.jpg'],
+    ['veg mini burger', 'veg big burger.jpg'],
+    ['hot dog', 'veg big burger.jpg'],
+    ['white sauce pasta', 'pasta.jpg'],
+    ['red sauce pasta', 'pasta.jpg'],
+    ['pasta', 'pasta.jpg'],
+    ['chicken puff', 'Paneer Puff.webp'],
+    ['paneer puff', 'Paneer Puff.webp'],
+    ['chicken pizza', 'Paneer Pizza.webp'],
+    ['paneer pizza', 'Paneer Pizza.webp'],
+    ['grill chicken sandwich', 'Italian Sandwich.jpg'],
+    ['chicken sandwich', 'Italian Sandwich.jpg'],
+    ['italian mini sandwich', 'Italian Sandwich.jpg'],
+    ['italian sandwich', 'Italian Sandwich.jpg'],
+    ['veg sandwich', 'Italian Sandwich.jpg'],
+    ['chicken garlic samosa', 'Chinese Samosa.webp'],
+    ['chinese samosa', 'Chinese Samosa.webp'],
+    ['panjabi samosa', 'Veg Paneer Samosa.webp'],
+    ['paneer samosa', 'Veg Paneer Samosa.webp'],
+    ['chicken 65', 'Paneer Puff.webp'],
+    ['paneer 65', 'Paneer Puff.webp'],
+    ['green chicken bun', 'pav.jpeg'],
+    ['chilli fish bun', 'pav.jpeg'],
+    ['chicken croissant', 'Paneer Puff.webp'],
+    ['paneer croissant', 'Paneer Puff.webp'],
+    ['chicken cheese patties', 'Egg Patties.webp'],
+    ['chilly chicken patties', 'Egg Patties.webp'],
+    ['chicken patties', 'Egg Patties.webp'],
+    ['egg patties', 'Egg Patties.webp'],
+    ['chicken internet', 'Italian Sandwich.jpg'],
+    ['chicken parcel', 'Paneer Puff.webp'],
+    ['misti shuk', 'gulab-jamun-recipe-01.webp'],
+    ['misti dahi', 'gulab-jamun-recipe-01.webp'],
+    ['fish chop', 'Veg Chop.jpg'],
+    ['veg chop', 'Veg Chop.jpg'],
+    ['fish finger', 'Veg Cutlet.jpg'],
+    ['fish cutlet', 'Veg Cutlet.jpg'],
+    ['chicken cutlet', 'Veg Cutlet.jpg'],
+    ['veg cutlet', 'Veg Cutlet.jpg'],
+    ['chicken kebab', 'turkish break kabab.jpg'],
+    ['turkish', 'turkish break kabab.jpg'],
+    ['chicken spring roll', 'Egg Spring Roll.jpg'],
+    ['egg spring roll', 'Egg Spring Roll.jpg'],
+    ['paneer spring', 'paneer spring.webp'],
+    ['chicken drump', 'Fry Momo.jpg'],
+    ['drum stick', 'Fry Momo.jpg'],
+    ['chicken butter masala', 'Paneer Pizza.webp'],
+    ['fry momo', 'Fry Momo.jpg'],
+    ['steam momo', 'steem momo.webp'],
+    ['small vada', 'Small Vada Pav.webp'],
+    ['vada pav', 'Vada Pav.webp'],
+    ['garlic bread', 'Garlic Bread.webp'],
+    ['veg kachori', 'Veg Kachori.webp'],
+    ['veg wrap', 'Italian Sandwich.jpg'],
+    ['veg puff', 'Veg Puff.jpg'],
+    ['egg devil', 'Egg Devil.webp'],
+    ['ram ball', 'RAM BALL.jpg'],
+    ['gulab jamun', 'gulab-jamun-recipe-01.webp'],
+    ['chocolate', 'Chocolate Cake.jpg']
+];
+
+export function resolveProductImage(name) {
+    const key = String(name || '').toLowerCase()
+        .replace(/\bchocko\b/g, 'choco')
+        .replace(/\bvenilla\b/g, 'vanilla')
+        .replace(/\bchocolet\b/g, 'chocolate')
+        .replace(/\babric\b/g, 'arabic');
+    const match = PRODUCT_IMAGE_HINTS.find(([needle]) => key.includes(needle));
+    return IMAGE_DIR + (match ? match[1] : 'Chocolate Cake.jpg');
+}
+
+function isMissingProductImage(src) {
+    return !src || /product-placeholder/i.test(src);
+}
+
 const MATCH_ALIASES = new Map([
     ['mango bento (large)', ['mango bento cake']],
     ['strawberry bento (large)', ['strawberry bento']],
@@ -265,7 +416,7 @@ function createProductCard(product) {
     card.dataset.catalogAddition = 'true';
 
     const image = document.createElement('img');
-    image.src = '../../image/cakes/product-placeholder.svg';
+    image.src = resolveProductImage(displayName);
     image.alt = displayName;
     image.loading = 'lazy';
 
@@ -419,6 +570,23 @@ export function installCatalogAdditions(root) {
             const newCard = createProductCard(product);
             grids.get(group.id).append(newCard);
             candidates.push(newCard);
+        }
+    }
+
+    for (const card of root.querySelectorAll('.cake-card')) {
+        const name = card.querySelector('h3')?.textContent ?? '';
+        let image = card.querySelector('img');
+        if (!image) {
+            const placeholder = card.querySelector('.product-placeholder');
+            image = document.createElement('img');
+            image.alt = name;
+            image.loading = 'lazy';
+            if (placeholder) placeholder.replaceWith(image);
+            else card.prepend(image);
+        }
+        if (isMissingProductImage(image.getAttribute('src'))) {
+            image.src = resolveProductImage(name || image.alt);
+            image.hidden = false;
         }
     }
 
