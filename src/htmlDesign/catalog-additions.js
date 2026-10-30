@@ -17,6 +17,7 @@ const GROUPS = [
             ['Choco Chip Cake', 'Junior', 290],
             ['Choco Chip Cake', 'Regular', 430],
             ['Rasmalai Cake', 'Regular', 430],
+            ['Red Velvet Cake', 'Regular', 480],
             ['Pinata Ball Cake', 'Regular', 280],
             ['Pinata Heart Cake', 'Regular', 280],
             ['Mango Malai Cake', 'Junior', 280],
@@ -179,16 +180,16 @@ const PRODUCT_IMAGE_HINTS = [
     ['choco almond', 'Choco Chips Cake Junior Regular Large.PNG'],
     ['honey almond', 'Honey Almond Cake.jpg'],
     ['pinata heart', 'Chocolate Heart Pastry.jpg'],
-    ['pinata ball', 'RAM BALL.jpg'],
+    ['pinata ball', 'pinata ball cake.jpg'],
     ['chocolate heart', 'Chocolate Heart Pastry.jpg'],
     ['heart cake', 'Chocolate Heart Pastry.jpg'],
     ['strawberry bento', 'mango Bento.webp'],
     ['vanilla bento', 'Choco Bento.webp'],
     ['mango bento', 'mango Bento.webp'],
     ['choco bento', 'Choco Bento.webp'],
-    ['donut strawberry', 'Strawberry Pastry.jpg'],
+    ['donut strawberry', 'strawberry -cakes.jpg'],
     ['donut chocolate', 'Chocolate Cake.jpg'],
-    ['rasmalai cake', 'Rahsmalai Pastry.jpg'],
+    ['rasmalai cake', 'rasmalai-cakes.png'],
     ['rasmalai pastry', 'Rahsmalai Pastry.jpg'],
     ['rahsmalai', 'Rahsmalai Pastry.jpg'],
     ['white forest pastry', 'White Forest Pastry.PNG'],
@@ -198,7 +199,7 @@ const PRODUCT_IMAGE_HINTS = [
     ['dual forest', 'Dual Forest Cake.jpg'],
     ['mango malai pastry', 'Mango Malai Cake.jpg'],
     ['mango malai', 'Mango Malai Cake.jpg'],
-    ['mango pastry', 'Mango Malai Cake.jpg'],
+    ['mango pastry', 'Mango Pastry.PNG'],
     ['choco truffle', 'Choco Truffle Cake Veg.webp'],
     ['choco vanilla', 'Choco Vanilla Cake.jpg'],
     ['choco chip pastry', 'Choco Chip Pastry.png'],
@@ -209,14 +210,15 @@ const PRODUCT_IMAGE_HINTS = [
     ['choco lava', 'Choco Lava Pastry.png'],
     ['chocko lava', 'Choco Lava Pastry.png'],
     ['choco delight', 'Choco Lava Pastry.png'],
-    ['milk chocolate', 'Milk Chocolate pastry.jpg'],
+    ['milk chocolate pastry', 'Milk Chocolate pastry.jpg'],
+    ['milk chocolate', 'milk chocolate-cake.png'],
     ['butterscotch pastry', 'Butterscotch Pastry.jpg'],
     ['butterscotch', 'Butterscotch Cake Veg.png'],
     ['pineapple pastry', 'Pineapple Pastry.jpg'],
     ['pineapple', 'Pineapple Cake.jpg'],
     ['red velvet pastry', 'red velvate pastry.PNG'],
     ['red velvet', 'Red Velvet Cake.jpg'],
-    ['blueberry cake', 'Blue Berry Pastry.webp'],
+    ['blueberry cake', 'blue-berry cakes.webp'],
     ['blue berry pastry', 'Blue Berry Pastry.webp'],
     ['blueberry', 'Blue Berry Pastry.webp'],
     ['berry blast', 'Blue Berry Pastry.webp'],
@@ -224,10 +226,10 @@ const PRODUCT_IMAGE_HINTS = [
     ['strawberry muffin', 'strawberry muffin.PNG'],
     ['strawberry mousse', 'strawberry-mousse-recipe.webp'],
     ['red velvet mousse', 'Red Velvet Mousse.PNG'],
-    ['strawberry cake', 'Strawberry Pastry.jpg'],
+    ['strawberry cake', 'strawberry -cakes.jpg'],
     ['strawberry', 'Strawberry Pastry.jpg'],
     ['kiwi', 'Pineapple Pastry.jpg'],
-    ['orange pastry', 'Orange Pastry.webp'],
+    ['orange pastry', 'Orange Pastry.png'],
     ['coconut pastry', 'Coconut Pastry.jpg'],
     ['swiss roll', 'Sweetmilk Pastry.png'],
     ['cream roll', 'Sweetmilk Pastry.png'],
@@ -270,7 +272,7 @@ const PRODUCT_IMAGE_HINTS = [
     ['chinese samosa', 'veg samosa chiken samosa cheese samosa chicken samosa paneer samosa.PNG'],
     ['panjabi samosa', 'veg samosa chiken samosa cheese samosa chicken samosa paneer samosa.PNG'],
     ['paneer samosa', 'veg samosa chiken samosa cheese samosa chicken samosa paneer samosa.PNG'],
-    ['chicken 65', 'Paneer 65.PNG'],
+    ['chicken 65', 'chicken 65.jpg'],
     ['paneer 65', 'Paneer 65.PNG'],
     ['green chicken bun', 'chicken sandwich.png'],
     ['chilli fish bun', 'chicken sandwich.png'],
@@ -284,7 +286,7 @@ const PRODUCT_IMAGE_HINTS = [
     ['chicken parcel', 'chicken percel.jpg'],
     ['misti shuk', 'gulab-jamun-recipe-01.webp'],
     ['misti dahi', 'gulab-jamun-recipe-01.webp'],
-    ['fish chop', 'Veg Chop fish chop.jpg'],
+    ['fish chop', 'fish chop.png'],
     ['veg chop', 'Veg Chop fish chop.jpg'],
     ['fish finger', 'fish finger.png'],
     ['fish cutlet', 'fish cutlet chicken cutlet.png'],
@@ -507,9 +509,8 @@ export function installCatalogAdditions(root) {
             /pastries/i.test(section.querySelector('.group-header h2')?.textContent ?? '')
         )
     };
-    if (!referenceSections.cakes || !referenceSections.pastries) {
-        throw new Error('Could not find the existing cake and pastry categories.');
-    }
+    if (!referenceSections.pastries) throw new Error('Could not find the existing pastry category.');
+    referenceSections.cakes ??= referenceSections.pastries;
 
     const grids = new Map();
     for (const group of GROUPS) {

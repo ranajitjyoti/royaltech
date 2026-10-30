@@ -36,6 +36,7 @@ function getProductRecords(root, pageId) {
             key: `${pageId}:${encodeURIComponent(norm)}:${occ}`,
             name,
             price,
+            priceOnRequest: card.dataset.priceOnRequest === 'true',
             imageUrl: card.querySelector('img')?.getAttribute('src') ?? '',
             category: card.closest('.gallery-section')?.querySelector('.group-header h2')?.textContent.trim() ?? 'Products'
         };
@@ -63,7 +64,12 @@ async function applyCustomerCatalog() {
         if (!card) return;
         if (override) {
             card.querySelector('h3').textContent = override.name;
-            card.querySelector('.cake-price').textContent = formatPrice(override.price);
+            if (record.priceOnRequest && override.price === 0) {
+                card.querySelector('.cake-price').textContent = 'Price on request';
+            } else {
+                card.dataset.priceOnRequest = 'false';
+                card.querySelector('.cake-price').textContent = formatPrice(override.price);
+            }
             if (!override.available) {
                 card.style.setProperty('display', 'none', 'important');
             } else {
@@ -182,6 +188,7 @@ function createProductRow(record, override, canEdit, pendingChanges, updateSaveA
     priceInput.step = '0.01';
     priceInput.required = true;
     priceInput.value = String(override?.price ?? record.price);
+    if (record.priceOnRequest) priceInput.placeholder = '0 = price on request';
     priceInput.disabled = !canEdit;
 
     const isAvailable = override?.available ?? true;
