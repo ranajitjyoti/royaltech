@@ -123,9 +123,9 @@
         }
         .toggle-btn[data-state="off"] { background: #9b3d3d; }
         .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        #save-all-visibility { background: #c47c00; }
-        #save-all-visibility:hover { background: #a36200; }
-        #save-all-visibility:disabled { background: #64756a; opacity: 0.6; cursor: not-allowed; }
+        .save-product-btn { background: #c47c00; white-space: nowrap; }
+        .save-product-btn:hover { background: #a36200; }
+        .save-product-btn:disabled { background: #64756a; opacity: 0.6; cursor: not-allowed; }
         .add-product-section {
             background: #fff;
             border: 2px dashed #7b5ea7;
@@ -164,7 +164,7 @@
             .product-row .field:first-of-type { grid-column: 1; }
             .product-row .field:last-of-type  { grid-column: 2; }
             .product-availability { grid-column: 1; justify-self: start; }
-            .row-actions { grid-column: 2; justify-self: end; }
+            .save-product-btn { grid-column: 2; justify-self: end; }
         }
         @media (max-width: 600px) {
             .page { width: 94%; padding: 14px 0 40px; }
@@ -291,7 +291,6 @@
 
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
                 <p class="product-count" id="product-count" style="margin:0;"></p>
-                <button id="save-all-visibility" type="button" disabled>Save All Visibility</button>
             </div>
             <section id="product-list" aria-label="Products"></section>
         </div>

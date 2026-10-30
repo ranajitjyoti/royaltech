@@ -148,7 +148,7 @@ function createField(labelText, input) {
     return label;
 }
 
-function createProductRow(record, override, canEdit, pendingChanges, updateSaveAllBtn) {
+function createProductRow(record, override, draft, canEdit, onDraftChange, onSave) {
     const row = document.createElement('article');
     row.className = 'product-row';
     row.dataset.key = record.key;
@@ -178,7 +178,7 @@ function createProductRow(record, override, canEdit, pendingChanges, updateSaveA
     nameInput.type = 'text';
     nameInput.required = true;
     nameInput.maxLength = 120;
-    nameInput.value = override?.name ?? record.name;
+    nameInput.value = draft?.name ?? override?.name ?? record.name;
     nameInput.disabled = !canEdit;
 
     const priceInput = document.createElement('input');
@@ -187,32 +187,53 @@ function createProductRow(record, override, canEdit, pendingChanges, updateSaveA
     priceInput.min = '0';
     priceInput.step = '0.01';
     priceInput.required = true;
-    priceInput.value = String(override?.price ?? record.price);
+    priceInput.value = String(draft?.price ?? override?.price ?? record.price);
     if (record.priceOnRequest) priceInput.placeholder = '0 = price on request';
     priceInput.disabled = !canEdit;
 
-    const isAvailable = override?.available ?? true;
-    const origState = isAvailable ? 'on' : 'off';
+    const available = draft?.available ?? override?.available ?? true;
 
     const availabilityBtn = document.createElement('button');
     availabilityBtn.className = 'product-availability toggle-btn';
     availabilityBtn.type = 'button';
-    availabilityBtn.dataset.state = origState;
-    availabilityBtn.textContent = isAvailable ? '✔ Visible' : '✖ Hidden';
+    availabilityBtn.dataset.state = available ? 'on' : 'off';
+    availabilityBtn.textContent = available ? '✔ Visible' : '✖ Hidden';
     availabilityBtn.disabled = !canEdit;
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'save-product-btn';
+    saveBtn.type = 'button';
+    saveBtn.textContent = 'Save';
+    saveBtn.disabled = !canEdit || !draft;
+
+    function updateDraft() {
+        const name = nameInput.value.trim();
+        const price = Number(priceInput.value);
+        const nextAvailable = availabilityBtn.dataset.state === 'on';
+        const originalName = override?.name ?? record.name;
+        const originalPrice = override?.price ?? record.price;
+        const originalAvailable = override?.available ?? true;
+        const changed = name !== originalName || price !== originalPrice || nextAvailable !== originalAvailable;
+        const nextDraft = changed ? { name, price, available: nextAvailable } : null;
+        onDraftChange(record.key, nextDraft);
+        saveBtn.disabled = !canEdit || !changed || !nameInput.validity.valid || !priceInput.validity.valid;
+    }
+
+    nameInput.addEventListener('input', updateDraft);
+    priceInput.addEventListener('input', updateDraft);
+    saveBtn.addEventListener('click', () => onSave(record, {
+        name: nameInput.value.trim(),
+        price: Number(priceInput.value),
+        available: availabilityBtn.dataset.state === 'on'
+    }, saveBtn));
     availabilityBtn.addEventListener('click', () => {
         const on = availabilityBtn.dataset.state !== 'on';
         availabilityBtn.dataset.state = on ? 'on' : 'off';
         availabilityBtn.textContent = on ? '✔ Visible' : '✖ Hidden';
-        if (availabilityBtn.dataset.state !== origState) {
-            pendingChanges.set(record.key, on);
-        } else {
-            pendingChanges.delete(record.key);
-        }
-        updateSaveAllBtn();
+        updateDraft();
     });
 
-    row.append(heading, createField('Product name', nameInput), createField('Price (₹)', priceInput), availabilityBtn);
+    row.append(heading, createField('Product name', nameInput), createField('Price (₹)', priceInput), availabilityBtn, saveBtn);
     return row;
 }
 
@@ -229,18 +250,15 @@ async function startAdmin() {
     const passwordInput = document.getElementById('admin-password');
     const logoutButton = document.getElementById('admin-logout');
     const adminPanel = document.getElementById('admin-panel');
-    const saveAllBtn = document.getElementById('save-all-visibility');
     const pageRecords = {};
-    const pendingChanges = new Map(); // key -> available (boolean)
+    const drafts = new Map();
     let catalog = {};
     let canEdit = false;
     let pagesLoaded = false;
 
-    function updateSaveAllBtn() {
-        saveAllBtn.disabled = !canEdit || pendingChanges.size === 0;
-        saveAllBtn.textContent = pendingChanges.size > 0
-            ? `Save All Visibility (${pendingChanges.size})`
-            : 'Save All Visibility';
+    function updateDraft(key, draft) {
+        if (draft) drafts.set(key, draft);
+        else drafts.delete(key);
     }
 
     function setStatus(msg, isError = false) {
@@ -268,11 +286,17 @@ async function startAdmin() {
             const override = catalog[r.key];
             return `${override?.name ?? r.name} ${r.category}`.toLocaleLowerCase().includes(query);
         });
-        productList.replaceChildren(...records.map(r => createProductRow(r, catalog[r.key], canEdit, pendingChanges, updateSaveAllBtn)));
+        productList.replaceChildren(...records.map(r => createProductRow(
+            r,
+            catalog[r.key],
+            drafts.get(r.key),
+            canEdit,
+            updateDraft,
+            saveProduct
+        )));
         count.textContent = `${records.length} products`;
         resetAll.disabled = !canEdit;
         toggleNonfood.disabled = !canEdit;
-        updateSaveAllBtn();
         const nonfoodRecords = (pageRecords[page.id] ?? []).filter(r => r.category.includes('Non-Food Items and Packaging'));
         const allHidden = nonfoodRecords.length > 0 && nonfoodRecords.every(r => (catalog[r.key]?.available ?? true) === false);
         toggleNonfood.textContent = allHidden ? 'Show all non-food' : 'Hide all non-food';
@@ -285,6 +309,37 @@ async function startAdmin() {
         if (canEdit) renderProducts();
         if (session && !canEdit) setStatus('This account is not authorized.', true);
         else if (!canEdit) setStatus('');
+    }
+
+    async function saveProduct(record, values, saveBtn) {
+        if (!canEdit || !values.name || !Number.isFinite(values.price) || values.price < 0) {
+            setStatus('Enter a valid product name and price before saving.', true);
+            return;
+        }
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving…';
+        try {
+            const imageUrl = catalog[record.key]?.imageUrl ?? record.imageUrl;
+            const category = catalog[record.key]?.category ?? record.category;
+            const { error } = await supabase.from(TABLE).upsert({
+                product_key: record.key,
+                name: values.name,
+                price: values.price,
+                available: values.available,
+                image_url: imageUrl,
+                category,
+                updated_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            catalog[record.key] = { name: values.name, price: values.price, available: values.available, imageUrl, category };
+            drafts.delete(record.key);
+            setStatus(`Saved "${values.name}".`);
+            renderProducts();
+        } catch (err) {
+            setStatus(err instanceof Error ? err.message : 'Could not save product.', true);
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
     }
 
     loginForm.addEventListener('submit', async e => {
@@ -315,35 +370,7 @@ async function startAdmin() {
         }
     });
 
-    saveAllBtn.addEventListener('click', async () => {
-        if (!canEdit || pendingChanges.size === 0) return;
-        saveAllBtn.disabled = true;
-        saveAllBtn.textContent = 'Saving…';
-        try {
-            for (const [key, available] of pendingChanges) {
-                const pageId = key.startsWith('new:') ? key.split(':')[1] : key.split(':')[0];
-                const record = (pageRecords[pageId] ?? []).find(r => r.key === key);
-                if (!record) continue;
-                const name = catalog[key]?.name ?? record.name;
-                const price = catalog[key]?.price ?? record.price;
-                if (available && !catalog[key]) {
-                    // was already default visible, no override needed — skip
-                } else {
-                    const { error } = await supabase.from(TABLE).upsert({ product_key: key, name, price, available, updated_at: new Date().toISOString() });
-                    if (error) throw error;
-                    catalog[key] = { ...(catalog[key] ?? {}), name, price, available };
-                }
-            }
-            setStatus(`Saved visibility for ${pendingChanges.size} product(s).`);
-            pendingChanges.clear();
-            renderProducts();
-        } catch (err) {
-            setStatus(err instanceof Error ? err.message : 'Could not save changes.', true);
-            updateSaveAllBtn();
-        }
-    });
-
-    pageSelect.addEventListener('change', () => { pendingChanges.clear(); renderProducts(); });
+    pageSelect.addEventListener('change', renderProducts);
     searchInput.addEventListener('input', renderProducts);
 
     // ─── Add New Product ──────────────────────────────────────────────────────
@@ -429,7 +456,7 @@ async function startAdmin() {
             const { error } = await supabase.from(TABLE).delete().not('product_key', 'is', null);
             if (error) throw error;
             catalog = {};
-            pendingChanges.clear();
+            drafts.clear();
             setStatus('All catalog changes reset.');
             renderProducts();
         } catch (err) {
