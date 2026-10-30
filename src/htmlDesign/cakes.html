@@ -1708,7 +1708,7 @@
                     `${i + 1}. ${name} x${v.qty} = ${v.price === null ? 'Price on request' : `₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`}`
                 ).join('\n');
                 const message =
-                    `${getFormattedDate()}\nDarun Delight Order\n\n${lines}\n\n` +
+                    `New Alipore order for Tomorrow\n\n${lines}\n\n` +
                     `Items total${hasUnpricedItems ? ' (excluding items on request)' : ''}: ${formatRupees(itemTotal)}\n` +
                     (deliveryCharge ? `Delivery: ${formatRupees(deliveryCharge)}\n` : '') +
                     `Total${hasUnpricedItems ? ' (excluding items on request)' : ''}: ${formatRupees(itemTotal + deliveryCharge)}\n\n` +

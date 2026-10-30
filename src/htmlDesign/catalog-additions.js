@@ -209,6 +209,7 @@ const PRODUCT_IMAGE_HINTS = [
     ['chocochip', 'Choco Chip Cake Veg.jpg'],
     ['choco lava', 'Choco Lava Pastry.png'],
     ['chocko lava', 'Choco Lava Pastry.png'],
+    ['choco delight pastry', 'choco delight pastry.PNG'],
     ['choco delight', 'Choco Lava Pastry.png'],
     ['milk chocolate pastry', 'Milk Chocolate pastry.jpg'],
     ['milk chocolate', 'milk chocolate-cake.png'],

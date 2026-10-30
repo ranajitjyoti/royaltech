@@ -1356,9 +1356,8 @@
             document.getElementById('coWhatsappOrder').addEventListener('click', () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
                 if (!entries.length) return;
-                const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 const lines = entries.map(([name, v], index) => `${index + 1}. ${name} - ${v.qty}`).join('\n');
-                const message = `${date}\nDarun Delight New Alipore Order\n\n${lines}`;
+                const message = `New Alipore order for Tomorrow\n\n${lines}`;
                 window.open(`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`, '_blank');
                 closeCheckout();
             });
