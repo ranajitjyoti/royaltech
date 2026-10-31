@@ -1707,13 +1707,13 @@
                 const lines = entries.map(([name, v], i) =>
                     `${i + 1}. ${v.price === null
                         ? `${name} ${v.qty} * Price on request`
-                        : `${name} ${v.qty} * ₹${Number(v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })} = ₹${Number(v.qty * v.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`}`
+                        : `${name} ${v.qty} * ${formatRupees(v.price)} = ${formatRupees(v.qty * v.price)}`}`
                 ).join('\n');
                 const message =
-                    `Hi, please accept my order.\n\nNew Alipore order for Tomorrow\n\n${lines}\n\n` +
-                    `Items total${hasUnpricedItems ? ' (excluding items on request)' : ''}: ${formatRupees(itemTotal)}\n` +
+                    `Hi , My Order\n\n${lines}\n` +
                     (deliveryCharge ? `Delivery: ${formatRupees(deliveryCharge)}\n` : '') +
-                    `Total${hasUnpricedItems ? ' (excluding items on request)' : ''}: ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
+                    `___________________________\n` +
+                    `Total${hasUnpricedItems ? ' (excluding items on request)' : ''}  ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
                     `Scan and pay via UPI: ${paymentQrUrl.href}\n\n` +
                     `Thanks, please order again!\nhttps://www.deeplinkdata.com/src/htmlDesign/cakes.html`;
                 window.location.href = `https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`;
