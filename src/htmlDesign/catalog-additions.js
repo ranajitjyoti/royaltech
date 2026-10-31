@@ -2,7 +2,7 @@ const GROUPS = [
     {
         id: 'eggless-cakes',
         title: 'Celebration Cakes — Eggless',
-        placement: 'before-cakes',
+        placement: 'after-mousse',
         items: [
             ['Choco Almond Cake', 'Regular', 430],
             ['Butterscotch Cake', 'Regular', 380],
@@ -28,7 +28,7 @@ const GROUPS = [
     {
         id: 'nonveg-cakes',
         title: 'Celebration Cakes — Non-veg',
-        placement: 'before-cakes',
+        placement: 'after-eggless-cakes',
         items: [
             ['Butterscotch Cake', 'Junior', 220],
             ['Butterscotch Cake', 'Regular', 310],
@@ -394,7 +394,9 @@ function createSection(root, group, referenceSection) {
     container.append(header, body);
     section.append(container);
 
-    if (group.placement === 'before-cakes') {
+    if (group.placement === 'after-mousse' || group.placement === 'after-eggless-cakes') {
+        referenceSection.after(section);
+    } else if (group.placement === 'before-cakes') {
         referenceSection.before(section);
     } else if (group.placement === 'after-pastries') {
         referenceSection.after(section);
@@ -491,9 +493,13 @@ function getSearchSections(root, group, targetSection) {
 function installGroup(root, group, referenceSections) {
     let section = findSection(root, group);
     if (!section) {
-        const reference = group.placement === 'after-pastries'
-            ? referenceSections.pastries
-            : referenceSections.cakes;
+        const referenceByPlacement = {
+            'after-mousse': referenceSections.mousse,
+            'after-eggless-cakes': root.querySelector('[data-catalog-additions="eggless-cakes"]'),
+            'after-pastries': referenceSections.pastries,
+            'before-cakes': referenceSections.cakes
+        };
+        const reference = referenceByPlacement[group.placement];
         if (!reference) throw new Error(`Could not find a category for ${group.title}.`);
         section = createSection(root, group, reference);
     }
@@ -508,9 +514,13 @@ export function installCatalogAdditions(root) {
         ),
         pastries: [...root.querySelectorAll('.gallery-section')].find(section =>
             /pastries/i.test(section.querySelector('.group-header h2')?.textContent ?? '')
+        ),
+        mousse: [...root.querySelectorAll('.gallery-section')].find(section =>
+            /mousse/i.test(section.querySelector('.group-header h2')?.textContent ?? '')
         )
     };
     if (!referenceSections.pastries) throw new Error('Could not find the existing pastry category.');
+    if (!referenceSections.mousse) throw new Error('Could not find the existing mousse category.');
     referenceSections.cakes ??= referenceSections.pastries;
 
     const grids = new Map();

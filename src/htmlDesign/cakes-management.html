@@ -126,6 +126,26 @@
         .save-product-btn { background: #c47c00; white-space: nowrap; }
         .save-product-btn:hover { background: #a36200; }
         .save-product-btn:disabled { background: #64756a; opacity: 0.6; cursor: not-allowed; }
+        .section-visibility { margin-bottom: 18px; }
+        .section-visibility h2 { margin: 0 0 4px; font-size: 1rem; color: #1a3d2b; }
+        .section-visibility p { margin: 0 0 10px; color: #557462; font-size: 0.82rem; }
+        #section-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+        .section-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid #e0ebe3;
+            border-radius: 10px;
+            background: #fff;
+        }
+        .section-control strong { overflow-wrap: anywhere; font-size: 0.82rem; }
+        .section-visibility-btn { flex: 0 0 auto; }
+        .section-visibility-btn[data-state="on"] { background: #2e8b57; }
+        .section-visibility-btn[data-state="off"] { background: #7b8580; }
+        .section-save-btn { flex: 0 0 auto; }
         .add-product-section {
             background: #fff;
             border: 2px dashed #7b5ea7;
@@ -292,6 +312,11 @@
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
                 <p class="product-count" id="product-count" style="margin:0;"></p>
             </div>
+            <section class="section-visibility" aria-labelledby="section-visibility-title">
+                <h2 id="section-visibility-title">Page section visibility</h2>
+                <p>Hide or show a whole section on the selected customer page. Individual product settings remain unchanged.</p>
+                <div id="section-list" aria-live="polite"></div>
+            </section>
             <section id="product-list" aria-label="Products"></section>
         </div>
     </main>

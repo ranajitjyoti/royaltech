@@ -18,6 +18,10 @@ function normalizeName(name) {
     return name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
 }
 
+function sectionCatalogKey(pageId, sectionName) {
+    return `section:${pageId}:${encodeURIComponent(normalizeName(sectionName))}`;
+}
+
 function formatPrice(price) {
     return `₹ ${Number(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -96,6 +100,21 @@ async function applyCustomerCatalog() {
         image.hidden = false;
     });
 
+    function applySectionVisibility() {
+        for (const section of document.querySelectorAll('.gallery-section')) {
+            const title = section.querySelector('.group-header h2')?.textContent.trim();
+            if (!title) continue;
+            const override = catalog[sectionCatalogKey(pageId, title)];
+            if (override?.available === false) {
+                section.style.setProperty('display', 'none', 'important');
+            } else {
+                section.style.removeProperty('display');
+            }
+        }
+    }
+
+    applySectionVisibility();
+
     const newEntries = Object.entries(catalog).filter(([k, v]) =>
         k.startsWith(`new:${pageId}:`) && v.available !== false
     );
@@ -135,6 +154,7 @@ async function applyCustomerCatalog() {
             <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>`;
         grid.appendChild(card);
     });
+    applySectionVisibility();
 }
 
 // ─── Admin panel ──────────────────────────────────────────────────────────────
@@ -237,10 +257,48 @@ function createProductRow(record, override, draft, canEdit, onDraftChange, onSav
     return row;
 }
 
+function createSectionControl(pageId, sectionName, catalog, draftAvailable, canEdit, onDraftChange, onSave) {
+    const row = document.createElement('article');
+    row.className = 'section-control';
+
+    const title = document.createElement('strong');
+    title.textContent = sectionName;
+
+    const key = sectionCatalogKey(pageId, sectionName);
+    const savedAvailable = catalog[key]?.available ?? true;
+    const available = draftAvailable ?? savedAvailable;
+    const stateButton = document.createElement('button');
+    stateButton.className = 'toggle-btn section-visibility-btn';
+    stateButton.type = 'button';
+    stateButton.dataset.state = available ? 'on' : 'off';
+    stateButton.textContent = available ? '✔ Visible' : '✖ Hidden';
+    stateButton.disabled = !canEdit;
+    stateButton.addEventListener('click', () => {
+        const nextAvailable = stateButton.dataset.state !== 'on';
+        stateButton.dataset.state = nextAvailable ? 'on' : 'off';
+        stateButton.textContent = nextAvailable ? '✔ Visible' : '✖ Hidden';
+        onDraftChange(key, nextAvailable === savedAvailable ? null : nextAvailable);
+        saveButton.disabled = !canEdit || nextAvailable === savedAvailable;
+    });
+
+    const saveButton = document.createElement('button');
+    saveButton.className = 'save-product-btn section-save-btn';
+    saveButton.type = 'button';
+    saveButton.textContent = 'Save';
+    saveButton.disabled = !canEdit || draftAvailable === undefined;
+    saveButton.addEventListener('click', () =>
+        onSave(pageId, sectionName, stateButton.dataset.state === 'on', saveButton)
+    );
+
+    row.append(title, stateButton, saveButton);
+    return row;
+}
+
 async function startAdmin() {
     const pageSelect = document.getElementById('catalog-page');
     const searchInput = document.getElementById('product-search');
     const productList = document.getElementById('product-list');
+    const sectionList = document.getElementById('section-list');
     const status = document.getElementById('catalog-status');
     const count = document.getElementById('product-count');
     const resetAll = document.getElementById('reset-all');
@@ -252,6 +310,7 @@ async function startAdmin() {
     const adminPanel = document.getElementById('admin-panel');
     const pageRecords = {};
     const drafts = new Map();
+    const sectionDrafts = new Map();
     let catalog = {};
     let canEdit = false;
     let pagesLoaded = false;
@@ -281,8 +340,27 @@ async function startAdmin() {
     function renderProducts() {
         if (!pagesLoaded) return;
         const page = PAGES.find(p => p.id === pageSelect.value);
+        const pageProductRecords = pageRecords[page.id] ?? [];
+        const sectionNames = new Set(pageProductRecords.map(record => record.category));
+        if (Object.keys(catalog).some(key => key.startsWith(`new:${page.id}:`))) {
+            sectionNames.add('✦ New Products');
+        }
+        sectionList.replaceChildren(...[...sectionNames].map(sectionName =>
+            createSectionControl(
+                page.id,
+                sectionName,
+                catalog,
+                sectionDrafts.get(sectionCatalogKey(page.id, sectionName)),
+                canEdit,
+                (key, available) => {
+                    if (available === null) sectionDrafts.delete(key);
+                    else sectionDrafts.set(key, available);
+                },
+                saveSectionVisibility
+            )
+        ));
         const query = searchInput.value.trim().toLocaleLowerCase();
-        const records = pageRecords[page.id].filter(r => {
+        const records = pageProductRecords.filter(r => {
             const override = catalog[r.key];
             return `${override?.name ?? r.name} ${r.category}`.toLocaleLowerCase().includes(query);
         });
@@ -339,6 +417,33 @@ async function startAdmin() {
             setStatus(err instanceof Error ? err.message : 'Could not save product.', true);
             saveBtn.disabled = false;
             saveBtn.textContent = 'Save';
+        }
+    }
+
+    async function saveSectionVisibility(pageId, sectionName, available, button) {
+        if (!canEdit) return;
+        button.disabled = true;
+        button.textContent = 'Saving…';
+        try {
+            const key = sectionCatalogKey(pageId, sectionName);
+            const { error } = await supabase.from(TABLE).upsert({
+                product_key: key,
+                name: sectionName,
+                price: 0,
+                available,
+                image_url: '',
+                category: sectionName,
+                updated_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            catalog[key] = { name: sectionName, price: 0, available, imageUrl: '', category: sectionName };
+            sectionDrafts.delete(key);
+            setStatus(`${sectionName} section ${available ? 'shown' : 'hidden'} on the ${PAGES.find(page => page.id === pageId)?.label ?? pageId}.`);
+            renderProducts();
+        } catch (err) {
+            setStatus(err instanceof Error ? err.message : 'Could not update section visibility.', true);
+            button.disabled = false;
+            button.textContent = 'Save';
         }
     }
 
@@ -457,6 +562,7 @@ async function startAdmin() {
             if (error) throw error;
             catalog = {};
             drafts.clear();
+            sectionDrafts.clear();
             setStatus('All catalog changes reset.');
             renderProducts();
         } catch (err) {
