@@ -478,7 +478,7 @@
         .co-overlay.open { display: flex; }
         .co-modal {
             background: #fff; border-radius: 18px;
-            width: min(420px, 100%);
+            width: min(480px, 100%);
             max-height: 90vh;
             padding: 28px 24px 24px;
             box-shadow: 0 16px 48px rgba(0,0,0,0.22);
@@ -486,6 +486,7 @@
             animation: fadeInUp 0.28s ease;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         .co-modal h3 { font-size: 1.05rem; color: #1a3d2b; font-weight: 700; margin-bottom: 4px; }
         .co-sub { font-size: 0.8rem; color: #4a7c5e; margin-bottom: 18px; }
@@ -542,6 +543,18 @@
         .co-factory:hover { background: #ca6f1e; }
         .co-actions-row2 { display: flex; gap: 10px; flex-shrink: 0; margin-top: 8px; }
         .co-order-only { width: 100%; flex: 0 0 auto; }
+        .co-bill-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .co-bill-button {
+            padding: 10px 8px; border: 0; border-radius: 8px;
+            background: #2e8b57; color: #fff; font: 600 0.78rem 'Poppins', sans-serif;
+            cursor: pointer;
+        }
+        .co-bill-button:hover { background: #1e6b40; }
+        .co-whatsapp-field { margin-top: 12px; }
+        .co-whatsapp-help, .co-bill-status {
+            font-size: 0.72rem; color: #4a7c5e; line-height: 1.5; margin-top: 4px;
+        }
+        .co-bill-status { min-height: 1.2em; }
         .co-factory-note {
             font-size: 0.72rem; color: #e67e22; font-weight: 600;
             text-align: center; margin-top: 6px; flex-shrink: 0;
@@ -1444,6 +1457,15 @@
             <div class="co-actions-row2">
                 <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
             </div>
+            <label class="co-label co-whatsapp-field" for="billWhatsappNumber">Customer WhatsApp number</label>
+            <input class="co-input" id="billWhatsappNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="Country code + number (e.g. 919876543210)">
+            <p class="co-whatsapp-help">WhatsApp does not allow this page to attach a PDF automatically. We will create the bill and open this chat; attach the downloaded PDF there. Use Share PDF for Bluetooth or other sharing options.</p>
+            <div class="co-bill-actions">
+                <button class="co-bill-button" id="printBillPdf" type="button">🖨️ Print / Save PDF</button>
+                <button class="co-bill-button" id="shareBillPdf" type="button">📤 Share PDF</button>
+                <button class="co-bill-button" id="whatsappBillPdf" type="button" style="grid-column:1 / -1;background:#25D366;">💬 Create PDF &amp; open WhatsApp</button>
+            </div>
+            <p class="co-bill-status" id="billPdfStatus" role="status" aria-live="polite"></p>
             <p class="co-factory-note" id="coFactoryNote"></p>
         </div>
     </div>
@@ -1672,6 +1694,177 @@
             function getFormattedDate() {
                 return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
             }
+
+            function createBillPdf() {
+                const entries = Object.entries(cartData).filter(([, item]) => item.qty > 0);
+                if (!entries.length) throw new Error('Your cart is empty.');
+
+                const total = entries.reduce((sum, [, item]) => sum + (item.price === null ? 0 : item.qty * item.price), 0);
+                const hasUnpricedItems = entries.some(([, item]) => item.price === null);
+                const date = getFormattedDate();
+                const safeText = value => String(value)
+                    .normalize('NFKD')
+                    .replace(/[^\x20-\x7E]/g, '')
+                    .replace(/\\/g, '\\\\')
+                    .replace(/\(/g, '\\(')
+                    .replace(/\)/g, '\\)');
+                const wrapText = (value, maxLength = 68) => {
+                    const words = safeText(value).split(/\s+/);
+                    const lines = [];
+                    let line = '';
+                    words.forEach(word => {
+                        while (word.length > maxLength) {
+                            if (line) { lines.push(line); line = ''; }
+                            lines.push(word.slice(0, maxLength));
+                            word = word.slice(maxLength);
+                        }
+                        if (line && `${line} ${word}`.length > maxLength) {
+                            lines.push(line);
+                            line = word;
+                        } else {
+                            line = line ? `${line} ${word}` : word;
+                        }
+                    });
+                    if (line) lines.push(line);
+                    return lines;
+                };
+                const lines = [
+                    'DARUN DELIGHTS - ORDER BILL',
+                    `Date: ${date}`,
+                    '',
+                    'Items:'
+                ];
+                entries.forEach(([name, item]) => {
+                    const amount = item.price === null
+                        ? 'Price on request'
+                        : `Rs ${Number(item.qty * item.price).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+                    const itemLines = wrapText(`${name} x${item.qty}${item.unit ? ` (${item.unit})` : ''} - ${amount}`);
+                    lines.push(...itemLines);
+                });
+                lines.push(
+                    '',
+                    `Total: Rs ${Number(total).toLocaleString('en-IN', { maximumFractionDigits: 2 })}${hasUnpricedItems ? ' + price on request' : ''}`,
+                    '',
+                    'Thank you for choosing Darun Delights!'
+                );
+
+                const pageLines = [];
+                let currentPage = [];
+                lines.forEach(line => {
+                    if (currentPage.length === 34) {
+                        pageLines.push(currentPage);
+                        currentPage = [];
+                    }
+                    currentPage.push(line);
+                });
+                if (currentPage.length) pageLines.push(currentPage);
+
+                const objects = [
+                    '<< /Type /Catalog /Pages 2 0 R >>',
+                    `<< /Type /Pages /Kids [${pageLines.map((_, index) => `${4 + index * 2} 0 R`).join(' ')}] /Count ${pageLines.length} >>`,
+                    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
+                ];
+                pageLines.forEach((page, index) => {
+                    const pageObject = 4 + index * 2;
+                    const contentObject = pageObject + 1;
+                    const commands = page.map((line, lineIndex) =>
+                        `BT /F1 ${lineIndex === 0 && index === 0 ? 16 : 11} Tf 50 ${790 - lineIndex * 20} Td (${line}) Tj ET`
+                    ).join('\n');
+                    objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentObject} 0 R >>`);
+                    objects.push(`<< /Length ${commands.length} >>\nstream\n${commands}\nendstream`);
+                });
+
+                let pdf = '%PDF-1.4\n';
+                const offsets = [0];
+                objects.forEach((object, index) => {
+                    offsets.push(pdf.length);
+                    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+                });
+                const xrefOffset = pdf.length;
+                pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+                offsets.slice(1).forEach(offset => {
+                    pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
+                });
+                pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+                return new Blob([pdf], { type: 'application/pdf' });
+            }
+
+            function downloadBillPdf(pdf) {
+                const url = URL.createObjectURL(pdf);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `darun-delights-bill-${new Date().toISOString().slice(0, 10)}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+            }
+
+            function setBillPdfStatus(message, isError = false) {
+                const status = document.getElementById('billPdfStatus');
+                status.textContent = message;
+                status.style.color = isError ? '#c0392b' : '';
+            }
+
+            document.getElementById('printBillPdf').addEventListener('click', () => {
+                try {
+                    const pdf = createBillPdf();
+                    const url = URL.createObjectURL(pdf);
+                    const printWindow = window.open(url, '_blank');
+                    if (!printWindow) {
+                        downloadBillPdf(pdf);
+                        setBillPdfStatus('PDF downloaded. Open it to print or choose Save as PDF.');
+                    } else {
+                        setBillPdfStatus('Bill opened as a PDF. Use the PDF viewer to print or save it.');
+                    }
+                    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+                } catch (error) {
+                    setBillPdfStatus(error instanceof Error ? error.message : 'Could not create the bill PDF.', true);
+                }
+            });
+
+            document.getElementById('shareBillPdf').addEventListener('click', async () => {
+                try {
+                    const pdf = createBillPdf();
+                    const file = new File([pdf], `darun-delights-bill-${new Date().toISOString().slice(0, 10)}.pdf`, { type: 'application/pdf' });
+                    if (navigator.canShare?.({ files: [file] }) && navigator.share) {
+                        await navigator.share({ files: [file], title: 'Darun Delights order bill' });
+                        setBillPdfStatus('The PDF share sheet was closed.');
+                    } else {
+                        downloadBillPdf(pdf);
+                        setBillPdfStatus('File sharing is not available in this browser. The PDF was downloaded; open it to print or share.');
+                    }
+                } catch (error) {
+                    if (error?.name !== 'AbortError') {
+                        setBillPdfStatus(error instanceof Error ? error.message : 'Could not share the bill PDF.', true);
+                    }
+                }
+            });
+
+            document.getElementById('whatsappBillPdf').addEventListener('click', () => {
+                const rawNumber = document.getElementById('billWhatsappNumber').value.trim();
+                const digits = rawNumber.replace(/\D/g, '');
+                if (digits.length < 8 || digits.length > 15) {
+                    setBillPdfStatus('Enter a valid WhatsApp number with country code (8-15 digits).', true);
+                    document.getElementById('billWhatsappNumber').focus();
+                    return;
+                }
+                try {
+                    const pdf = createBillPdf();
+                    downloadBillPdf(pdf);
+                    const message = 'Hello! Your Darun Delights order bill PDF has been downloaded. Please attach it to this chat to share your bill.';
+                    const whatsappWindow = window.open('about:blank', '_blank');
+                    if (whatsappWindow) {
+                        whatsappWindow.opener = null;
+                        whatsappWindow.location.href = `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+                        setBillPdfStatus('PDF downloaded and WhatsApp chat opened. Attach the downloaded bill in that chat to send it.');
+                    } else {
+                        setBillPdfStatus('PDF downloaded. Allow pop-ups to open WhatsApp, then attach the bill in that chat.');
+                    }
+                } catch (error) {
+                    setBillPdfStatus(error instanceof Error ? error.message : 'Could not create the bill PDF.', true);
+                }
+            });
 
             function openCheckout() {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);

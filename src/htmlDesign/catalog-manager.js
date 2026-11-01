@@ -5,6 +5,10 @@ const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
 const STORAGE_BUCKET = 'product-images';
+const ADMIN_EMAILS = new Set([
+    'ranojitjyoti@gmail.com',
+    'connect@deeplinkdata.com'
+]);
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const PAGES = [
@@ -381,7 +385,7 @@ async function startAdmin() {
     }
 
     function updateAuthUI(session) {
-        canEdit = Boolean(session?.user && session.user.email?.toLocaleLowerCase() === 'ranojitjyoti@gmail.com');
+        canEdit = Boolean(session?.user?.email && ADMIN_EMAILS.has(session.user.email.toLocaleLowerCase()));
         loginForm.hidden = canEdit;
         adminPanel.hidden = !canEdit;
         if (canEdit) renderProducts();
