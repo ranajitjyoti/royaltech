@@ -1,6 +1,11 @@
 -- Run this in the Supabase SQL Editor to authorize the additional catalog admin.
 -- Keep the email allow-list in sync with ADMIN_EMAILS in catalog-manager.js.
 
+-- The catalog manager reads and writes these columns, including on older installs.
+alter table public.catalog_overrides
+    add column if not exists image_url text not null default '',
+    add column if not exists category text not null default 'Products';
+
 drop policy if exists "Admin can insert catalog overrides" on public.catalog_overrides;
 create policy "Admin can insert catalog overrides"
     on public.catalog_overrides

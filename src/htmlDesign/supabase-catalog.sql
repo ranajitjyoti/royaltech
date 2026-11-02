@@ -6,6 +6,10 @@ create table if not exists public.catalog_overrides (
     updated_at timestamptz not null default now()
 );
 
+alter table public.catalog_overrides
+    add column if not exists image_url text not null default '',
+    add column if not exists category text not null default 'Products';
+
 alter table public.catalog_overrides enable row level security;
 
 grant select on public.catalog_overrides to anon, authenticated;
@@ -27,51 +31,27 @@ begin
                 using (true)
         $policy$;
     end if;
-
-    if not exists (
-        select 1 from pg_policies
-        where schemaname = 'public'
-          and tablename = 'catalog_overrides'
-          and policyname = 'Admin can insert catalog overrides'
-    ) then
-        execute $policy$
-            create policy "Admin can insert catalog overrides"
-                on public.catalog_overrides
-                for insert
-                to authenticated
-                with check (lower(auth.jwt() ->> 'email') = 'ranojitjyoti@gmail.com')
-        $policy$;
-    end if;
-
-    if not exists (
-        select 1 from pg_policies
-        where schemaname = 'public'
-          and tablename = 'catalog_overrides'
-          and policyname = 'Admin can update catalog overrides'
-    ) then
-        execute $policy$
-            create policy "Admin can update catalog overrides"
-                on public.catalog_overrides
-                for update
-                to authenticated
-                using (lower(auth.jwt() ->> 'email') = 'ranojitjyoti@gmail.com')
-                with check (lower(auth.jwt() ->> 'email') = 'ranojitjyoti@gmail.com')
-        $policy$;
-    end if;
-
-    if not exists (
-        select 1 from pg_policies
-        where schemaname = 'public'
-          and tablename = 'catalog_overrides'
-          and policyname = 'Admin can delete catalog overrides'
-    ) then
-        execute $policy$
-            create policy "Admin can delete catalog overrides"
-                on public.catalog_overrides
-                for delete
-                to authenticated
-                using (lower(auth.jwt() ->> 'email') = 'ranojitjyoti@gmail.com')
-        $policy$;
-    end if;
 end
 $$;
+
+drop policy if exists "Admin can insert catalog overrides" on public.catalog_overrides;
+create policy "Admin can insert catalog overrides"
+    on public.catalog_overrides
+    for insert
+    to authenticated
+    with check (lower(auth.jwt() ->> 'email') in ('ranojitjyoti@gmail.com', 'connect@deeplinkdata.com'));
+
+drop policy if exists "Admin can update catalog overrides" on public.catalog_overrides;
+create policy "Admin can update catalog overrides"
+    on public.catalog_overrides
+    for update
+    to authenticated
+    using (lower(auth.jwt() ->> 'email') in ('ranojitjyoti@gmail.com', 'connect@deeplinkdata.com'))
+    with check (lower(auth.jwt() ->> 'email') in ('ranojitjyoti@gmail.com', 'connect@deeplinkdata.com'));
+
+drop policy if exists "Admin can delete catalog overrides" on public.catalog_overrides;
+create policy "Admin can delete catalog overrides"
+    on public.catalog_overrides
+    for delete
+    to authenticated
+    using (lower(auth.jwt() ->> 'email') in ('ranojitjyoti@gmail.com', 'connect@deeplinkdata.com'));
