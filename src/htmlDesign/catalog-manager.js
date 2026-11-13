@@ -65,7 +65,7 @@ function findOrCreateProductSection(title) {
             <div class="group-body"><div class="gallery-grid"></div></div>
         </div>`;
     section.querySelector('.group-header h2').textContent = title;
-    document.querySelector('.location-section')?.before(section);
+    (document.querySelector('.location-section') ?? document.getElementById('coOverlay'))?.before(section);
     return section.querySelector('.gallery-grid');
 }
 
