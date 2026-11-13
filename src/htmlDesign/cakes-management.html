@@ -47,6 +47,25 @@
             margin-bottom: 18px;
             font-size: 0.88rem;
         }
+        .shop-availability {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            border: 1px solid #e0ebe3;
+            border-radius: 12px;
+            background: #fff;
+        }
+        .shop-availability h2 { margin: 0 0 4px; font-size: 1rem; }
+        .shop-availability p { margin: 0; color: #557462; font-size: 0.82rem; }
+        #shop-order-state { font-weight: 700; }
+        #shop-order-state[data-state="closed"] { color: #a52626; }
+        #shop-order-state[data-state="open"] { color: #2e6c45; }
+        #shop-order-toggle[data-state="closed"] { background: #2e8b57; }
+        #shop-order-toggle[data-state="open"] { background: #9b3d3d; }
         .toolbar {
             display: grid;
             grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
@@ -251,6 +270,15 @@
                     <button id="admin-logout" type="button" style="background:#9b3d3d;">Sign out</button>
                 </div>
             </header>
+
+            <section class="shop-availability" aria-labelledby="shop-availability-title">
+                <div>
+                    <h2 id="shop-availability-title">Shop order acceptance</h2>
+                    <p id="shop-order-state" role="status" aria-live="polite"></p>
+                    <p>Closing the shop keeps products visible but prevents adding items on both customer pages.</p>
+                </div>
+                <button id="shop-order-toggle" data-state="open" type="button">Close shop to new orders</button>
+            </section>
 
             <section class="add-product-section">
                 <h2>✦ Add New Product</h2>

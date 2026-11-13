@@ -5,8 +5,10 @@ const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
 const STORAGE_BUCKET = 'product-images';
+const SHOP_AVAILABILITY_KEY = 'setting:shop-accepting-orders';
 const DRY_CAKES_SECTION = '🍰 Dry Cakes';
 const DRY_FOOD_ITEMS_SECTION = '🍱 Dry Food Items';
+const SHOP_WHATSAPP_URL = 'https://wa.me/918420290133';
 const ADMIN_EMAILS = new Set([
     'ranojitjyoti@gmail.com',
     'connect@deeplinkdata.com'
@@ -124,12 +126,97 @@ async function fetchCatalog() {
     return Object.fromEntries(data.map(p => [p.product_key, { name: p.name, price: Number(p.price), available: p.available, imageUrl: p.image_url ?? '', category: p.category ?? '' }]));
 }
 
+function updateCustomerOrderAvailability(acceptingOrders, message) {
+    const root = document.documentElement;
+    root.dataset.orderAvailability = acceptingOrders ? 'open' : 'closed';
+
+    let style = document.getElementById('shop-order-availability-styles');
+    if (!style) {
+        style = document.createElement('style');
+        style.id = 'shop-order-availability-styles';
+        style.textContent = `
+            .shop-closed-banner {
+                display:flex; justify-content:center; align-items:center; flex-wrap:wrap;
+                gap:6px; padding:14px 18px; background:#b42318; color:#fff;
+                font-weight:600; text-align:center;
+            }
+            .shop-closed-banner[hidden] { display:none !important; }
+            .shop-closed-banner a { color:#fff; text-decoration:underline; font-weight:700; }
+            html[data-order-availability="closed"] .btn-add-cart,
+            html[data-order-availability="closed"] .qty-plus,
+            html[data-order-availability="closed"] .di-qty [data-action="plus"],
+            html[data-order-availability="closed"] .sr-add,
+            html[data-order-availability="closed"] .btn-checkout {
+                opacity:.55; cursor:not-allowed;
+            }
+        `;
+        document.head.append(style);
+    }
+
+    let banner = document.getElementById('shop-closed-banner');
+    if (!banner) {
+        banner = document.createElement('aside');
+        banner.id = 'shop-closed-banner';
+        banner.className = 'shop-closed-banner';
+        banner.setAttribute('role', 'status');
+        const text = document.createElement('span');
+        text.className = 'shop-closed-message';
+        const link = document.createElement('a');
+        link.href = SHOP_WHATSAPP_URL;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'WhatsApp us to order';
+        banner.append(text, link);
+        const firstSection = document.querySelector('.gallery-section');
+        (firstSection?.parentElement ?? document.body).insertBefore(banner, firstSection ?? document.body.firstChild);
+    }
+    banner.querySelector('.shop-closed-message').textContent =
+        message ?? 'Shop is not accepting orders now. If you need to order, ';
+    banner.hidden = acceptingOrders;
+}
+
 // ─── Customer page ────────────────────────────────────────────────────────────
 
 async function applyCustomerCatalog() {
     installCatalogAdditions(document);
+    const root = document.documentElement;
+    root.dataset.orderAvailability = 'checking';
+    const blockedControls = '.btn-add-cart, .qty-plus, .di-qty [data-action="plus"], .sr-add, .btn-checkout';
+    const updateBlockedControls = () => {
+        const blocked = root.dataset.orderAvailability !== 'open';
+        document.querySelectorAll(blockedControls).forEach(button => {
+            if (blocked) {
+                if (!button.hasAttribute('data-order-state-disabled')) {
+                    button.dataset.orderStateDisabled = String(button.disabled);
+                }
+                button.disabled = true;
+            } else if (button.hasAttribute('data-order-state-disabled')) {
+                button.disabled = button.dataset.orderStateDisabled === 'true';
+                delete button.dataset.orderStateDisabled;
+            }
+        });
+    };
+    document.addEventListener('click', event => {
+        if (root.dataset.orderAvailability === 'open' || !(event.target instanceof Element)) return;
+        if (!event.target.closest(blockedControls)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }, true);
+    updateBlockedControls();
+    const controlsObserver = new MutationObserver(updateBlockedControls);
+    controlsObserver.observe(document.body, { childList: true, subtree: true });
+
     const pageId = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html') ? 'order-cakes' : 'cakes';
-    const catalog = await fetchCatalog();
+    let catalog;
+    try {
+        catalog = await fetchCatalog();
+    } catch (error) {
+        updateCustomerOrderAvailability(false, 'We can’t confirm order availability right now. Please contact us on WhatsApp. ');
+        updateBlockedControls();
+        throw error;
+    }
+    updateCustomerOrderAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available !== false);
+    updateBlockedControls();
     const cards = [...document.querySelectorAll('.cake-card')];
     const records = getProductRecords(document, pageId);
 
@@ -200,6 +287,7 @@ async function applyCustomerCatalog() {
         productGrids.get(category).appendChild(createCustomerProductCard(product));
     });
     document.dispatchEvent(new Event('catalog:products-updated'));
+    updateBlockedControls();
     applySectionVisibility();
 }
 
@@ -347,6 +435,8 @@ async function startAdmin() {
     const sectionList = document.getElementById('section-list');
     const status = document.getElementById('catalog-status');
     const count = document.getElementById('product-count');
+    const shopOrderState = document.getElementById('shop-order-state');
+    const shopOrderToggle = document.getElementById('shop-order-toggle');
     const resetAll = document.getElementById('reset-all');
     const toggleNonfood = document.getElementById('toggle-nonfood');
     const loginForm = document.getElementById('admin-login');
@@ -372,6 +462,15 @@ async function startAdmin() {
         status.classList.toggle('error', isError);
     }
 
+    function renderShopAvailability() {
+        const acceptingOrders = catalog[SHOP_AVAILABILITY_KEY]?.available !== false;
+        shopOrderState.dataset.state = acceptingOrders ? 'open' : 'closed';
+        shopOrderState.textContent = acceptingOrders ? 'Shop is accepting orders.' : 'Shop is not accepting orders.';
+        shopOrderToggle.dataset.state = acceptingOrders ? 'open' : 'closed';
+        shopOrderToggle.textContent = acceptingOrders ? 'Close shop to new orders' : 'Accept orders again';
+        shopOrderToggle.disabled = !canEdit;
+    }
+
     async function loadPages() {
         for (const page of PAGES) {
             const pageUrl = new URL(page.file, location.href);
@@ -387,6 +486,7 @@ async function startAdmin() {
     }
 
     function renderProducts() {
+        renderShopAvailability();
         if (!pagesLoaded) return;
         const page = PAGES.find(p => p.id === pageSelect.value);
         const pageProductRecords = new Map((pageRecords[page.id] ?? []).map(record => [record.key, record]));
@@ -506,6 +606,36 @@ async function startAdmin() {
         }
     }
 
+    async function saveShopAvailability(acceptingOrders) {
+        if (!canEdit) return;
+        shopOrderToggle.disabled = true;
+        shopOrderToggle.textContent = 'Saving…';
+        try {
+            const { error } = await supabase.from(TABLE).upsert({
+                product_key: SHOP_AVAILABILITY_KEY,
+                name: 'Shop order availability',
+                price: 0,
+                available: acceptingOrders,
+                image_url: '',
+                category: 'Settings',
+                updated_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            catalog[SHOP_AVAILABILITY_KEY] = {
+                name: 'Shop order availability',
+                price: 0,
+                available: acceptingOrders,
+                imageUrl: '',
+                category: 'Settings'
+            };
+            setStatus(acceptingOrders ? 'The shop is now accepting orders.' : 'The shop is now closed to new orders.');
+            renderProducts();
+        } catch (err) {
+            setStatus(err instanceof Error ? err.message : 'Could not update order availability.', true);
+            renderShopAvailability();
+        }
+    }
+
     loginForm.addEventListener('submit', async e => {
         e.preventDefault();
         setStatus('Signing in…');
@@ -536,6 +666,9 @@ async function startAdmin() {
 
     pageSelect.addEventListener('change', renderProducts);
     searchInput.addEventListener('input', renderProducts);
+    shopOrderToggle.addEventListener('click', () =>
+        saveShopAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available === false)
+    );
 
     // ─── Add New Product ──────────────────────────────────────────────────────
     const addForm = document.getElementById('add-product-form');
