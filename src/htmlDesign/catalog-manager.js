@@ -5,6 +5,8 @@ const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
 const STORAGE_BUCKET = 'product-images';
+const DRY_CAKES_SECTION = '🍰 Dry Cakes';
+const DRY_FOOD_ITEMS_SECTION = '🍱 Dry Food Items';
 const ADMIN_EMAILS = new Set([
     'ranojitjyoti@gmail.com',
     'connect@deeplinkdata.com'
@@ -24,6 +26,21 @@ function normalizeName(name) {
 
 function sectionCatalogKey(pageId, sectionName) {
     return `section:${pageId}:${encodeURIComponent(normalizeName(sectionName))}`;
+}
+
+function getSectionOverride(catalog, pageId, sectionName) {
+    const override = catalog[sectionCatalogKey(pageId, sectionName)];
+    if (override || sectionName !== DRY_FOOD_ITEMS_SECTION) return override;
+    return catalog[sectionCatalogKey(pageId, DRY_CAKES_SECTION)];
+}
+
+function normalizeProductCategory(category) {
+    const normalized = normalizeName(category);
+    if ([DRY_CAKES_SECTION, DRY_FOOD_ITEMS_SECTION, 'Dry Cakes', 'Dry Food Items']
+        .some(name => normalizeName(name) === normalized)) {
+        return DRY_FOOD_ITEMS_SECTION;
+    }
+    return category;
 }
 
 function formatPrice(price) {
@@ -158,7 +175,7 @@ async function applyCustomerCatalog() {
         for (const section of document.querySelectorAll('.gallery-section')) {
             const title = section.querySelector('.group-header h2')?.textContent.trim();
             if (!title) continue;
-            const override = catalog[sectionCatalogKey(pageId, title)];
+            const override = getSectionOverride(catalog, pageId, title);
             if (override?.available === false) {
                 section.style.setProperty('display', 'none', 'important');
             } else {
@@ -176,7 +193,7 @@ async function applyCustomerCatalog() {
 
     const productGrids = new Map();
     newEntries.forEach(([, product]) => {
-        const category = product.category || '✦ New Products';
+        const category = normalizeProductCategory(product.category || '✦ New Products');
         if (!productGrids.has(category)) {
             productGrids.set(category, findOrCreateProductSection(category));
         }
@@ -294,7 +311,7 @@ function createSectionControl(pageId, sectionName, catalog, draftAvailable, canE
     title.textContent = sectionName;
 
     const key = sectionCatalogKey(pageId, sectionName);
-    const savedAvailable = catalog[key]?.available ?? true;
+    const savedAvailable = getSectionOverride(catalog, pageId, sectionName)?.available ?? true;
     const available = draftAvailable ?? savedAvailable;
     const stateButton = document.createElement('button');
     stateButton.className = 'toggle-btn section-visibility-btn';
@@ -380,7 +397,7 @@ async function startAdmin() {
                 name: product.name,
                 price: product.price,
                 imageUrl: product.imageUrl,
-                category: product.category || '✦ New Products'
+                category: normalizeProductCategory(product.category || '✦ New Products')
             }));
         const records = [...pageProductRecords.values()];
         const sectionNames = new Set([
@@ -549,7 +566,7 @@ async function startAdmin() {
         if (!canEdit) return;
         const name = newNameInput.value.trim();
         const price = Number(newPriceInput.value);
-        const category = newCategoryInput.value.trim();
+        const category = normalizeProductCategory(newCategoryInput.value.trim());
         const targetPage = newPageSelect.value;
         if (!name || !Number.isFinite(price) || price < 0) {
             setStatus('Enter a valid name and price.', true); return;

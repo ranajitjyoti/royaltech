@@ -59,12 +59,13 @@ const GROUPS = [
     },
     {
         id: 'dry-cakes',
-        title: '🍰 Dry Cakes',
+        title: '🍱 Dry Food Items',
         placement: 'after-cake-sections',
         items: [
             ['Slice Cake', '', 20],
             ['Cupcakes', '', 15],
-            ['Tea Cup', '', 10]
+            ['Tea Cup', '', 10],
+            ['Water Bottle', '', 10]
         ]
     },
     {
@@ -186,6 +187,7 @@ const GROUPS = [
 
 const IMAGE_DIR = '../../image/cakes/';
 const PRODUCT_IMAGE_HINTS = [
+    ['water bottle', 'water bottles.jpeg'],
     ['tea cup', 'tea cup.jpeg'],
     ['cupcake', 'cupcakes.jpeg'],
     ['slice cake', 'slice cakes.jpeg'],
