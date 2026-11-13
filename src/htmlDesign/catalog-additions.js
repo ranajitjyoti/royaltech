@@ -186,8 +186,9 @@ const GROUPS = [
 
 const IMAGE_DIR = '../../image/cakes/';
 const PRODUCT_IMAGE_HINTS = [
-    ['tea cup', 'cake box.jpg'],
-    ['cupcake', 'strawberry muffin.PNG'],
+    ['tea cup', 'tea cup.jpeg'],
+    ['cupcake', 'cupcakes.jpeg'],
+    ['slice cake', 'slice cakes.jpeg'],
     ['brown kham', 'brown kham small brown kham medium brown kham big.jpg'],
     ['choco almond', 'Choco Chips Cake Junior Regular Large.PNG'],
     ['honey almond', 'Honey Almond Cake.jpg'],
