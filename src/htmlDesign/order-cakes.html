@@ -519,6 +519,16 @@
             font-size: 0.72rem; color: #e67e22; font-weight: 600;
             text-align: center; margin-top: 6px; flex-shrink: 0;
         }
+        .co-extra-options { margin-top: 10px; }
+        .co-extra-options > summary {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; color: #2e8b57; font-size: 0.82rem; font-weight: 600;
+            list-style: none; user-select: none;
+        }
+        .co-extra-options > summary::-webkit-details-marker { display: none; }
+        .co-extra-options > summary::after { content: '▼'; font-size: 0.7rem; transition: transform 0.2s; }
+        .co-extra-options[open] > summary::after { transform: rotate(180deg); }
+        .co-extra-content { padding-top: 10px; }
         .co-close-x {
             position: absolute; top: 14px; right: 16px;
             background: none; border: none; font-size: 1.3rem;
@@ -1369,22 +1379,27 @@
                 <button class="co-cancel" id="coCancel">Cancel</button>
                 <button class="co-confirm" id="coConfirm">💬 Send Current Stock Details</button>
             </div>
-            <div class="co-actions-row2">
-                <button class="co-factory" id="coFactory">🏭 Order to Factory (−25%)</button>
-            </div>
-            <div class="co-actions-row2">
-                <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
-            </div>
-            <label class="co-label co-whatsapp-field" for="billWhatsappNumber">Customer WhatsApp number</label>
-            <input class="co-input" id="billWhatsappNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="Country code + number (e.g. 919876543210)">
-            <p class="co-whatsapp-help">WhatsApp does not allow this page to attach a PDF automatically. We will create the bill and open this chat; attach the downloaded PDF there. Use Share PDF for Bluetooth or other sharing options.</p>
-            <div class="co-bill-actions">
-                <button class="co-bill-button" id="printBillPdf" type="button">🖨️ Print / Save PDF</button>
-                <button class="co-bill-button" id="shareBillPdf" type="button">📤 Share PDF</button>
-                <button class="co-bill-button" id="whatsappBillPdf" type="button" style="grid-column:1 / -1;background:#25D366;">💬 Create PDF &amp; open WhatsApp</button>
-            </div>
-            <p class="co-bill-status" id="billPdfStatus" role="status" aria-live="polite"></p>
-            <p class="co-factory-note" id="coFactoryNote"></p>
+            <details class="co-extra-options">
+                <summary>More options</summary>
+                <div class="co-extra-content">
+                    <div class="co-actions-row2">
+                        <button class="co-factory" id="coFactory">🏭 Order to Factory (−25%)</button>
+                    </div>
+                    <div class="co-actions-row2">
+                        <button class="co-confirm co-order-only" id="coWhatsappOrder">📲 Send Order to WhatsApp</button>
+                    </div>
+                    <label class="co-label co-whatsapp-field" for="billWhatsappNumber">Customer WhatsApp number</label>
+                    <input class="co-input" id="billWhatsappNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="Country code + number (e.g. 919876543210)">
+                    <p class="co-whatsapp-help">WhatsApp does not allow this page to attach a PDF automatically. We will create the bill and open this chat; attach the downloaded PDF there. Use Share PDF for Bluetooth or other sharing options.</p>
+                    <div class="co-bill-actions">
+                        <button class="co-bill-button" id="printBillPdf" type="button">🖨️ Print / Save PDF</button>
+                        <button class="co-bill-button" id="shareBillPdf" type="button">📤 Share PDF</button>
+                        <button class="co-bill-button" id="whatsappBillPdf" type="button" style="grid-column:1 / -1;background:#25D366;">💬 Create PDF &amp; open WhatsApp</button>
+                    </div>
+                    <p class="co-bill-status" id="billPdfStatus" role="status" aria-live="polite"></p>
+                    <p class="co-factory-note" id="coFactoryNote"></p>
+                </div>
+            </details>
         </div>
     </div>
 
@@ -1844,7 +1859,7 @@
                     `📅 *Date:* ${getFormattedDate()}\n\n` +
                     `🛍️ *Items:*\n${lines}\n\n` +
                     `💰 *Total: ₹${Number(totalPrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}${hasUnpricedItems ? ' + price on request' : ''}*\n\n` +
-                    `💳 *Pay via PhonePe:* https://phpe.app/ranajit.jyoti%40ybl`;
+                    `Update stock using this link - https://www.deeplinkdata.com/src/htmlDesign/order-cakes.html`;
                 navigator.clipboard.writeText(msg).catch(() => {});
                 window.open('https://chat.whatsapp.com/LYtrPKuMYh7FW3XrahklnV?mode=gi_t', '_blank');
                 closeCheckout();
