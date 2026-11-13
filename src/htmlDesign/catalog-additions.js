@@ -58,6 +58,16 @@ const GROUPS = [
         ]
     },
     {
+        id: 'dry-cakes',
+        title: '🍰 Dry Cakes',
+        placement: 'after-cake-sections',
+        items: [
+            ['Slice Cake', '', 20],
+            ['Cupcakes', '', 15],
+            ['Tea Cup', '', 10]
+        ]
+    },
+    {
         id: 'pastries',
         title: 'Pastries',
         items: [
@@ -176,6 +186,8 @@ const GROUPS = [
 
 const IMAGE_DIR = '../../image/cakes/';
 const PRODUCT_IMAGE_HINTS = [
+    ['tea cup', 'cake box.jpg'],
+    ['cupcake', 'strawberry muffin.PNG'],
     ['brown kham', 'brown kham small brown kham medium brown kham big.jpg'],
     ['choco almond', 'Choco Chips Cake Junior Regular Large.PNG'],
     ['honey almond', 'Honey Almond Cake.jpg'],
@@ -396,6 +408,8 @@ function createSection(root, group, referenceSection) {
 
     if (group.placement === 'after-mousse' || group.placement === 'after-eggless-cakes') {
         referenceSection.after(section);
+    } else if (group.placement === 'after-cake-sections') {
+        referenceSection.after(section);
     } else if (group.placement === 'before-cakes') {
         referenceSection.before(section);
     } else if (group.placement === 'after-pastries') {
@@ -441,7 +455,8 @@ function productNames(group, product) {
 }
 
 function findSection(root, group) {
-    if (group.id === 'eggless-cakes' || group.id === 'nonveg-cakes' || group.id === 'nonveg-pastries') {
+    if (group.id === 'eggless-cakes' || group.id === 'nonveg-cakes' || group.id === 'nonveg-pastries'
+        || group.placement === 'after-cake-sections') {
         return root.querySelector(`[data-catalog-additions="${group.id}"]`);
     }
 
@@ -496,6 +511,7 @@ function installGroup(root, group, referenceSections) {
         const referenceByPlacement = {
             'after-mousse': referenceSections.mousse,
             'after-eggless-cakes': root.querySelector('[data-catalog-additions="eggless-cakes"]'),
+            'after-cake-sections': referenceSections['cake-sections'],
             'after-pastries': referenceSections.pastries,
             'before-cakes': referenceSections.cakes
         };
@@ -524,11 +540,23 @@ export function installCatalogAdditions(root) {
     referenceSections.cakes ??= referenceSections.pastries;
 
     const grids = new Map();
+    let cakeSectionAnchor;
     for (const group of GROUPS) {
         if (['snacks', 'savouries', 'muffins', 'mousse'].includes(group.id) && !findSection(root, group)) {
             throw new Error(`Could not find the existing category for ${group.title}.`);
         }
-        grids.set(group.id, installGroup(root, group, referenceSections));
+        if (group.placement === 'after-cake-sections' && !cakeSectionAnchor) {
+            cakeSectionAnchor = root.querySelector('[data-catalog-additions="nonveg-cakes"]')
+                ?? referenceSections.cakes;
+        }
+        const grid = installGroup(root, group, {
+            ...referenceSections,
+            'cake-sections': cakeSectionAnchor
+        });
+        grids.set(group.id, grid);
+        if (group.placement === 'after-cake-sections') {
+            cakeSectionAnchor = grid.closest('.gallery-section');
+        }
     }
 
     for (const group of GROUPS) {

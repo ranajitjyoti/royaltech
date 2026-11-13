@@ -1513,18 +1513,22 @@
                     if (e.isIntersecting) { e.target.classList.add('animate'); observer.unobserve(e.target); }
                 });
             }, { threshold: 0.08 });
-            document.querySelectorAll('.cake-card').forEach(c => observer.observe(c));
+            function observeUnanimatedCards() {
+                document.querySelectorAll('.cake-card:not(.animate)').forEach(c => observer.observe(c));
+            }
+            observeUnanimatedCards();
+            document.addEventListener('catalog:products-updated', observeUnanimatedCards);
 
             // Lightbox
             const lightbox    = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightboxImg');
 
-            document.querySelectorAll('.cake-card img').forEach(img => {
-                img.addEventListener('click', () => {
-                    lightboxImg.src = img.src.replace('w=600', 'w=1200');
-                    lightbox.classList.add('open');
-                    document.body.style.overflow = 'hidden';
-                });
+            document.addEventListener('click', event => {
+                const img = event.target.closest('.cake-card img');
+                if (!img) return;
+                lightboxImg.src = img.src.replace('w=600', 'w=1200');
+                lightbox.classList.add('open');
+                document.body.style.overflow = 'hidden';
             });
 
             function closeLightbox() {
@@ -1639,7 +1643,9 @@
                 });
             }
 
-            document.querySelectorAll('.cake-card').forEach(card => {
+            function initializeCartCards() {
+                document.querySelectorAll('.cake-card:not([data-cart-initialized])').forEach(card => {
+                card.dataset.cartInitialized = 'true';
                 const name    = card.querySelector('h3').textContent;
                 const priceEl = card.querySelector('.cake-price');
                 const price   = card.dataset.priceOnRequest === 'true' ? null : parsePrice(priceEl.textContent);
@@ -1685,7 +1691,10 @@
                     }
                     syncDrawer();
                 });
-            });
+                });
+            }
+            initializeCartCards();
+            document.addEventListener('catalog:products-updated', initializeCartCards);
 
             // ── Checkout Modal ──
             const SHOP_WA = '918420290133';

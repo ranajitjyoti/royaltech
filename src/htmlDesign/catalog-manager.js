@@ -30,6 +30,56 @@ function formatPrice(price) {
     return `₹ ${Number(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+function findOrCreateProductSection(title) {
+    const existing = [...document.querySelectorAll('.gallery-section')].find(section =>
+        section.querySelector('.group-header h2')?.textContent.trim() === title
+    );
+    if (existing) return existing.querySelector('.gallery-grid');
+
+    const section = document.createElement('section');
+    section.className = 'gallery-section';
+    section.style.cssText = 'padding-top:0; background:#e8f5ee;';
+    section.innerHTML = `
+        <div class="container" style="padding-top:clamp(36px,6vw,70px);">
+            <div class="group-header" onclick="toggleGroup(this)">
+                <h2></h2>
+                <span class="group-toggle">▼</span>
+            </div>
+            <div class="group-body"><div class="gallery-grid"></div></div>
+        </div>`;
+    section.querySelector('.group-header h2').textContent = title;
+    document.querySelector('.location-section')?.before(section);
+    return section.querySelector('.gallery-grid');
+}
+
+function createCustomerProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'cake-card';
+    card.dataset.priceOnRequest = 'false';
+
+    const image = document.createElement('img');
+    image.src = product.imageUrl && !/product-placeholder/i.test(product.imageUrl)
+        ? product.imageUrl
+        : resolveProductImage(product.name);
+    image.alt = product.name;
+    image.loading = 'lazy';
+
+    const info = document.createElement('div');
+    info.className = 'cake-info';
+    const name = document.createElement('h3');
+    name.textContent = product.name;
+    const price = document.createElement('p');
+    price.className = 'cake-price';
+    price.textContent = formatPrice(product.price);
+    info.append(name, price);
+
+    const cart = document.createElement('div');
+    cart.className = 'cake-cart';
+    cart.innerHTML = '<button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div>';
+    card.append(image, info, cart);
+    return card;
+}
+
 function getProductRecords(root, pageId) {
     const occurrences = new Map();
     return [...root.querySelectorAll('.cake-card')].map(card => {
@@ -124,40 +174,15 @@ async function applyCustomerCatalog() {
     );
     if (!newEntries.length) return;
 
-    let newSection = document.getElementById('new-products-section');
-    if (!newSection) {
-        newSection = document.createElement('section');
-        newSection.id = 'new-products-section';
-        newSection.className = 'gallery-section';
-        newSection.style.cssText = 'padding-top:0; background:#e8f5ee;';
-        newSection.innerHTML = `
-            <div class="container" style="padding-top:clamp(36px,6vw,70px);">
-                <div class="group-header" onclick="toggleGroup(this)">
-                    <h2>✦ New Products</h2>
-                    <span class="group-toggle">▼</span>
-                </div>
-                <div class="group-body"><div class="gallery-grid" id="new-products-grid"></div></div>
-            </div>`;
-        document.querySelector('.location-section')?.before(newSection);
-    }
-    const grid = newSection.querySelector('#new-products-grid');
-    grid.innerHTML = '';
-    newEntries.forEach(([, p]) => {
-        const card = document.createElement('div');
-        card.className = 'cake-card';
-        const imageSrc = p.imageUrl && !/product-placeholder/i.test(p.imageUrl)
-            ? p.imageUrl
-            : resolveProductImage(p.name);
-        card.innerHTML = `
-            <img src="${imageSrc}" alt="${p.name}" loading="lazy">
-            <div class="cake-info">
-                <h3>${p.name}</h3>
-                ${p.category ? `<p style="font-size:0.75rem;color:#718777;">${p.category}</p>` : ''}
-                <p class="cake-price">${formatPrice(p.price)}</p>
-            </div>
-            <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>`;
-        grid.appendChild(card);
+    const productGrids = new Map();
+    newEntries.forEach(([, product]) => {
+        const category = product.category || '✦ New Products';
+        if (!productGrids.has(category)) {
+            productGrids.set(category, findOrCreateProductSection(category));
+        }
+        productGrids.get(category).appendChild(createCustomerProductCard(product));
     });
+    document.dispatchEvent(new Event('catalog:products-updated'));
     applySectionVisibility();
 }
 
@@ -313,6 +338,7 @@ async function startAdmin() {
     const logoutButton = document.getElementById('admin-logout');
     const adminPanel = document.getElementById('admin-panel');
     const pageRecords = {};
+    const pageSections = {};
     const drafts = new Map();
     const sectionDrafts = new Map();
     let catalog = {};
@@ -337,6 +363,8 @@ async function startAdmin() {
             const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
             installCatalogAdditions(doc);
             pageRecords[page.id] = getProductRecords(doc, page.id);
+            pageSections[page.id] = [...doc.querySelectorAll('.gallery-section .group-header h2')]
+                .map(heading => heading.textContent.trim());
             if (!pageRecords[page.id].length) throw new Error(`No products found in ${page.file}.`);
         }
     }
@@ -344,11 +372,21 @@ async function startAdmin() {
     function renderProducts() {
         if (!pagesLoaded) return;
         const page = PAGES.find(p => p.id === pageSelect.value);
-        const pageProductRecords = pageRecords[page.id] ?? [];
-        const sectionNames = new Set(pageProductRecords.map(record => record.category));
-        if (Object.keys(catalog).some(key => key.startsWith(`new:${page.id}:`))) {
-            sectionNames.add('✦ New Products');
-        }
+        const pageProductRecords = new Map((pageRecords[page.id] ?? []).map(record => [record.key, record]));
+        Object.entries(catalog)
+            .filter(([key]) => key.startsWith(`new:${page.id}:`) && !pageProductRecords.has(key))
+            .forEach(([key, product]) => pageProductRecords.set(key, {
+                key,
+                name: product.name,
+                price: product.price,
+                imageUrl: product.imageUrl,
+                category: product.category || '✦ New Products'
+            }));
+        const records = [...pageProductRecords.values()];
+        const sectionNames = new Set([
+            ...(pageSections[page.id] ?? []),
+            ...records.map(record => record.category)
+        ]);
         sectionList.replaceChildren(...[...sectionNames].map(sectionName =>
             createSectionControl(
                 page.id,
@@ -364,11 +402,11 @@ async function startAdmin() {
             )
         ));
         const query = searchInput.value.trim().toLocaleLowerCase();
-        const records = pageProductRecords.filter(r => {
+        const visibleRecords = records.filter(r => {
             const override = catalog[r.key];
             return `${override?.name ?? r.name} ${r.category}`.toLocaleLowerCase().includes(query);
         });
-        productList.replaceChildren(...records.map(r => createProductRow(
+        productList.replaceChildren(...visibleRecords.map(r => createProductRow(
             r,
             catalog[r.key],
             drafts.get(r.key),
@@ -376,7 +414,7 @@ async function startAdmin() {
             updateDraft,
             saveProduct
         )));
-        count.textContent = `${records.length} products`;
+        count.textContent = `${visibleRecords.length} products`;
         resetAll.disabled = !canEdit;
         toggleNonfood.disabled = !canEdit;
         const nonfoodRecords = (pageRecords[page.id] ?? []).filter(r => r.category.includes('Non-Food Items and Packaging'));
@@ -543,8 +581,6 @@ async function startAdmin() {
                 });
                 if (error) throw error;
                 catalog[key] = { name, price, available: true, imageUrl, category };
-                if (!pageRecords[pageId]) pageRecords[pageId] = [];
-                pageRecords[pageId].push({ key, name, price, imageUrl, category });
             }
             setStatus(`Added "${name}" successfully.`);
             addForm.reset();
