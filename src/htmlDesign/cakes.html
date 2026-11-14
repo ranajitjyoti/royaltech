@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/src/htmlDesign/">
+    <link rel="canonical" href="https://www.deeplinkdata.com/cakes/">
     <title>Cakes Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -781,7 +783,7 @@
         <div class="delivery-badge">
             5 Min Home Delivery
         </div>
-        <a class="contact-btn btn-whatsapp hero-whatsapp" href="https://wa.me/918420290133?text=Hi%2C%20Darun%20Delights%0AOrder%20Link%20-%20https%3A%2F%2Fwww.deeplinkdata.com%2Fsrc%2FhtmlDesign%2Fcakes.html" target="_blank" rel="noopener">
+        <a class="contact-btn btn-whatsapp hero-whatsapp" href="https://wa.me/918420290133?text=Hi%2C%20Darun%20Delights%0AOrder%20Link%20-%20https%3A%2F%2Fwww.deeplinkdata.com%2Fcakes%2F" target="_blank" rel="noopener">
             💬 WhatsApp Us
         </a>
     </section>
@@ -1724,7 +1726,7 @@
                     `___________________________\n` +
                     `Total${hasUnpricedItems ? ' (excluding items on request)' : ''}  ${formatRupees(itemTotal + deliveryCharge)}\n\n` +
                     `Scan and pay via UPI: ${paymentQrUrl.href}\n\n` +
-                    `Thanks, please order again!\nhttps://www.deeplinkdata.com/src/htmlDesign/cakes.html`;
+                    `Thanks, please order again!\nhttps://www.deeplinkdata.com/cakes/`;
                 window.location.href = `https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`;
             });
 
