@@ -282,6 +282,15 @@
             min-width: 28px;
             text-align: center;
         }
+        .qty-input {
+            width: 64px;
+            padding: 2px 4px;
+            border: 0;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.16);
+            color: #fff;
+            font: inherit;
+        }
         @media (max-width: 480px) {
             .cake-cart { padding: 0 12px 12px; }
         }
@@ -1565,7 +1574,12 @@
                         const num    = card.querySelector('.qty-num');
                         qty.classList.remove('show');
                         addBtn.style.display = '';
-                        num.textContent = 1;
+                        if (num instanceof HTMLInputElement) {
+                            num.value = '1';
+                            num.removeAttribute('aria-invalid');
+                        } else {
+                            num.textContent = 1;
+                        }
                         // reset card-local count via closure isn't accessible here,
                         // so patch via a data attribute the card listener reads
                         card.dataset.count = '0';
@@ -1600,15 +1614,49 @@
                 const qtyStep = Number(card.dataset.qtyStep) || 1;
                 const addBtn  = card.querySelector('.btn-add-cart');
                 const qty     = card.querySelector('.qty-controls');
-                const num     = card.querySelector('.qty-num');
+                let num       = card.querySelector('.qty-num');
+                const section = card.closest('.gallery-section');
+                const sectionTitle = section?.querySelector('.group-header h2')?.textContent.trim();
+                const isCelebrationCake = section?.dataset.catalogAdditions === 'eggless-cakes'
+                    || section?.dataset.catalogAdditions === 'nonveg-cakes'
+                    || sectionTitle === 'Celebration Cakes — Eggless'
+                    || sectionTitle === 'Celebration Cakes — Non-veg';
+                const usesEditableQuantity = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html')
+                    && !isCelebrationCake;
+                if (usesEditableQuantity && !(num instanceof HTMLInputElement)) {
+                    const input = document.createElement('input');
+                    input.className = 'qty-num qty-input';
+                    input.type = 'number';
+                    input.inputMode = 'numeric';
+                    input.min = '1';
+                    input.step = '1';
+                    input.value = '1';
+                    input.setAttribute('aria-label', `Quantity for ${name}`);
+                    num.replaceWith(input);
+                    num = input;
+                }
                 card.dataset.count = '0';
 
                 function getCount()  { return parseInt(card.dataset.count) || 0; }
                 function setCount(n) { card.dataset.count = n; }
+                function setDisplayCount(n) {
+                    if (num instanceof HTMLInputElement) {
+                        num.value = String(n);
+                        num.removeAttribute('aria-invalid');
+                    } else {
+                        num.textContent = n;
+                    }
+                }
+                function updateCartCount(count) {
+                    setCount(count);
+                    setDisplayCount(count);
+                    cartData[name] = { qty: count, price, imgSrc, unit };
+                    syncDrawer();
+                }
 
                 addBtn.addEventListener('click', () => {
                     setCount(qtyStep);
-                    num.textContent = qtyStep;
+                    setDisplayCount(qtyStep);
                     addBtn.style.display = 'none';
                     qty.classList.add('show');
                     cartData[name] = { qty: qtyStep, price, imgSrc, unit };
@@ -1617,25 +1665,42 @@
 
                 card.querySelector('.qty-plus').addEventListener('click', () => {
                     const c = getCount() + qtyStep;
-                    setCount(c); num.textContent = c;
-                    cartData[name] = { qty: c, price, imgSrc, unit };
-                    syncDrawer();
+                    updateCartCount(c);
                 });
 
                 card.querySelector('.qty-minus').addEventListener('click', () => {
                     const c = getCount();
                     if (c > qtyStep) {
-                        setCount(c - qtyStep); num.textContent = c - qtyStep;
-                        cartData[name] = { qty: c - qtyStep, price, imgSrc, unit };
+                        updateCartCount(c - qtyStep);
                     } else {
                         setCount(0);
                         qty.classList.remove('show');
                         addBtn.style.display = '';
-                        num.textContent = 1;
+                        setDisplayCount(1);
                         delete cartData[name];
+                        syncDrawer();
                     }
-                    syncDrawer();
                 });
+
+                if (num instanceof HTMLInputElement) {
+                    num.addEventListener('input', () => {
+                        const count = Number(num.value);
+                        const valid = num.value !== ''
+                            && num.validity.valid
+                            && Number.isSafeInteger(count)
+                            && count > 0;
+                        num.setAttribute('aria-invalid', String(!valid));
+                        if (valid) updateCartCount(count);
+                    });
+                    num.addEventListener('change', () => {
+                        const count = Number(num.value);
+                        if (num.value === '' || !num.validity.valid || !Number.isSafeInteger(count) || count < 1) {
+                            setDisplayCount(getCount());
+                        } else {
+                            updateCartCount(count);
+                        }
+                    });
+                }
                 });
             }
             initializeCartCards();
