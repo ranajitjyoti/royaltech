@@ -627,6 +627,7 @@
 
         /* Large mobile */
         @media (max-width: 480px) {
+            body { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
             .container { width: 95%; padding: 0 8px; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .cake-card img { height: 150px; }
@@ -637,9 +638,9 @@
 
         /* Small mobile */
         @media (max-width: 360px) {
-            .gallery-grid { grid-template-columns: 1fr; }
-            .cake-card img { height: 200px; }
-            .product-placeholder { height: 200px; }
+            .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .cake-card img { height: 150px; }
+            .product-placeholder { height: 150px; }
         }
 
         /* Touch devices — disable hover lift to avoid sticky state */
@@ -919,7 +920,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/veg samosa chiken samosa cheese samosa chicken samosa paneer samosa.PNG" alt="Panjabi Samosa" loading="lazy">
+                    <img src="../../image/cakes/Panjabi Samosa.jpeg" alt="Panjabi Samosa" loading="lazy">
                     <div class="cake-info"><h3>Panjabi Samosa</h3><p>Classic Punjabi samosa with potato and pea filling.</p><p class="cake-price">&#8377; 30</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -937,7 +938,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/Italian Mini Sanditch.jpg" alt="Italian Mini Sandwich" loading="lazy">
+                    <img src="../../image/cakes/Italian Mini Sandwich.jpeg" alt="Italian Mini Sandwich" loading="lazy">
                     <div class="cake-info"><h3>Italian Mini Sandwich</h3><p>Bite-sized Italian sandwich with herbed filling.</p><p class="cake-price">&#8377; 35</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -949,7 +950,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/turkish break kabab.jpg" alt="Turkish Bread Kebab" loading="lazy">
+                    <img src="../../image/cakes/Turkish Bread Kebab.jpeg" alt="Turkish Bread Kebab" loading="lazy">
                     <div class="cake-info"><h3>Turkish Bread Kebab</h3><p>Soft Turkish bread with spiced veg kebab filling.</p><p class="cake-price">&#8377; 35</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -1034,7 +1035,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/Fry Momo.jpg" alt="Fry Momo" loading="lazy">
+                    <img src="../../image/cakes/Fried Momo.png" alt="Fry Momo" loading="lazy">
                     <div class="cake-info"><h3>Fry Momo</h3><p>Crispy fried momos with spiced veg filling.</p><p class="cake-price">&#8377; 55</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
