@@ -940,7 +940,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/veg samosa chiken samosa cheese samosa chicken samosa paneer samosa.PNG" alt="Panjabi Samosa" loading="lazy">
+                    <img src="../../image/cakes/Panjabi Samosa.jpeg" alt="Panjabi Samosa" loading="lazy">
                     <div class="cake-info"><h3>Panjabi Samosa</h3><p>Classic Punjabi samosa with potato and pea filling.</p><p class="cake-price">&#8377; 30</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -958,7 +958,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/Italian Mini Sanditch.jpg" alt="Italian Mini Sandwich" loading="lazy">
+                    <img src="../../image/cakes/Italian Mini Sandwich.jpeg" alt="Italian Mini Sandwich" loading="lazy">
                     <div class="cake-info"><h3>Italian Mini Sandwich</h3><p>Bite-sized Italian sandwich with herbed filling.</p><p class="cake-price">&#8377; 35</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -970,7 +970,7 @@
                 </div>
 
                 <div class="cake-card">
-                    <img src="../../image/cakes/turkish break kabab.jpg" alt="Turkish Bread Kebab" loading="lazy">
+                    <img src="../../image/cakes/Turkish Bread Kebab.jpeg" alt="Turkish Bread Kebab" loading="lazy">
                     <div class="cake-info"><h3>Turkish Bread Kebab</h3><p>Soft Turkish bread with spiced veg kebab filling.</p><p class="cake-price">&#8377; 35</p></div>
                     <div class="cake-cart"><button class="btn-add-cart">Add to Cart</button><div class="qty-controls"><button class="qty-btn qty-minus">&#8722;</button><span class="qty-num">1</span><button class="qty-btn qty-plus">+</button></div></div>
                 </div>
@@ -1521,6 +1521,12 @@
                 return '₹ ' + Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
             }
 
+            function getCardPrice(card) {
+                return card.dataset.priceOnRequest === 'true'
+                    ? null
+                    : parsePrice(card.querySelector('.cake-price')?.textContent);
+            }
+
             function getDeliveryCharge(itemTotal) {
                 return itemTotal > 0 && itemTotal < 100 ? 10 : 0;
             }
@@ -1606,11 +1612,18 @@
             }
 
             function initializeCartCards() {
-                document.querySelectorAll('.cake-card:not([data-cart-initialized])').forEach(card => {
+                let cartUpdated = false;
+                document.querySelectorAll('.cake-card').forEach(card => {
+                const name = card.querySelector('h3').textContent;
+                const price = getCardPrice(card);
+                if (card.dataset.cartInitialized === 'true') {
+                    if (cartData[name]) {
+                        cartData[name].price = price;
+                        cartUpdated = true;
+                    }
+                    return;
+                }
                 card.dataset.cartInitialized = 'true';
-                const name    = card.querySelector('h3').textContent;
-                const priceEl = card.querySelector('.cake-price');
-                const price   = card.dataset.priceOnRequest === 'true' ? null : parsePrice(priceEl.textContent);
                 const img     = card.querySelector('img');
                 const imgSrc  = img ? img.src : '';
                 const unit    = card.dataset.unit || '';
@@ -1634,7 +1647,7 @@
                     num.textContent = 1;
                     addBtn.style.display = 'none';
                     qty.classList.add('show');
-                    cartData[name] = { qty: 1, price, imgSrc, unit, isCake, maxQuantity };
+                    cartData[name] = { qty: 1, price: getCardPrice(card), imgSrc, unit, isCake, maxQuantity };
                     syncDrawer();
                 });
 
@@ -1650,7 +1663,7 @@
                     }
                     const c = currentCount + 1;
                     setCount(c); num.textContent = c;
-                    cartData[name] = { qty: c, price, imgSrc, unit, isCake, maxQuantity };
+                    cartData[name] = { qty: c, price: getCardPrice(card), imgSrc, unit, isCake, maxQuantity };
                     syncDrawer();
                     if (c === maxQuantity && !isCake) showAdvanceBookingNotice();
                 });
@@ -1659,7 +1672,7 @@
                     const c = getCount();
                     if (c > 1) {
                         setCount(c - 1); num.textContent = c - 1;
-                        cartData[name] = { qty: c - 1, price, imgSrc, unit, isCake, maxQuantity };
+                        cartData[name] = { qty: c - 1, price: getCardPrice(card), imgSrc, unit, isCake, maxQuantity };
                     } else {
                         setCount(0);
                         qty.classList.remove('show');
@@ -1670,6 +1683,7 @@
                     syncDrawer();
                 });
                 });
+                if (cartUpdated) syncDrawer();
             }
             initializeCartCards();
             document.addEventListener('catalog:products-updated', initializeCartCards);

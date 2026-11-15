@@ -48,18 +48,42 @@
             font-size: 0.88rem;
         }
         .shop-availability {
+            padding: 10px;
+            margin-bottom: 18px;
+            border: 1px solid #e0ebe3;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+        }
+        .shop-availability > summary, .toolbar > summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 9px;
+            background: #e8f5ee;
+            color: #2e6c45;
+            cursor: pointer;
+            list-style: none;
+        }
+        .shop-availability > summary::-webkit-details-marker,
+        .toolbar > summary::-webkit-details-marker { display: none; }
+        .shop-availability > summary::after, .toolbar > summary::after {
+            content: '+';
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .shop-availability[open] > summary::after, .toolbar[open] > summary::after { content: '−'; }
+        .shop-availability h2, .toolbar h2 { margin: 0; font-size: 1rem; }
+        .shop-availability-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            padding: 14px 16px;
-            margin-bottom: 18px;
-            border: 1px solid #e0ebe3;
-            border-radius: 12px;
-            background: #fff;
+            padding: 14px 6px 6px;
         }
-        .shop-availability h2 { margin: 0 0 4px; font-size: 1rem; }
         .shop-availability p { margin: 0; color: #557462; font-size: 0.82rem; }
         #shop-order-state { font-weight: 700; }
         #shop-order-state[data-state="closed"] { color: #a52626; }
@@ -67,14 +91,18 @@
         #shop-order-toggle[data-state="closed"] { background: #2e8b57; }
         #shop-order-toggle[data-state="open"] { background: #9b3d3d; }
         .toolbar {
+            padding: 10px;
+            margin-bottom: 18px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+        }
+        .toolbar-controls {
             display: grid;
             grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
             gap: 12px;
             align-items: end;
-            background: #fff;
-            border-radius: 14px;
-            padding: 16px;
-            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+            padding: 12px 6px 6px;
         }
         .toolbar label, .field { display: grid; gap: 6px; color: #557462; font-size: 0.78rem; font-weight: 600; }
         input, select {
@@ -109,7 +137,37 @@
         .auth-panel[hidden] { display: none; }
         .auth-panel .field { min-width: min(220px, 100%); }
         .product-count { margin: 0 0 10px; color: #557462; font-size: 0.82rem; }
-        #product-list { display: grid; gap: 10px; }
+        #product-list { display: grid; gap: 24px; }
+        .product-category-group {
+            overflow: hidden;
+            border: 1px solid #d6e5d9;
+            border-radius: 12px;
+            background: #fff;
+        }
+        .product-category-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #e8f5ee;
+            cursor: pointer;
+            list-style: none;
+        }
+        .product-category-summary::-webkit-details-marker { display: none; }
+        .product-category-summary::after {
+            content: '+';
+            color: #2e6c45;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .product-category-group[open] > .product-category-summary::after { content: '−'; }
+        .product-category-heading {
+            margin: 0;
+            color: #2e6c45;
+            font-size: 1rem;
+        }
+        .product-category-items { display: grid; gap: 10px; padding: 0 12px 12px; }
         .product-row {
             display: grid;
             grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.4fr) minmax(120px, 0.7fr) auto auto;
@@ -124,7 +182,6 @@
         .product-heading { display: flex; align-items: center; gap: 10px; min-width: 0; }
         .product-image { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 8px; object-fit: cover; background: #edf4ee; }
         .product-heading strong { display: block; overflow-wrap: anywhere; font-size: 0.9rem; }
-        .product-category { display: block; color: #718777; font-size: 0.7rem; margin-bottom: 3px; }
         .toggle-btn {
             display: inline-flex;
             align-items: center;
@@ -145,8 +202,6 @@
         .save-product-btn { background: #c47c00; white-space: nowrap; }
         .save-product-btn:hover { background: #a36200; }
         .save-product-btn:disabled { background: #64756a; opacity: 0.6; cursor: not-allowed; }
-        .section-visibility { margin-bottom: 18px; }
-        .section-visibility h2 { margin: 0 0 4px; font-size: 1rem; color: #1a3d2b; }
         .section-visibility p { margin: 0 0 10px; color: #557462; font-size: 0.82rem; }
         #section-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
         .section-control {
@@ -165,18 +220,56 @@
         .section-visibility-btn[data-state="on"] { background: #2e8b57; }
         .section-visibility-btn[data-state="off"] { background: #7b8580; }
         .section-save-btn { flex: 0 0 auto; }
-        .add-product-section {
+        .add-product-section, .section-visibility, .cakes-discount-section {
             background: #fff;
             border: 2px dashed #7b5ea7;
             border-radius: 14px;
-            padding: 20px;
+            padding: 10px;
             margin-bottom: 18px;
         }
-        .add-product-section h2 {
-            margin: 0 0 16px;
-            font-size: 1rem;
-            color: #7b5ea7;
+        .add-product-section > summary, .section-visibility > summary, .cakes-discount-section > summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 9px;
+            background: #7b5ea7;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
         }
+        .add-product-section > summary::-webkit-details-marker,
+        .section-visibility > summary::-webkit-details-marker,
+        .cakes-discount-section > summary::-webkit-details-marker { display: none; }
+        .add-product-section > summary::after, .section-visibility > summary::after,
+        .cakes-discount-section > summary::after {
+            content: '+';
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .add-product-section[open] > summary::after,
+        .section-visibility[open] > summary::after,
+        .cakes-discount-section[open] > summary::after { content: '−'; }
+        .add-product-section h2, .section-visibility h2, .cakes-discount-section h2 {
+            margin: 0;
+            font-size: 1rem;
+            color: inherit;
+        }
+        .add-product-section form, .section-visibility-content, .cakes-discount-content {
+            padding: 16px 10px 10px;
+        }
+        .cakes-discount-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            align-items: end;
+            gap: 12px;
+        }
+        .cakes-discount-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cakes-discount-actions button { transition: opacity 0.25s ease, background-color 0.2s ease; }
+        .cakes-discount-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+        .cakes-discount-state { margin: 12px 0 0; color: #557462; font-size: 0.82rem; }
         .add-product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -208,11 +301,11 @@
         @media (max-width: 600px) {
             .page { width: 94%; padding: 14px 0 40px; }
             h1 { font-size: 1.15rem; }
-            .toolbar {
+            .toolbar-controls {
                 grid-template-columns: 1fr 1fr;
             }
-            .toolbar label:nth-child(1) { grid-column: 1; }
-            .toolbar label:nth-child(2) { grid-column: 1 / -1; }
+            .toolbar-controls label:nth-child(1) { grid-column: 1; }
+            .toolbar-controls label:nth-child(2) { grid-column: 1 / -1; }
             #reset-all    { grid-column: 1; }
             #toggle-nonfood { grid-column: 2; }
             .add-product-grid { grid-template-columns: 1fr 1fr; }
@@ -233,7 +326,7 @@
         @media (max-width: 400px) {
             .add-product-grid { grid-template-columns: 1fr; }
             .btn-add-product { grid-column: 1; }
-            .toolbar { grid-template-columns: 1fr; }
+            .toolbar-controls { grid-template-columns: 1fr; }
             #reset-all, #toggle-nonfood { grid-column: 1; }
         }
     </style>
@@ -271,17 +364,46 @@
                 </div>
             </header>
 
-            <section class="shop-availability" aria-labelledby="shop-availability-title">
-                <div>
-                    <h2 id="shop-availability-title">Shop order acceptance</h2>
+            <details class="shop-availability" aria-labelledby="shop-availability-title">
+                <summary><h2 id="shop-availability-title">Shop order acceptance</h2></summary>
+                <div class="shop-availability-content">
+                    <div>
                     <p id="shop-order-state" role="status" aria-live="polite"></p>
                     <p>Closing the shop keeps products visible but prevents adding items on both customer pages.</p>
+                    </div>
+                    <button id="shop-order-toggle" data-state="open" type="button">Close shop to new orders</button>
                 </div>
-                <button id="shop-order-toggle" data-state="open" type="button">Close shop to new orders</button>
-            </section>
+            </details>
 
-            <section class="add-product-section">
-                <h2>✦ Add New Product</h2>
+            <details class="cakes-discount-section">
+                <summary><h2>🎉 Cakes page discount</h2></summary>
+                <div class="cakes-discount-content">
+                    <p class="cakes-discount-state">Applies to priced products on the Cakes page only. It starts when activated and expires automatically; customers see a countdown. Price-on-request products are excluded.</p>
+                    <p class="cakes-discount-state">Before first use, apply <a href="./supabase-cakes-promotions.sql" target="_blank" rel="noopener">the promotion table SQL</a> in the Supabase SQL editor.</p>
+                    <div class="cakes-discount-grid">
+                        <label class="field" for="cakes-discount-percent">Discount percentage
+                            <input id="cakes-discount-percent" type="number" min="0.01" max="100" step="0.01" value="10" required>
+                        </label>
+                        <label class="field" for="cakes-discount-duration">Duration
+                            <input id="cakes-discount-duration" type="number" min="1" step="1" value="24" required>
+                        </label>
+                        <label class="field" for="cakes-discount-unit">Duration unit
+                            <select id="cakes-discount-unit">
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                            </select>
+                        </label>
+                        <div class="cakes-discount-actions">
+                            <button id="start-cakes-discount" type="button">Start discount</button>
+                            <button id="stop-cakes-discount" type="button" disabled style="background:#9b3d3d;">Stop discount</button>
+                        </div>
+                    </div>
+                    <p id="cakes-discount-status" class="cakes-discount-state" role="status" aria-live="polite">No Cakes page discount is active.</p>
+                </div>
+            </details>
+
+            <details class="add-product-section">
+                <summary><h2>✦ Add New Product</h2></summary>
                 <form id="add-product-form">
                     <div class="add-product-grid">
                         <label class="field">Product name *
@@ -322,30 +444,35 @@
                         <button type="submit" class="btn-add-product">+ Add Product</button>
                     </div>
                 </form>
-            </section>
+            </details>
 
-            <section class="toolbar" aria-label="Catalog controls">
-                <label for="catalog-page">Customer page
-                    <select id="catalog-page">
-                        <option value="cakes">Cakes page</option>
-                        <option value="order-cakes">Order cakes page</option>
-                    </select>
-                </label>
-                <label for="product-search">Find a product
-                    <input id="product-search" type="search" placeholder="Search by product or category">
-                </label>
-                <button id="reset-all" type="button">Reset all changes</button>
-                <button id="toggle-nonfood" type="button" style="background:#7b5ea7;">Hide all non-food</button>
-            </section>
+            <details class="toolbar" aria-label="Catalog controls">
+                <summary><h2>Catalog controls</h2></summary>
+                <div class="toolbar-controls">
+                    <label for="catalog-page">Customer page
+                        <select id="catalog-page">
+                            <option value="cakes">Cakes page</option>
+                            <option value="order-cakes">Order cakes page</option>
+                        </select>
+                    </label>
+                    <label for="product-search">Find a product
+                        <input id="product-search" type="search" placeholder="Search by product or category">
+                    </label>
+                    <button id="reset-all" type="button">Reset all changes</button>
+                    <button id="toggle-nonfood" type="button" style="background:#7b5ea7;">Hide all non-food</button>
+                </div>
+            </details>
 
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
                 <p class="product-count" id="product-count" style="margin:0;"></p>
             </div>
-            <section class="section-visibility" aria-labelledby="section-visibility-title">
-                <h2 id="section-visibility-title">Page section visibility</h2>
-                <p>Hide or show a whole section on the selected customer page. Individual product settings remain unchanged.</p>
-                <div id="section-list" aria-live="polite"></div>
-            </section>
+            <details class="section-visibility" aria-labelledby="section-visibility-title">
+                <summary><h2 id="section-visibility-title">Page section visibility</h2></summary>
+                <div class="section-visibility-content">
+                    <p>Hide or show a whole section on the selected customer page. Individual product settings remain unchanged.</p>
+                    <div id="section-list" aria-live="polite"></div>
+                </div>
+            </details>
             <section id="product-list" aria-label="Products"></section>
         </div>
     </main>

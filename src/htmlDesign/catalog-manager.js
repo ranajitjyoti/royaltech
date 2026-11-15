@@ -4,11 +4,24 @@ import { installCatalogAdditions, resolveProductImage } from './catalog-addition
 const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
+const PROMOTIONS_TABLE = 'catalog_promotions';
+const CAKES_PROMOTION_KEY = 'cakes';
+const PROMOTION_TIME_ZONE = 'Asia/Kolkata';
 const STORAGE_BUCKET = 'product-images';
 const SHOP_AVAILABILITY_KEY = 'setting:shop-accepting-orders';
 const DRY_CAKES_SECTION = '🍰 Dry Cakes';
 const DRY_FOOD_ITEMS_SECTION = '🍱 Dry Food Items';
 const SHOP_WHATSAPP_URL = 'https://wa.me/918420290133';
+const CAKES_LOCAL_IMAGE_PRODUCTS = new Set([
+    'fantasy coffee pastry',
+    'cream roll jumbo',
+    'chicken tikki burger',
+    'turkish bread kebab',
+    'fish cutlet',
+    'chicken cutlet',
+    'chicken kebab',
+    'fry momo'
+]);
 const ADMIN_EMAILS = new Set([
     'ranojitjyoti@gmail.com',
     'connect@deeplinkdata.com'
@@ -36,6 +49,26 @@ function getSectionOverride(catalog, pageId, sectionName) {
     return catalog[sectionCatalogKey(pageId, DRY_CAKES_SECTION)];
 }
 
+function setProductImageSource(image, pageId, name, preferredSource) {
+    const fallbackSource = resolveProductImage(name);
+    const normalizedName = normalizeName(name);
+    const useCakesFolderImage = pageId === 'cakes'
+        && (CAKES_LOCAL_IMAGE_PRODUCTS.has(normalizedName)
+            || normalizedName.startsWith('strawberry bento')
+            || normalizedName.startsWith('strawberry cake')
+            || normalizedName.startsWith('donut strawberry cake'));
+    const source = useCakesFolderImage || !preferredSource || /product-placeholder/i.test(preferredSource)
+        ? fallbackSource
+        : preferredSource;
+    const fallbackUrl = new URL(fallbackSource, document.baseURI).href;
+
+    image.onerror = () => {
+        image.onerror = null;
+        if (image.src !== fallbackUrl) image.src = fallbackSource;
+    };
+    image.src = source;
+}
+
 function normalizeProductCategory(category) {
     const normalized = normalizeName(category);
     if ([DRY_CAKES_SECTION, DRY_FOOD_ITEMS_SECTION, 'Dry Cakes', 'Dry Food Items']
@@ -47,6 +80,258 @@ function normalizeProductCategory(category) {
 
 function formatPrice(price) {
     return `₹ ${Number(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function getErrorMessage(error, fallback) {
+    if (error instanceof Error) return error.message;
+    if (error && typeof error.message === 'string') return error.message;
+    return fallback;
+}
+
+function formatCountdown(milliseconds) {
+    const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+}
+
+function isCakesPromotionActive(promotion, now = Date.now()) {
+    if (!promotion?.enabled || promotion.discount_type !== 'percentage') return false;
+    const startsAt = Date.parse(promotion.starts_at);
+    const endsAt = Date.parse(promotion.ends_at);
+    return Number.isFinite(startsAt)
+        && Number.isFinite(endsAt)
+        && startsAt <= now
+        && now < endsAt;
+}
+
+let cakesPromotionCountdownTimer = null;
+
+async function fetchCakesPromotion() {
+    const { data, error } = await supabase
+        .from(PROMOTIONS_TABLE)
+        .select('promotion_key, discount_type, discount_value, starts_at, ends_at, enabled')
+        .eq('promotion_key', CAKES_PROMOTION_KEY)
+        .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+
+    const discountValue = Number(data.discount_value);
+    if (data.discount_type !== 'percentage'
+        || !Number.isFinite(discountValue)
+        || discountValue <= 0
+        || discountValue > 100
+        || !Number.isFinite(Date.parse(data.starts_at))
+        || !Number.isFinite(Date.parse(data.ends_at))
+        || Date.parse(data.ends_at) <= Date.parse(data.starts_at)) {
+        throw new Error('The saved Cakes page discount settings are invalid.');
+    }
+
+    return { ...data, discount_value: discountValue };
+}
+
+function ensureCakesPromotionStyles() {
+    let style = document.getElementById('cakes-promotion-styles');
+    if (!style) {
+        style = document.createElement('style');
+        style.id = 'cakes-promotion-styles';
+        document.head.append(style);
+    }
+    style.textContent = `
+        #cakes-promotion-error {
+            margin: 14px auto; padding: 12px 16px; max-width: 1120px;
+            border-radius: 10px; background: #fff3cd; color: #654d0a;
+            font-weight: 600; text-align: center;
+        }
+        .cakes-discount-banner {
+            position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
+            z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+            gap: 18px; width: min(760px, calc(100% - 28px)); margin: 12px auto;
+            padding: 12px 18px; border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px; background: linear-gradient(115deg, #153f2c, #267347);
+            color: #fff; box-shadow: 0 12px 30px rgba(20, 61, 40, 0.25);
+            text-align: left; animation: cakesDiscountArrive 0.45s ease-out both;
+        }
+        .cakes-discount-offer { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .cakes-discount-badge {
+            flex: 0 0 auto; padding: 7px 10px; border-radius: 10px;
+            background: #ffe4a3; color: #3c2b08; font-size: 0.88rem;
+            font-weight: 800; letter-spacing: 0.03em;
+        }
+        .cakes-discount-copy { display: grid; gap: 2px; }
+        .cakes-discount-kicker {
+            color: #d3ead9; font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+        }
+        .cakes-discount-description { font-size: 0.91rem; font-weight: 600; line-height: 1.35; }
+        .cakes-discount-countdown {
+            display: grid; gap: 2px; flex: 0 0 auto; padding-left: 18px;
+            border-left: 1px solid rgba(255, 255, 255, 0.25); color: #e4f2e8;
+            font-size: 0.72rem; line-height: 1.35;
+        }
+        .cakes-discount-countdown-value {
+            color: #fff; font-size: 0.9rem; font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .cakes-discount-countdown-value.tick { animation: cakesCountdownTick 0.35s ease-out; }
+        @keyframes cakesDiscountArrive {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes cakesCountdownTick {
+            0% { opacity: 0.55; transform: translateY(2px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 520px) {
+            .cakes-discount-banner { gap: 10px; width: calc(100% - 20px); padding: 10px 12px; }
+            .cakes-discount-offer { gap: 8px; }
+            .cakes-discount-badge { padding: 7px 8px; font-size: 0.78rem; }
+            .cakes-discount-kicker { font-size: 0.58rem; }
+            .cakes-discount-description { font-size: 0.78rem; }
+            .cakes-discount-countdown { padding-left: 10px; font-size: 0.64rem; }
+            .cakes-discount-countdown-value { font-size: 0.74rem; }
+        }
+        @media (max-width: 360px) {
+            .cakes-discount-banner { align-items: flex-start; flex-direction: column; }
+            .cakes-discount-countdown { padding: 0; border: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cakes-discount-banner, .cakes-discount-countdown-value.tick { animation: none; }
+        }
+        .cake-price-original {
+            display: block; margin-top: 8px; color: #718777;
+            font-size: 0.78rem; text-decoration: line-through;
+        }
+        .cake-price.cakes-discounted-price { margin-top: 2px; color: #b42318; }
+    `;
+}
+
+function clearCakesPromotionDisplay() {
+    if (cakesPromotionCountdownTimer !== null) {
+        clearInterval(cakesPromotionCountdownTimer);
+        cakesPromotionCountdownTimer = null;
+    }
+    document.querySelectorAll('.cakes-discount-banner').forEach(banner => banner.remove());
+    document.querySelectorAll('.cake-price.cakes-discounted-price').forEach(priceElement => {
+        priceElement.textContent = priceElement.dataset.regularPriceText ?? '';
+        delete priceElement.dataset.regularPriceText;
+        priceElement.previousElementSibling?.remove();
+        priceElement.classList.remove('cakes-discounted-price');
+    });
+}
+
+function showCakesPromotionError(error) {
+    console.error('Could not verify the Cakes page discount:', error);
+    if (document.getElementById('cakes-promotion-error')) return;
+    ensureCakesPromotionStyles();
+    const banner = document.createElement('aside');
+    banner.id = 'cakes-promotion-error';
+    banner.setAttribute('role', 'alert');
+    banner.textContent = 'We could not verify the current Cakes page discount. Displayed prices may not include an active offer.';
+    const firstSection = document.querySelector('.gallery-section');
+    (firstSection?.parentElement ?? document.body).insertBefore(banner, firstSection ?? null);
+}
+
+function applyCakesPromotion(promotion) {
+    clearCakesPromotionDisplay();
+    if (!isCakesPromotionActive(promotion)) return;
+    ensureCakesPromotionStyles();
+
+    const endsAt = Date.parse(promotion.ends_at);
+    const banner = document.createElement('aside');
+    banner.className = 'cakes-discount-banner';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Cakes page discount');
+    const offer = document.createElement('div');
+    offer.className = 'cakes-discount-offer';
+    const badge = document.createElement('span');
+    badge.className = 'cakes-discount-badge';
+    badge.textContent = `${promotion.discount_value}% OFF`;
+    const copy = document.createElement('span');
+    copy.className = 'cakes-discount-copy';
+    const kicker = document.createElement('span');
+    kicker.className = 'cakes-discount-kicker';
+    kicker.textContent = 'Limited-time offer';
+    const description = document.createElement('span');
+    description.className = 'cakes-discount-description';
+    description.textContent = 'Discount on all items';
+    copy.append(kicker, description);
+    offer.append(badge, copy);
+    const countdown = document.createElement('span');
+    countdown.className = 'cakes-discount-countdown';
+    countdown.setAttribute('aria-live', 'off');
+    const countdownLabel = document.createElement('span');
+    countdownLabel.textContent = 'Discount ends in';
+    const countdownValue = document.createElement('strong');
+    countdownValue.className = 'cakes-discount-countdown-value';
+    countdown.append(countdownLabel, countdownValue);
+    banner.append(offer, countdown);
+    const firstSection = document.querySelector('.gallery-section');
+    (firstSection?.parentElement ?? document.body).insertBefore(banner, firstSection ?? null);
+
+    document.querySelectorAll('.cake-card').forEach(card => {
+        const priceElement = card.querySelector('.cake-price');
+        if (!priceElement || card.dataset.priceOnRequest === 'true') return;
+        const regularPrice = Number(priceElement.textContent.replace(/[^\d.]/g, ''));
+        if (!Number.isFinite(regularPrice) || regularPrice < 0) return;
+
+        const originalPrice = document.createElement('del');
+        originalPrice.className = 'cake-price-original';
+        originalPrice.textContent = `Regular: ${formatPrice(regularPrice)}`;
+        priceElement.before(originalPrice);
+        priceElement.dataset.regularPriceText = priceElement.textContent;
+        const discountedPrice = Math.round((regularPrice * (1 - promotion.discount_value / 100) + Number.EPSILON) * 100) / 100;
+        priceElement.textContent = `Now: ${formatPrice(discountedPrice)}`;
+        priceElement.classList.add('cakes-discounted-price');
+    });
+
+    const updateCountdown = () => {
+        const remaining = endsAt - Date.now();
+        if (remaining <= 0) {
+            clearCakesPromotionDisplay();
+            document.dispatchEvent(new Event('catalog:products-updated'));
+            return;
+        }
+        countdownValue.textContent = formatCountdown(remaining);
+        countdownValue.classList.remove('tick');
+        // Restart the tick animation for each timer update.
+        void countdownValue.offsetWidth;
+        countdownValue.classList.add('tick');
+    };
+    cakesPromotionCountdownTimer = setInterval(updateCountdown, 1000);
+    updateCountdown();
+}
+
+function sameCakesPromotion(left, right) {
+    return left?.enabled === right?.enabled
+        && left?.discount_type === right?.discount_type
+        && left?.discount_value === right?.discount_value
+        && left?.starts_at === right?.starts_at
+        && left?.ends_at === right?.ends_at;
+}
+
+function monitorCakesPromotion(initialPromotion) {
+    let currentPromotion = initialPromotion;
+    let refreshing = false;
+    setInterval(async () => {
+        if (refreshing) return;
+        refreshing = true;
+        try {
+            const latestPromotion = await fetchCakesPromotion();
+            if (!sameCakesPromotion(currentPromotion, latestPromotion)) {
+                currentPromotion = latestPromotion;
+                applyCakesPromotion(currentPromotion);
+                document.dispatchEvent(new Event('catalog:products-updated'));
+            }
+            document.getElementById('cakes-promotion-error')?.remove();
+        } catch (error) {
+            showCakesPromotionError(error);
+        } finally {
+            refreshing = false;
+        }
+    }, 30000);
 }
 
 function findOrCreateProductSection(title) {
@@ -71,15 +356,13 @@ function findOrCreateProductSection(title) {
     return section.querySelector('.gallery-grid');
 }
 
-function createCustomerProductCard(product) {
+function createCustomerProductCard(product, pageId) {
     const card = document.createElement('div');
     card.className = 'cake-card';
     card.dataset.priceOnRequest = 'false';
 
     const image = document.createElement('img');
-    image.src = product.imageUrl && !/product-placeholder/i.test(product.imageUrl)
-        ? product.imageUrl
-        : resolveProductImage(product.name);
+    setProductImageSource(image, pageId, product.name, product.imageUrl);
     image.alt = product.name;
     image.loading = 'lazy';
 
@@ -179,8 +462,10 @@ function updateCustomerOrderAvailability(acceptingOrders, message) {
 
 async function applyCustomerCatalog() {
     installCatalogAdditions(document);
+    const pageId = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html') ? 'order-cakes' : 'cakes';
+    const controlsShopAvailability = pageId === 'cakes';
     const root = document.documentElement;
-    root.dataset.orderAvailability = 'checking';
+    root.dataset.orderAvailability = controlsShopAvailability ? 'checking' : 'open';
     const blockedControls = '.btn-add-cart, .qty-plus, .di-qty [data-action="plus"], .sr-add, .btn-checkout';
     const updateBlockedControls = () => {
         const blocked = root.dataset.orderAvailability !== 'open';
@@ -206,16 +491,25 @@ async function applyCustomerCatalog() {
     const controlsObserver = new MutationObserver(updateBlockedControls);
     controlsObserver.observe(document.body, { childList: true, subtree: true });
 
-    const pageId = location.pathname.toLocaleLowerCase().endsWith('/order-cakes.html') ? 'order-cakes' : 'cakes';
+    const promotionResultPromise = controlsShopAvailability
+        ? fetchCakesPromotion()
+            .then(promotion => ({ promotion }))
+            .catch(error => ({ error }))
+        : Promise.resolve({ promotion: null });
     let catalog;
+    let promotionResult;
     try {
-        catalog = await fetchCatalog();
+        [catalog, promotionResult] = await Promise.all([fetchCatalog(), promotionResultPromise]);
     } catch (error) {
-        updateCustomerOrderAvailability(false, 'We can’t confirm order availability right now. Please contact us on WhatsApp. ');
+        if (controlsShopAvailability) {
+            updateCustomerOrderAvailability(false, 'We can’t confirm order availability right now. Please contact us on WhatsApp. ');
+        }
         updateBlockedControls();
         throw error;
     }
-    updateCustomerOrderAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available !== false);
+    if (controlsShopAvailability) {
+        updateCustomerOrderAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available !== false);
+    }
     updateBlockedControls();
     const cards = [...document.querySelectorAll('.cake-card')];
     const records = getProductRecords(document, pageId);
@@ -251,12 +545,12 @@ async function applyCustomerCatalog() {
             if (placeholder) placeholder.replaceWith(image);
             else card.prepend(image);
         }
-        image.src = imageSrc && !/product-placeholder/i.test(imageSrc)
-            ? imageSrc
-            : resolveProductImage(displayName);
         image.alt = displayName;
         image.hidden = false;
+        setProductImageSource(image, pageId, displayName, imageSrc);
     });
+
+    if (promotionResult.error) showCakesPromotionError(promotionResult.error);
 
     function applySectionVisibility() {
         for (const section of document.querySelectorAll('.gallery-section')) {
@@ -276,19 +570,28 @@ async function applyCustomerCatalog() {
     const newEntries = Object.entries(catalog).filter(([k, v]) =>
         k.startsWith(`new:${pageId}:`) && v.available !== false
     );
-    if (!newEntries.length) return;
+    if (newEntries.length) {
+        const productGrids = new Map();
+        newEntries.forEach(([, product]) => {
+            const category = normalizeProductCategory(product.category || '✦ New Products');
+            if (!productGrids.has(category)) {
+                productGrids.set(category, findOrCreateProductSection(category));
+            }
+            productGrids.get(category).appendChild(createCustomerProductCard(product, pageId));
+        });
+    }
 
-    const productGrids = new Map();
-    newEntries.forEach(([, product]) => {
-        const category = normalizeProductCategory(product.category || '✦ New Products');
-        if (!productGrids.has(category)) {
-            productGrids.set(category, findOrCreateProductSection(category));
-        }
-        productGrids.get(category).appendChild(createCustomerProductCard(product));
-    });
-    document.dispatchEvent(new Event('catalog:products-updated'));
-    updateBlockedControls();
-    applySectionVisibility();
+    if (pageId === 'cakes') {
+        applyCakesPromotion(promotionResult.promotion);
+        monitorCakesPromotion(promotionResult.promotion);
+        document.dispatchEvent(new Event('catalog:products-updated'));
+        updateBlockedControls();
+        applySectionVisibility();
+    } else if (newEntries.length) {
+        document.dispatchEvent(new Event('catalog:products-updated'));
+        updateBlockedControls();
+        applySectionVisibility();
+    }
 }
 
 // ─── Admin panel ──────────────────────────────────────────────────────────────
@@ -319,12 +622,9 @@ function createProductRow(record, override, draft, canEdit, onDraftChange, onSav
         : resolveProductImage(override?.name || record.name);
     image.alt = override?.name || record.name;
     const productTitle = document.createElement('div');
-    const category = document.createElement('span');
-    category.className = 'product-category';
-    category.textContent = record.category;
     const originalName = document.createElement('strong');
     originalName.textContent = record.name;
-    productTitle.append(category, originalName);
+    productTitle.append(originalName);
     heading.append(image, productTitle);
 
     const nameInput = document.createElement('input');
@@ -437,6 +737,12 @@ async function startAdmin() {
     const count = document.getElementById('product-count');
     const shopOrderState = document.getElementById('shop-order-state');
     const shopOrderToggle = document.getElementById('shop-order-toggle');
+    const discountPercentInput = document.getElementById('cakes-discount-percent');
+    const discountDurationInput = document.getElementById('cakes-discount-duration');
+    const discountUnitInput = document.getElementById('cakes-discount-unit');
+    const startDiscountButton = document.getElementById('start-cakes-discount');
+    const stopDiscountButton = document.getElementById('stop-cakes-discount');
+    const discountStatus = document.getElementById('cakes-discount-status');
     const resetAll = document.getElementById('reset-all');
     const toggleNonfood = document.getElementById('toggle-nonfood');
     const loginForm = document.getElementById('admin-login');
@@ -449,8 +755,12 @@ async function startAdmin() {
     const drafts = new Map();
     const sectionDrafts = new Map();
     let catalog = {};
+    let cakesPromotion = null;
     let canEdit = false;
     let pagesLoaded = false;
+    let promotionLoaded = false;
+    let promotionLoadStarted = false;
+    let promotionSaving = false;
 
     function updateDraft(key, draft) {
         if (draft) drafts.set(key, draft);
@@ -469,6 +779,114 @@ async function startAdmin() {
         shopOrderToggle.dataset.state = acceptingOrders ? 'open' : 'closed';
         shopOrderToggle.textContent = acceptingOrders ? 'Close shop to new orders' : 'Accept orders again';
         shopOrderToggle.disabled = !canEdit;
+    }
+
+    function formatPromotionEnd(value) {
+        return new Intl.DateTimeFormat('en-IN', {
+            timeZone: PROMOTION_TIME_ZONE,
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        }).format(new Date(value));
+    }
+
+    function renderCakesPromotion() {
+        const active = isCakesPromotionActive(cakesPromotion);
+        const canManagePromotion = canEdit && !promotionSaving && promotionLoaded;
+        discountPercentInput.disabled = !canEdit || promotionSaving || !promotionLoaded;
+        discountDurationInput.disabled = !canEdit || promotionSaving || !promotionLoaded;
+        discountUnitInput.disabled = !canEdit || promotionSaving || !promotionLoaded;
+        startDiscountButton.disabled = !canManagePromotion || active;
+        stopDiscountButton.disabled = !canManagePromotion || !active;
+
+        if (!promotionLoaded) {
+            discountStatus.textContent = promotionLoadStarted
+                ? 'Loading discount settings…'
+                : 'Discount settings are unavailable. Check the Supabase setup.';
+        } else if (active) {
+            discountPercentInput.value = String(cakesPromotion.discount_value);
+            discountStatus.textContent = `Active: ${cakesPromotion.discount_value}% off until ${formatPromotionEnd(cakesPromotion.ends_at)}.`;
+        } else if (cakesPromotion?.ends_at && Date.parse(cakesPromotion.ends_at) <= Date.now()) {
+            discountStatus.textContent = `The previous discount expired at ${formatPromotionEnd(cakesPromotion.ends_at)}. No discount is active.`;
+        } else {
+            discountStatus.textContent = 'No Cakes page discount is active.';
+        }
+    }
+
+    async function loadCakesPromotion() {
+        cakesPromotion = await fetchCakesPromotion();
+        promotionLoaded = true;
+        renderCakesPromotion();
+    }
+
+    async function startCakesPromotion() {
+        if (!canEdit || !promotionLoaded) return;
+        const discountValue = Number(discountPercentInput.value);
+        const duration = Number(discountDurationInput.value);
+        const unit = discountUnitInput.value;
+        const durationMultiplier = unit === 'days' ? 86400000 : 3600000;
+        const startsAtMilliseconds = Date.now();
+        const endsAtMilliseconds = startsAtMilliseconds + duration * durationMultiplier;
+        if (!discountPercentInput.validity.valid
+            || !Number.isFinite(discountValue)
+            || discountValue <= 0
+            || discountValue > 100
+            || !discountDurationInput.validity.valid
+            || !Number.isSafeInteger(duration)
+            || duration < 1
+            || !['hours', 'days'].includes(unit)
+            || !Number.isFinite(endsAtMilliseconds)
+            || Number.isNaN(new Date(endsAtMilliseconds).getTime())) {
+            setStatus('Enter a discount from 0.01% to 100% and a positive whole-number duration.', true);
+            return;
+        }
+
+        const now = new Date(startsAtMilliseconds);
+        const promotion = {
+            promotion_key: CAKES_PROMOTION_KEY,
+            discount_type: 'percentage',
+            discount_value: discountValue,
+            starts_at: now.toISOString(),
+            ends_at: new Date(endsAtMilliseconds).toISOString(),
+            enabled: true,
+            updated_at: now.toISOString()
+        };
+        promotionSaving = true;
+        renderCakesPromotion();
+        setStatus('Starting the Cakes page discount…');
+        try {
+            const { error } = await supabase.from(PROMOTIONS_TABLE).upsert(promotion);
+            if (error) throw error;
+            cakesPromotion = promotion;
+            setStatus(`Started a ${discountValue}% Cakes page discount until ${formatPromotionEnd(promotion.ends_at)}.`);
+        } catch (error) {
+            setStatus(`Could not start the Cakes page discount: ${getErrorMessage(error, 'Unknown error')}`, true);
+        } finally {
+            promotionSaving = false;
+            renderCakesPromotion();
+        }
+    }
+
+    async function stopCakesPromotion() {
+        if (!canEdit || !promotionLoaded || !isCakesPromotionActive(cakesPromotion)) return;
+        promotionSaving = true;
+        renderCakesPromotion();
+        setStatus('Stopping the Cakes page discount…');
+        const promotion = { ...cakesPromotion, enabled: false, updated_at: new Date().toISOString() };
+        try {
+            const { error } = await supabase.from(PROMOTIONS_TABLE).upsert(promotion);
+            if (error) throw error;
+            cakesPromotion = promotion;
+            setStatus('Stopped the Cakes page discount.');
+        } catch (error) {
+            setStatus(`Could not stop the Cakes page discount: ${getErrorMessage(error, 'Unknown error')}`, true);
+        } finally {
+            promotionSaving = false;
+            renderCakesPromotion();
+        }
     }
 
     async function loadPages() {
@@ -523,14 +941,36 @@ async function startAdmin() {
             const override = catalog[r.key];
             return `${override?.name ?? r.name} ${r.category}`.toLocaleLowerCase().includes(query);
         });
-        productList.replaceChildren(...visibleRecords.map(r => createProductRow(
-            r,
-            catalog[r.key],
-            drafts.get(r.key),
-            canEdit,
-            updateDraft,
-            saveProduct
-        )));
+        const productGroups = new Map();
+        visibleRecords.forEach(record => {
+            const category = record.category || 'Other items';
+            let group = productGroups.get(category);
+            if (!group) {
+                const section = document.createElement('details');
+                section.className = 'product-category-group';
+                section.setAttribute('aria-label', category);
+                const summary = document.createElement('summary');
+                summary.className = 'product-category-summary';
+                const heading = document.createElement('h2');
+                heading.className = 'product-category-heading';
+                heading.textContent = category;
+                const items = document.createElement('div');
+                items.className = 'product-category-items';
+                summary.append(heading);
+                section.append(summary, items);
+                group = { section, items };
+                productGroups.set(category, group);
+            }
+            group.items.append(createProductRow(
+                record,
+                catalog[record.key],
+                drafts.get(record.key),
+                canEdit,
+                updateDraft,
+                saveProduct
+            ));
+        });
+        productList.replaceChildren(...[...productGroups.values()].map(group => group.section));
         count.textContent = `${visibleRecords.length} products`;
         resetAll.disabled = !canEdit;
         toggleNonfood.disabled = !canEdit;
@@ -543,7 +983,20 @@ async function startAdmin() {
         canEdit = Boolean(session?.user?.email && ADMIN_EMAILS.has(session.user.email.toLocaleLowerCase()));
         loginForm.hidden = canEdit;
         adminPanel.hidden = !canEdit;
-        if (canEdit) renderProducts();
+        if (canEdit) {
+            renderProducts();
+            if (!promotionLoadStarted) {
+                promotionLoadStarted = true;
+                renderCakesPromotion();
+                loadCakesPromotion().catch(error => {
+                    promotionLoadStarted = false;
+                    renderCakesPromotion();
+                    setStatus(`Could not load Cakes page discount settings: ${getErrorMessage(error, 'Unknown error')}`, true);
+                });
+            } else {
+                renderCakesPromotion();
+            }
+        }
         if (session && !canEdit) setStatus('This account is not authorized.', true);
         else if (!canEdit) setStatus('');
     }
@@ -666,6 +1119,8 @@ async function startAdmin() {
 
     pageSelect.addEventListener('change', renderProducts);
     searchInput.addEventListener('input', renderProducts);
+    startDiscountButton.addEventListener('click', startCakesPromotion);
+    stopDiscountButton.addEventListener('click', stopCakesPromotion);
     shopOrderToggle.addEventListener('click', () =>
         saveShopAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available === false)
     );
