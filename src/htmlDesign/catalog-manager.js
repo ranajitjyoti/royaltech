@@ -5,6 +5,7 @@ const SUPABASE_URL = 'https://flsfsjtyfrpdbhyauxeg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_B65tKRHEWcEnjZkfb9wvMg_u7YSmsPy';
 const TABLE = 'catalog_overrides';
 const PROMOTIONS_TABLE = 'catalog_promotions';
+const ORDERS_TABLE = 'cakes_orders';
 const CAKES_PROMOTION_KEY = 'cakes';
 const PROMOTION_TIME_ZONE = 'Asia/Kolkata';
 const STORAGE_BUCKET = 'product-images';
@@ -743,6 +744,13 @@ async function startAdmin() {
     const startDiscountButton = document.getElementById('start-cakes-discount');
     const stopDiscountButton = document.getElementById('stop-cakes-discount');
     const discountStatus = document.getElementById('cakes-discount-status');
+    const ordersToggle = document.getElementById('cakes-orders-toggle');
+    const ordersUnread = document.getElementById('cakes-orders-unread');
+    const ordersPanel = document.getElementById('cakes-orders-panel');
+    const ordersStatus = document.getElementById('cakes-orders-status');
+    const ordersList = document.getElementById('cakes-orders-list');
+    const pushToggle = document.getElementById('cakes-push-toggle');
+    const pushStatus = document.getElementById('cakes-push-status');
     const resetAll = document.getElementById('reset-all');
     const toggleNonfood = document.getElementById('toggle-nonfood');
     const loginForm = document.getElementById('admin-login');
@@ -761,6 +769,245 @@ async function startAdmin() {
     let promotionLoaded = false;
     let promotionLoadStarted = false;
     let promotionSaving = false;
+    let ordersChannel = null;
+    let ordersLoadPromise = null;
+    let ordersRefreshQueued = false;
+    let markOrdersReadQueued = false;
+    let pushRegistration = null;
+    let pushSubscription = null;
+    let pushPublicKey = null;
+
+    function setOrdersError(message) {
+        ordersStatus.textContent = message;
+        ordersStatus.classList.add('error');
+    }
+
+    function formatOrderTime(value) {
+        return new Intl.DateTimeFormat('en-IN', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+            timeZone: 'Asia/Kolkata'
+        }).format(new Date(value));
+    }
+
+    function renderOrders(orders) {
+        if (!orders.length) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.className = 'cakes-orders-state';
+            emptyMessage.textContent = 'No orders have been recorded yet.';
+            ordersList.replaceChildren(emptyMessage);
+            return;
+        }
+
+        const cards = orders.map(order => {
+            const card = document.createElement('article');
+            card.className = 'cakes-order-card';
+
+            const heading = document.createElement('div');
+            heading.className = 'cakes-order-heading';
+            const orderId = document.createElement('strong');
+            orderId.textContent = `Order ${String(order.id).slice(0, 8)}`;
+            const time = document.createElement('time');
+            time.dateTime = order.created_at;
+            time.textContent = formatOrderTime(order.created_at);
+            heading.append(orderId, time);
+
+            const itemsList = document.createElement('ul');
+            itemsList.className = 'cakes-order-items';
+            for (const item of order.items) {
+                const row = document.createElement('li');
+                const unit = item.unit ? ` (${item.unit})` : '';
+                const linePrice = item.unit_price === null
+                    ? 'Price on request'
+                    : formatPrice(Number(item.unit_price) * Number(item.quantity));
+                row.textContent = `${item.quantity} × ${item.name}${unit} — ${linePrice}`;
+                itemsList.append(row);
+            }
+
+            const total = document.createElement('p');
+            total.className = 'cakes-order-total';
+            total.textContent = `${order.has_unpriced_items ? 'Known total (items on request excluded)' : 'Total'}: ${formatPrice(order.total)}`;
+
+            const pending = document.createElement('p');
+            pending.className = 'cakes-order-pending';
+            pending.textContent = 'Pending — WhatsApp message not confirmed';
+
+            card.append(heading, itemsList, total, pending);
+            return card;
+        });
+        ordersList.replaceChildren(...cards);
+    }
+
+    function loadOrders(markVisibleAsRead = false) {
+        if (!canEdit) return Promise.resolve();
+        if (ordersLoadPromise) {
+            ordersRefreshQueued = true;
+            markOrdersReadQueued ||= markVisibleAsRead;
+            return ordersLoadPromise;
+        }
+        const shouldMarkVisibleAsRead = markVisibleAsRead || markOrdersReadQueued;
+        ordersRefreshQueued = false;
+        markOrdersReadQueued = false;
+
+        ordersLoadPromise = (async () => {
+            ordersStatus.classList.remove('error');
+            ordersStatus.textContent = 'Loading orders…';
+            const { data, error } = await supabase
+                .from(ORDERS_TABLE)
+                .select('id, items, subtotal, delivery_charge, total, has_unpriced_items, created_at, read_at')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            if (error) throw error;
+
+            let orders = data ?? [];
+            if (shouldMarkVisibleAsRead) {
+                const unreadIds = orders.filter(order => !order.read_at).map(order => order.id);
+                if (unreadIds.length) {
+                    const readAt = new Date().toISOString();
+                    const { error: updateError } = await supabase
+                        .from(ORDERS_TABLE)
+                        .update({ read_at: readAt })
+                        .in('id', unreadIds)
+                        .is('read_at', null);
+                    if (updateError) throw updateError;
+                    orders = orders.map(order => unreadIds.includes(order.id) ? { ...order, read_at: readAt } : order);
+                }
+            }
+
+            renderOrders(orders);
+            ordersStatus.textContent = orders.length
+                ? `Showing the latest ${orders.length} order${orders.length === 1 ? '' : 's'}.`
+                : 'No orders have been recorded yet.';
+            const { count: unreadCount, error: countError } = await supabase
+                .from(ORDERS_TABLE)
+                .select('id', { count: 'exact', head: true })
+                .is('read_at', null);
+            if (countError) throw countError;
+            ordersUnread.textContent = unreadCount > 99 ? '99+' : String(unreadCount ?? 0);
+            ordersUnread.hidden = !unreadCount;
+        })().catch(error => {
+            setOrdersError(`Could not load Cakes orders: ${getErrorMessage(error, 'Unknown error')}`);
+            throw error;
+        }).finally(() => {
+            ordersLoadPromise = null;
+            if (ordersRefreshQueued) {
+                const markVisibleAsReadAgain = markOrdersReadQueued;
+                ordersRefreshQueued = false;
+                markOrdersReadQueued = false;
+                loadOrders(markVisibleAsReadAgain).catch(error => console.error('Could not refresh Cakes orders:', error));
+            }
+        });
+
+        return ordersLoadPromise;
+    }
+
+    function registerOrdersServiceWorker() {
+        const serviceWorkerUrl = new URL('./cakes-management-sw.js', document.baseURI);
+        const scope = new URL('./', document.baseURI).pathname;
+        return navigator.serviceWorker.register(serviceWorkerUrl.href, { scope });
+    }
+
+    async function updatePushStatus() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+            pushToggle.disabled = true;
+            pushStatus.textContent = 'This browser does not support push notifications.';
+            return;
+        }
+
+        try {
+            pushRegistration = await registerOrdersServiceWorker();
+            pushSubscription = await pushRegistration.pushManager.getSubscription();
+            if (pushSubscription) {
+                pushPublicKey = null;
+                pushToggle.disabled = false;
+                pushToggle.textContent = 'Disable notifications';
+                pushStatus.textContent = 'Push notifications are enabled on this device.';
+                return;
+            }
+
+            const { data, error } = await supabase.functions.invoke('cakes-orders', {
+                body: { action: 'push-key' }
+            });
+            if (error) throw error;
+            if (typeof data?.publicKey !== 'string') throw new Error('The server did not provide a VAPID public key.');
+            pushPublicKey = data.publicKey;
+            pushToggle.disabled = false;
+            pushToggle.textContent = 'Enable notifications';
+            pushStatus.textContent = Notification.permission === 'denied'
+                ? 'Notifications are blocked by the browser. Allow them in browser settings to enable alerts.'
+                : 'Notifications are off on this device.';
+        } catch (error) {
+            pushToggle.disabled = true;
+            pushStatus.textContent = `Could not set up browser notifications: ${getErrorMessage(error, 'Unknown error')}`;
+            pushPublicKey = null;
+        }
+    }
+
+    function base64UrlToBytes(value) {
+        const padded = value.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(value.length / 4) * 4, '=');
+        const raw = window.atob(padded);
+        return Uint8Array.from(raw, character => character.charCodeAt(0));
+    }
+
+    async function togglePushNotifications() {
+        pushToggle.disabled = true;
+        pushStatus.textContent = 'Updating notification settings…';
+        try {
+            const existingSubscription = pushSubscription;
+            if (existingSubscription) {
+                const { error } = await supabase.functions.invoke('cakes-orders', {
+                    body: { action: 'unsubscribe', endpoint: existingSubscription.endpoint }
+                });
+                if (error) throw error;
+                const removed = await existingSubscription.unsubscribe();
+                if (!removed) throw new Error('The browser could not disable this push subscription.');
+                pushStatus.textContent = 'Push notifications are disabled on this device.';
+                return;
+            }
+
+            if (!pushRegistration || !pushPublicKey) throw new Error('Push notifications are not configured on the server.');
+
+            const permissionRequest = Notification.permission === 'granted'
+                ? Promise.resolve('granted')
+                : Notification.requestPermission();
+            const permission = await permissionRequest;
+            if (permission !== 'granted') {
+                pushStatus.textContent = 'Notification permission was not granted. Change it in browser settings to enable alerts.';
+                return;
+            }
+
+            const subscription = await pushRegistration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: base64UrlToBytes(pushPublicKey)
+            });
+            const { error: saveError } = await supabase.functions.invoke('cakes-orders', {
+                body: { action: 'subscribe', subscription: subscription.toJSON() }
+            });
+            if (saveError) {
+                await subscription.unsubscribe();
+                throw saveError;
+            }
+            pushStatus.textContent = 'Push notifications are enabled on this device.';
+        } catch (error) {
+            pushStatus.textContent = `Could not update notifications: ${getErrorMessage(error, 'Unknown error')}`;
+        } finally {
+            await updatePushStatus();
+        }
+    }
+
+    function watchOrders() {
+        if (ordersChannel) return;
+        ordersChannel = supabase
+            .channel('cakes-orders-inbox')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: ORDERS_TABLE
+            }, () => {
+                loadOrders(!ordersPanel.hidden).catch(error => console.error('Could not refresh Cakes orders:', error));
+            })
+            .subscribe();
+    }
 
     function updateDraft(key, draft) {
         if (draft) drafts.set(key, draft);
@@ -985,6 +1232,14 @@ async function startAdmin() {
         adminPanel.hidden = !canEdit;
         if (canEdit) {
             renderProducts();
+            const openOrdersFromNotification = new URLSearchParams(window.location.search).get('orders') === '1';
+            if (openOrdersFromNotification) {
+                ordersPanel.hidden = false;
+                ordersToggle.setAttribute('aria-expanded', 'true');
+            }
+            watchOrders();
+            loadOrders(openOrdersFromNotification).catch(error => console.error('Could not load Cakes orders:', error));
+            updatePushStatus();
             if (!promotionLoadStarted) {
                 promotionLoadStarted = true;
                 renderCakesPromotion();
@@ -996,6 +1251,9 @@ async function startAdmin() {
             } else {
                 renderCakesPromotion();
             }
+        } else if (ordersChannel) {
+            void supabase.removeChannel(ordersChannel);
+            ordersChannel = null;
         }
         if (session && !canEdit) setStatus('This account is not authorized.', true);
         else if (!canEdit) setStatus('');
@@ -1121,6 +1379,13 @@ async function startAdmin() {
     searchInput.addEventListener('input', renderProducts);
     startDiscountButton.addEventListener('click', startCakesPromotion);
     stopDiscountButton.addEventListener('click', stopCakesPromotion);
+    ordersToggle.addEventListener('click', () => {
+        const open = ordersPanel.hidden;
+        ordersPanel.hidden = !open;
+        ordersToggle.setAttribute('aria-expanded', String(open));
+        if (open) loadOrders(true).catch(error => console.error('Could not load Cakes orders:', error));
+    });
+    pushToggle.addEventListener('click', togglePushNotifications);
     shopOrderToggle.addEventListener('click', () =>
         saveShopAvailability(catalog[SHOP_AVAILABILITY_KEY]?.available === false)
     );

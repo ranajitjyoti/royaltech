@@ -1,0 +1,4 @@
+project_id = "royaltech"
+
+[functions.cakes-orders]
+verify_jwt = false

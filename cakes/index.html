@@ -1723,9 +1723,10 @@
 
             const whatsappOrderButton = document.getElementById('coWhatsappOrder');
             const paymentQrUrl = new URL('../../image/payment%20Scannar/scannarPayment.jpeg', window.location.href);
-            whatsappOrderButton.addEventListener('click', () => {
+            let orderSubmissionInProgress = false;
+            whatsappOrderButton.addEventListener('click', async () => {
                 const entries = Object.entries(cartData).filter(([, v]) => v.qty > 0);
-                if (!entries.length) return;
+                if (!entries.length || orderSubmissionInProgress) return;
                 const itemTotal = entries.reduce((s, [, v]) => s + v.qty * v.price, 0);
                 const deliveryCharge = getDeliveryCharge(itemTotal);
                 const hasUnpricedItems = entries.some(([, v]) => v.price === null);
@@ -1742,7 +1743,25 @@
                     `Scan and pay via UPI: ${paymentQrUrl.href}\n\n` +
                     `See you again 😊\n` +
                     `Order here 👇\nhttps://www.deeplinkdata.com/cakes/`;
-                window.location.href = `https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`;
+                const whatsappUrl = `https://wa.me/${SHOP_WA}?text=${encodeURIComponent(message)}`;
+                const orderItems = entries.map(([name, item]) => ({
+                    name,
+                    quantity: item.qty,
+                    unit: item.unit || null,
+                    unitPrice: item.price
+                }));
+                orderSubmissionInProgress = true;
+                whatsappOrderButton.disabled = true;
+                whatsappOrderButton.textContent = 'Saving order…';
+                try {
+                    const orderApiUrl = new URL('./cakes-orders-api.js', document.baseURI).href;
+                    const { savePendingCakesOrder } = await import(orderApiUrl);
+                    await savePendingCakesOrder(orderItems);
+                } catch (error) {
+                    console.error('Could not record the Cakes order in the management inbox:', error);
+                    window.alert('The shop inbox could not record this order. WhatsApp will still open so you can send it directly.');
+                }
+                window.location.href = whatsappUrl;
             });
 
             // ── Scroll to top ──

@@ -90,6 +90,58 @@
         #shop-order-state[data-state="open"] { color: #2e6c45; }
         #shop-order-toggle[data-state="closed"] { background: #2e8b57; }
         #shop-order-toggle[data-state="open"] { background: #9b3d3d; }
+        .cakes-orders-section {
+            padding: 14px;
+            margin-bottom: 18px;
+            border: 1px solid #cbdccf;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
+        }
+        .cakes-orders-toolbar, .cakes-orders-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .cakes-orders-toolbar h2 { margin: 0; font-size: 1rem; }
+        .cakes-orders-toolbar p, .cakes-orders-state { margin: 5px 0 0; color: #557462; font-size: 0.82rem; }
+        #cakes-orders-toggle { display: inline-flex; align-items: center; gap: 8px; }
+        #cakes-orders-unread {
+            min-width: 22px;
+            padding: 1px 6px;
+            border-radius: 12px;
+            background: #fff;
+            color: #2e6c45;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        #cakes-orders-unread[hidden] { display: none; }
+        #cakes-push-toggle { background: #537b9d; }
+        #cakes-push-toggle:hover { background: #3e617f; }
+        #cakes-orders-panel { margin-top: 14px; }
+        #cakes-orders-panel[hidden] { display: none; }
+        #cakes-orders-list { display: grid; gap: 10px; }
+        .cakes-order-card {
+            padding: 12px;
+            border: 1px solid #e0ebe3;
+            border-radius: 10px;
+            background: #f9fcfa;
+        }
+        .cakes-order-heading {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            margin-bottom: 8px;
+        }
+        .cakes-order-heading strong { font-size: 0.9rem; }
+        .cakes-order-heading time { color: #557462; font-size: 0.78rem; }
+        .cakes-order-items { display: grid; gap: 4px; margin: 0; padding-left: 20px; font-size: 0.84rem; }
+        .cakes-order-total { margin: 8px 0 0; font-size: 0.86rem; font-weight: 700; }
+        .cakes-order-pending { margin: 5px 0 0; color: #8a5b00; font-size: 0.76rem; }
+        .cakes-orders-state.error { color: #a52626; }
         .toolbar {
             padding: 10px;
             margin-bottom: 18px;
@@ -374,6 +426,27 @@
                     <button id="shop-order-toggle" data-state="open" type="button">Close shop to new orders</button>
                 </div>
             </details>
+
+            <section class="cakes-orders-section" aria-labelledby="cakes-orders-title">
+                <div class="cakes-orders-toolbar">
+                    <div>
+                        <h2 id="cakes-orders-title">🔔 Cakes orders</h2>
+                        <p>Orders stay pending until WhatsApp is verified with the customer.</p>
+                    </div>
+                    <div class="cakes-orders-actions">
+                        <button id="cakes-orders-toggle" type="button" aria-expanded="false" aria-controls="cakes-orders-panel">
+                            View orders <span id="cakes-orders-unread" hidden>0</span>
+                        </button>
+                        <button id="cakes-push-toggle" type="button" disabled>Enable notifications</button>
+                    </div>
+                </div>
+                <p id="cakes-push-status" class="cakes-orders-state" role="status" aria-live="polite"></p>
+                <p id="cakes-orders-status" class="cakes-orders-state" role="status" aria-live="polite"></p>
+                <div id="cakes-orders-panel" hidden>
+                    <div id="cakes-orders-list"></div>
+                </div>
+                <p class="cakes-orders-state">Before first use, apply the <a href="./supabase-cakes-orders.sql" target="_blank" rel="noopener">Cakes orders SQL</a>, deploy the <code>cakes-orders</code> Edge Function, and <a href="../../supabase/cakes-orders-setup.md" target="_blank" rel="noopener">follow the setup steps</a> for VAPID secrets.</p>
+            </section>
 
             <details class="cakes-discount-section">
                 <summary><h2>🎉 Cakes page discount</h2></summary>
